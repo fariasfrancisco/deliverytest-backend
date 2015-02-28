@@ -15,7 +15,7 @@ public class RestaurantesController {
     @RequestMapping("/restaurantes")
     public Restaurantes restaurantes() {
         QueryService queryService = new QueryService();
-        Restaurantes restaurantes = new Restaurantes(queryService.GetRestaurants());
+        Restaurantes restaurantes = new Restaurantes(queryService.GetRestaurantes());
         HibernateSessionService.shutDown();
         return restaurantes;
     }

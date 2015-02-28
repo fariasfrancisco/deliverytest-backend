@@ -123,6 +123,10 @@ public class Pedido implements Serializable {
         this.usuario = usuario;
     }
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "menu_pedido", joinColumns = {
+            @JoinColumn(name = "PedidoId", nullable = false, updatable = false) },
+            inverseJoinColumns = { @JoinColumn(name = "MenuId", nullable = false, updatable = false) })
     public Set<Menu> getMenus() {
         return menus;
     }

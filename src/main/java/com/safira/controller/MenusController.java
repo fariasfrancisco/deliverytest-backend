@@ -22,7 +22,7 @@ public class MenusController {
             restauranteId = 0;
         }
         QueryService queryService = new QueryService();
-        Menus menus = new Menus(queryService.GetMenuForRestaurant(restauranteId));
+        Menus menus = new Menus(queryService.GetMenuForRestaurante(restauranteId));
         HibernateSessionService.shutDown();
         return menus;
     }

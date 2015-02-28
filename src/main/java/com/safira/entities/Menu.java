@@ -3,8 +3,10 @@ package com.safira.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.io.PipedOutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Set;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -19,6 +21,7 @@ public class Menu implements Serializable {
     private String nombre;
     private String descripcion;
     private BigDecimal costo;
+    private Set<Pedido> pedidos;
 
     public Menu() {
     }
@@ -83,6 +86,15 @@ public class Menu implements Serializable {
 
     public void setCosto(BigDecimal costo) {
         this.costo = costo;
+    }
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "menus")
+    public Set<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(Set<Pedido> pedidos) {
+        this.pedidos = pedidos;
     }
 
     @Override
