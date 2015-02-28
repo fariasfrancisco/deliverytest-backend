@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -12,7 +13,7 @@ import static javax.persistence.GenerationType.IDENTITY;
  * Created by Francisco on 26/02/2015.
  */
 @Entity
-@Table(name = "usuarios" , uniqueConstraints = {
+@Table(name = "usuarios", uniqueConstraints = {
         @UniqueConstraint(columnNames = "facebookId"),
         @UniqueConstraint(columnNames = "email")})
 public class Usuario implements Serializable {
@@ -21,24 +22,14 @@ public class Usuario implements Serializable {
     private String email;
     private String nombre;
     private String apellido;
-    private Set<Pedido> pedidos;
+    private Set<Pedido> pedidos = new HashSet<>(0);
 
-    public Usuario() {
-    }
-
-    public Usuario(String facebookId, String email, String nombre, String apellido) {
-        this.facebookId = facebookId;
-        this.email = email;
-        this.nombre = nombre;
-        this.apellido = apellido;
-    }
-
-    public Usuario(String facebookId, String email, String nombre, String apellido, Set<Pedido> pedidos) {
-        this.facebookId = facebookId;
-        this.email = email;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.pedidos = pedidos;
+    public Usuario(Builder builder) {
+        this.facebookId = builder.facebookId;
+        this.email = builder.email;
+        this.nombre = builder.nombre;
+        this.apellido = builder.apellido;
+        this.pedidos = builder.pedidos;
     }
 
     @Id
@@ -96,6 +87,43 @@ public class Usuario implements Serializable {
 
     public void setPedidos(Set<Pedido> pedidos) {
         this.pedidos = pedidos;
+    }
+
+    public static class Builder {
+        private String facebookId;
+        private String email;
+        private String nombre;
+        private String apellido;
+        private Set<Pedido> pedidos = new HashSet<>(0);
+
+        public Builder withFacebookId(String facebookId) {
+            this.facebookId = facebookId;
+            return this;
+        }
+
+        public Builder withEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder withNombre(String nombre) {
+            this.nombre = nombre;
+            return this;
+        }
+
+        public Builder withApellido(String apellido) {
+            this.apellido = apellido;
+            return this;
+        }
+
+        public Builder withPedidos(Set<Pedido> pedidos) {
+            this.pedidos = pedidos;
+            return this;
+        }
+
+        public Usuario build() {
+            return new Usuario(this);
+        }
     }
 
     @Override

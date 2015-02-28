@@ -3,9 +3,9 @@ package com.safira.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.io.PipedOutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -17,26 +17,18 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "menu")
 public class Menu implements Serializable {
     private int id;
-    private Restaurante restaurante;
     private String nombre;
     private String descripcion;
     private BigDecimal costo;
-    private Set<Pedido> pedidos;
+    private Restaurante restaurante;
+    private Set<Pedido> pedidos = new HashSet<>();
 
-    public Menu() {
-    }
-
-    public Menu(String nombre, String descripcion, BigDecimal costo) {
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.costo = costo;
-    }
-
-    public Menu(Restaurante restaurante, String nombre, String descripcion, BigDecimal costo) {
-        this.restaurante = restaurante;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.costo = costo;
+    public Menu(Builder builder) {
+        this.nombre = builder.nombre;
+        this.descripcion = builder.descripcion;
+        this.costo = builder.costo;
+        this.restaurante = builder.restaurante;
+        this.pedidos = builder.pedidos;
     }
 
     @Id
@@ -95,6 +87,43 @@ public class Menu implements Serializable {
 
     public void setPedidos(Set<Pedido> pedidos) {
         this.pedidos = pedidos;
+    }
+
+    public static class Builder {
+        private String nombre;
+        private String descripcion;
+        private BigDecimal costo;
+        private Restaurante restaurante;
+        private Set<Pedido> pedidos = new HashSet<>();
+
+        public Builder withNombre(String nombre) {
+            this.nombre = nombre;
+            return this;
+        }
+
+        public Builder withDescripcion(String descripcion) {
+            this.descripcion = descripcion;
+            return this;
+        }
+
+        public Builder withCosto(BigDecimal costo) {
+            this.costo = costo;
+            return this;
+        }
+
+        public Builder withRestaurante(Restaurante restaurante) {
+            this.restaurante = restaurante;
+            return this;
+        }
+
+        public Builder withPedidos(Set<Pedido> pedidos) {
+            this.pedidos = pedidos;
+            return this;
+        }
+
+        public Menu build() {
+            return new Menu(this);
+        }
     }
 
     @Override

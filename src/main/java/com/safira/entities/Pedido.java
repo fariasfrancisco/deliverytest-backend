@@ -1,10 +1,12 @@
 package com.safira.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.safira.service.LocalDatePersistenceConverter;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -16,35 +18,27 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "pedidos")
 public class Pedido implements Serializable {
+
     private int id;
     private String calle;
     private String numero;
     private String piso;
     private String puerta;
     private String telefono;
+    @Convert(converter = LocalDatePersistenceConverter.class)
     private LocalDate fecha;
     private Usuario usuario;
-    private Set<Menu> menus;
+    private Set<Menu> menus = new HashSet<>(0);
 
-    public Pedido(){}
-    public Pedido(String calle, String numero, String piso, String puerta, String telefono, LocalDate fecha) {
-        this.calle = calle;
-        this.numero = numero;
-        this.piso = piso;
-        this.puerta = puerta;
-        this.telefono = telefono;
-        this.fecha = fecha;
-    }
-
-    public Pedido(String calle, String numero, String piso, String puerta, String telefono, LocalDate fecha, Usuario usuario, Set<Menu> menus) {
-        this.calle = calle;
-        this.numero = numero;
-        this.piso = piso;
-        this.puerta = puerta;
-        this.telefono = telefono;
-        this.fecha = fecha;
-        this.usuario = usuario;
-        this.menus = menus;
+    public Pedido(Builder builder) {
+        this.calle = builder.calle;
+        this.numero = builder.numero;
+        this.piso = builder.piso;
+        this.puerta = builder.puerta;
+        this.telefono = builder.telefono;
+        this.fecha = builder.fecha;
+        this.usuario = builder.usuario;
+        this.menus = builder.menus;
     }
 
     @Id
@@ -125,13 +119,81 @@ public class Pedido implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "menu_pedido", joinColumns = {
-            @JoinColumn(name = "PedidoId", nullable = false, updatable = false) },
-            inverseJoinColumns = { @JoinColumn(name = "MenuId", nullable = false, updatable = false) })
+            @JoinColumn(name = "PedidoId", nullable = false, updatable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "MenuId", nullable = false, updatable = false)})
     public Set<Menu> getMenus() {
         return menus;
     }
 
     public void setMenus(Set<Menu> menus) {
         this.menus = menus;
+    }
+
+    public static class Builder {
+        private String calle;
+        private String numero;
+        private String piso;
+        private String puerta;
+        private String telefono;
+        private LocalDate fecha;
+        private Usuario usuario;
+        private Set<Menu> menus = new HashSet<>(0);
+
+        public Builder withCalle(String calle) {
+            this.calle = calle;
+            return this;
+        }
+
+        public Builder withNumero(String numero) {
+            this.numero = numero;
+            return this;
+        }
+
+        public Builder withPiso(String piso) {
+            this.piso = piso;
+            return this;
+        }
+
+        public Builder withPuerta(String puerta) {
+            this.puerta = puerta;
+            return this;
+        }
+
+        public Builder withTelefono(String telefono) {
+            this.telefono = telefono;
+            return this;
+        }
+
+        public Builder withFecha(LocalDate fecha) {
+            this.fecha = fecha;
+            return this;
+        }
+
+        public Builder withUsuario(Usuario usuario) {
+            this.usuario = usuario;
+            return this;
+        }
+
+        public Builder withMenus(Set<Menu> menus) {
+            this.usuario = usuario;
+            return this;
+        }
+
+        public Pedido build() {
+            return new Pedido(this);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Pedido{" +
+                "id=" + id +
+                ", calle='" + calle + '\'' +
+                ", numero='" + numero + '\'' +
+                ", piso='" + piso + '\'' +
+                ", puerta='" + puerta + '\'' +
+                ", telefono='" + telefono + '\'' +
+                ", fecha=" + fecha.toString() +
+                '}';
     }
 }

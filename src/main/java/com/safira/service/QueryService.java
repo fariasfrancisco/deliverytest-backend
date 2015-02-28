@@ -52,7 +52,6 @@ public class QueryService {
         return criteria.list();
     }
 
-    //TODO learn how to do a INSERT
-    public void RegistrarUsuario(){
+    public void InsertUsuario(Usuario usuario){
     }
 }

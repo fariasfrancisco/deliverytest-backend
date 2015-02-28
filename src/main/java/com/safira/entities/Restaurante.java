@@ -14,10 +14,11 @@ import static javax.persistence.GenerationType.IDENTITY;
  */
 
 @Entity
-@Table(name = "restaurantes" , uniqueConstraints = {
+@Table(name = "restaurantes", uniqueConstraints = {
         @UniqueConstraint(columnNames = "direccion"),
         @UniqueConstraint(columnNames = "telefono")})
 public class Restaurante implements Serializable {
+
     private int id;
     private String nombre;
     private String direccion;
@@ -25,22 +26,12 @@ public class Restaurante implements Serializable {
     private String mail;
     private Set<Menu> menus = new HashSet<>(0);
 
-    public Restaurante() {
-    }
-
-    public Restaurante(String nombre, String direccion, String telefono, String mail) {
-        this.nombre = nombre;
-        this.direccion = direccion;
-        this.telefono = telefono;
-        this.mail = mail;
-    }
-
-    public Restaurante(String nombre, String direccion, String telefono, String mail, Set<Menu> menus) {
-        this.nombre = nombre;
-        this.direccion = direccion;
-        this.telefono = telefono;
-        this.mail = mail;
-        this.menus = menus;
+    public Restaurante(Builder builder) {
+        this.nombre = builder.nombre;
+        this.direccion = builder.direccion;
+        this.telefono = builder.telefono;
+        this.mail = builder.mail;
+        this.menus = builder.menus;
     }
 
     @Id
@@ -98,6 +89,45 @@ public class Restaurante implements Serializable {
 
     public void setMenus(Set<Menu> menus) {
         this.menus = menus;
+    }
+
+    public static class Builder {
+
+        private String nombre;
+        private String direccion;
+        private String telefono;
+        private String mail;
+        private Set<Menu> menus = new HashSet<>();
+
+        public Builder withNombre(String nombre) {
+            this.nombre = nombre;
+            return this;
+        }
+
+        public Builder withDireccion(String direccion) {
+            this.direccion = direccion;
+            return this;
+        }
+
+        public Builder withTelefono(String telefono) {
+            this.telefono = telefono;
+            return this;
+        }
+
+        public Builder withMail(String mail) {
+            this.mail = mail;
+            return this;
+        }
+
+        public Builder withMenus(Set<Menu> menus) {
+            this.menus = menus;
+            return this;
+        }
+
+        public Restaurante build() {
+            return new Restaurante(this);
+        }
+
     }
 
     @Override
