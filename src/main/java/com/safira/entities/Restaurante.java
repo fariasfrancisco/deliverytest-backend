@@ -23,15 +23,20 @@ public class Restaurante implements Serializable {
     private String nombre;
     private String direccion;
     private String telefono;
-    private String mail;
+    private String email;
     private Set<Menu> menus = new HashSet<>(0);
+    private Set<Pedido> pedidos = new HashSet<>(0);
+
+    public Restaurante() {
+    }
 
     public Restaurante(Builder builder) {
         this.nombre = builder.nombre;
         this.direccion = builder.direccion;
         this.telefono = builder.telefono;
-        this.mail = builder.mail;
+        this.email = builder.email;
         this.menus = builder.menus;
+        this.pedidos = builder.pedidos;
     }
 
     @Id
@@ -72,13 +77,13 @@ public class Restaurante implements Serializable {
         this.telefono = telefono;
     }
 
-    @Column(name = "mail", nullable = false, length = 30)
-    public String getMail() {
-        return mail;
+    @Column(name = "email", nullable = false, length = 30)
+    public String getEmail() {
+        return email;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @JsonIgnore
@@ -91,13 +96,24 @@ public class Restaurante implements Serializable {
         this.menus = menus;
     }
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "restaurante")
+    public Set<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(Set<Pedido> pedidos) {
+        this.pedidos = pedidos;
+    }
+
     public static class Builder {
 
         private String nombre;
         private String direccion;
         private String telefono;
-        private String mail;
+        private String email;
         private Set<Menu> menus = new HashSet<>();
+        private Set<Pedido> pedidos = new HashSet<>(0);
 
         public Builder withNombre(String nombre) {
             this.nombre = nombre;
@@ -114,13 +130,18 @@ public class Restaurante implements Serializable {
             return this;
         }
 
-        public Builder withMail(String mail) {
-            this.mail = mail;
+        public Builder withEmail(String email) {
+            this.email = email;
             return this;
         }
 
         public Builder withMenus(Set<Menu> menus) {
             this.menus = menus;
+            return this;
+        }
+
+        public Builder withPedidos(Set<Pedido> pedidos) {
+            this.pedidos = pedidos;
             return this;
         }
 
@@ -137,7 +158,7 @@ public class Restaurante implements Serializable {
                 ", nombre='" + nombre + '\'' +
                 ", direccion='" + direccion + '\'' +
                 ", telefono='" + telefono + '\'' +
-                ", mail='" + mail + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

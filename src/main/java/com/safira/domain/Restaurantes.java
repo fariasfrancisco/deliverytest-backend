@@ -18,10 +18,6 @@ public class Restaurantes {
         return restaurantes;
     }
 
-    public void setRestaurantes(List<Restaurante> restaurantes) {
-        this.restaurantes = restaurantes;
-    }
-
     @Override
     public String toString() {
         String s = "Restaurantes{restaurantes=";

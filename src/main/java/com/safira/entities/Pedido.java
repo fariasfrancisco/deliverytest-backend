@@ -23,21 +23,26 @@ public class Pedido implements Serializable {
     private String calle;
     private String numero;
     private String piso;
-    private String puerta;
+    private String departamento;
     private String telefono;
     @Convert(converter = LocalDatePersistenceConverter.class)
     private LocalDate fecha;
     private Usuario usuario;
+    private Restaurante restaurante;
     private Set<Menu> menus = new HashSet<>(0);
+
+    public Pedido() {
+    }
 
     public Pedido(Builder builder) {
         this.calle = builder.calle;
         this.numero = builder.numero;
         this.piso = builder.piso;
-        this.puerta = builder.puerta;
+        this.departamento = builder.departamento;
         this.telefono = builder.telefono;
         this.fecha = builder.fecha;
         this.usuario = builder.usuario;
+        this.restaurante = builder.restaurante;
         this.menus = builder.menus;
     }
 
@@ -79,13 +84,13 @@ public class Pedido implements Serializable {
         this.piso = piso;
     }
 
-    @Column(name = "puerta", nullable = true)
-    public String getPuerta() {
-        return puerta;
+    @Column(name = "departamento", nullable = true)
+    public String getDepartamento() {
+        return departamento;
     }
 
-    public void setPuerta(String puerta) {
-        this.puerta = puerta;
+    public void setDepartamento(String departamento) {
+        this.departamento = departamento;
     }
 
     @Column(name = "telefono", nullable = false)
@@ -117,6 +122,17 @@ public class Pedido implements Serializable {
         this.usuario = usuario;
     }
 
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "RestauranteId", nullable = false)
+    public Restaurante getRestaurante() {
+        return restaurante;
+    }
+
+    public void setRestaurante(Restaurante restaurante) {
+        this.restaurante = restaurante;
+    }
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "menu_pedido", joinColumns = {
             @JoinColumn(name = "PedidoId", nullable = false, updatable = false)},
@@ -133,10 +149,11 @@ public class Pedido implements Serializable {
         private String calle;
         private String numero;
         private String piso;
-        private String puerta;
+        private String departamento;
         private String telefono;
         private LocalDate fecha;
         private Usuario usuario;
+        private Restaurante restaurante;
         private Set<Menu> menus = new HashSet<>(0);
 
         public Builder withCalle(String calle) {
@@ -154,8 +171,8 @@ public class Pedido implements Serializable {
             return this;
         }
 
-        public Builder withPuerta(String puerta) {
-            this.puerta = puerta;
+        public Builder withDeepartamento(String departamento) {
+            this.departamento = departamento;
             return this;
         }
 
@@ -171,6 +188,11 @@ public class Pedido implements Serializable {
 
         public Builder withUsuario(Usuario usuario) {
             this.usuario = usuario;
+            return this;
+        }
+
+        public Builder withRestaurante(Restaurante restaurante) {
+            this.restaurante = restaurante;
             return this;
         }
 
@@ -191,7 +213,7 @@ public class Pedido implements Serializable {
                 ", calle='" + calle + '\'' +
                 ", numero='" + numero + '\'' +
                 ", piso='" + piso + '\'' +
-                ", puerta='" + puerta + '\'' +
+                ", departamento='" + departamento + '\'' +
                 ", telefono='" + telefono + '\'' +
                 ", fecha=" + fecha.toString() +
                 '}';

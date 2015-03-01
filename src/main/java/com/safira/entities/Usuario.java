@@ -24,6 +24,9 @@ public class Usuario implements Serializable {
     private String apellido;
     private Set<Pedido> pedidos = new HashSet<>(0);
 
+    public Usuario() {
+    }
+
     public Usuario(Builder builder) {
         this.facebookId = builder.facebookId;
         this.email = builder.email;

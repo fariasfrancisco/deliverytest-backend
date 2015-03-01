@@ -23,6 +23,9 @@ public class Menu implements Serializable {
     private Restaurante restaurante;
     private Set<Pedido> pedidos = new HashSet<>();
 
+    public Menu() {
+    }
+
     public Menu(Builder builder) {
         this.nombre = builder.nombre;
         this.descripcion = builder.descripcion;
@@ -40,17 +43,6 @@ public class Menu implements Serializable {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "RestauranteId", nullable = false)
-    public Restaurante getRestaurante() {
-        return restaurante;
-    }
-
-    public void setRestaurante(Restaurante Restaurante) {
-        this.restaurante = restaurante;
     }
 
     @Column(name = "nombre", unique = true, nullable = false, length = 30)
@@ -78,6 +70,17 @@ public class Menu implements Serializable {
 
     public void setCosto(BigDecimal costo) {
         this.costo = costo;
+    }
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "RestauranteId", nullable = false)
+    public Restaurante getRestaurante() {
+        return restaurante;
+    }
+
+    public void setRestaurante(Restaurante Restaurante) {
+        this.restaurante = restaurante;
     }
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "menus")
