@@ -22,8 +22,8 @@ public class RestaurantesController {
         return restaurantes;
     }
 
-    @RequestMapping(value = "/restaurantes", method = RequestMethod.GET)
-    public Restaurantes restaurantes(@RequestParam(value = "id", required = true, defaultValue = "0") String id) {
+    @RequestMapping(value = "/restaurante", method = RequestMethod.GET)
+    public Restaurantes restaurante(@RequestParam(value = "id", required = true, defaultValue = "0") String id) {
         int restauranteId;
         try {
             restauranteId = Integer.valueOf(id);
