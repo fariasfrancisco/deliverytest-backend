@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 /**
- * Created by Francisco on 26/02/2015.
+ * Controller dedicated to serving json RESTful webservice for Menus
  */
 public class MenusController {
 
@@ -23,7 +23,7 @@ public class MenusController {
             restauranteId = 0;
         }
         QueryService queryService = new QueryService();
-        Menus menus = new Menus(queryService.GetMenuForRestaurante(restauranteId));
+        Menus menus = new Menus(queryService.GetMenuByRestauranteId(restauranteId));
         HibernateSessionService.shutDown();
         return menus;
     }
@@ -41,4 +41,25 @@ public class MenusController {
         HibernateSessionService.shutDown();
         return menus;
     }
+
+    /*
+    @RequestMapping(value = "/insertMenu", method = RequestMethod.GET)
+    public Menus menu() {
+        QueryService queryService = new QueryService();
+        Restaurantes restaurantes = new Restaurantes(queryService.GetRestaurantes());
+        Menu menu = new Menu.Builder()
+                .withNombre("lomito especial")
+                .withDescripcion("pan lomo queso jamon mayonesa etc.")
+                .withCosto(new BigDecimal(52.00))
+                .withRestaurante(restaurantes.getRestaurantes().get(0))
+                .build();
+        queryService = new QueryService();
+        queryService.InsertObject(menu);
+        queryService = new QueryService();
+        Menus menus = new Menus(queryService.GetMenuByRestauranteId(restaurantes.getRestaurantes().get(0).getId()));
+        HibernateSessionService.shutDown();
+        return menus;
+    }
+    */
+
 }

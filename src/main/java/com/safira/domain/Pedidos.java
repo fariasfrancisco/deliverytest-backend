@@ -14,13 +14,13 @@ public class Pedidos {
         this.pedidos = pedidos;
     }
 
-    public List<Pedido> getPedidos() {
-        return pedidos;
+    public Pedido get(int i) {
+        return pedidos.get(i);
     }
 
     @Override
     public String toString() {
-        String s = "Pedidos{pedido=";
+        String s = "Pedidos{";
         for (Pedido p : pedidos) {
             s += p.toString();
         }

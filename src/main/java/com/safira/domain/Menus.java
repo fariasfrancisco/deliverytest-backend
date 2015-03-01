@@ -14,17 +14,13 @@ public class Menus {
         this.menus = menus;
     }
 
-    public List<Menu> getMenus() {
-        return menus;
-    }
-
-    public void setMenus(List<Menu> menus) {
-        this.menus = menus;
+    public Menu get(int i) {
+        return menus.get(i);
     }
 
     @Override
     public String toString() {
-        String s = "Menus{menus=";
+        String s = "Menus{";
         for (Menu m : menus) {
             s += m.toString();
         }

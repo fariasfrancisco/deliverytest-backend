@@ -36,7 +36,7 @@ public class QueryService {
         return criteria.list();
     }
 
-    public List GetMenuForRestaurante(Integer id) {
+    public List GetMenuByRestauranteId(Integer id) {
         criteria = session.createCriteria(Menu.class)
                 .add(Restrictions.eq("restaurante.id", id));
         return criteria.list();
@@ -49,13 +49,25 @@ public class QueryService {
         return criteria.list();
     }
 
+    public List GetUsuarios(){
+        criteria = session.createCriteria(Usuario.class);
+        return criteria.list();
+    }
+
     public List GetUsuario(String facebookId) {
         criteria = session.createCriteria(Usuario.class)
                 .add(Restrictions.eq("facebookId", facebookId));
         return criteria.list();
     }
 
-    public List GetPedidosForRestaurante(Integer id) {
+
+    public List<Usuario> GetUsuario(int id) {
+        criteria = session.createCriteria(Usuario.class)
+                .add(Restrictions.eq("id", id));
+        return criteria.list();
+    }
+
+    public List GetPedidosByRestauranteId(Integer id) {
         criteria = session.createCriteria(Pedido.class)
                 .add(Restrictions.eq("restaurante.id", id));
         return criteria.list();

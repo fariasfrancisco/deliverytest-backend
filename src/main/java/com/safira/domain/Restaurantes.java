@@ -14,13 +14,13 @@ public class Restaurantes {
         this.restaurantes = restaurantes;
     }
 
-    public List<Restaurante> getRestaurantes() {
-        return restaurantes;
+    public Restaurante get(int i) {
+        return restaurantes.get(i);
     }
 
     @Override
     public String toString() {
-        String s = "Restaurantes{restaurantes=";
+        String s = "Restaurantes{";
         for (Restaurante r : restaurantes) {
             s += r.toString();
         }

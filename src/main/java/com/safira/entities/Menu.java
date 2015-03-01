@@ -83,6 +83,7 @@ public class Menu implements Serializable {
         this.restaurante = restaurante;
     }
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "menus")
     public Set<Pedido> getPedidos() {
         return pedidos;
