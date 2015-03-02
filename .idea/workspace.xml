@@ -2,11 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bcd85cc7-dab0-40ea-9437-eb87175eaad5" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/resources/main/application.properties" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/resources/main/hibernate.cfg.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/resources/main/templates/connect/facebookConnect.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/resources/main/templates/connect/facebookConnected.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/build/resources/main/templates/hello.html" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/safira/controller/HelloController.java" afterPath="$PROJECT_DIR$/src/main/java/com/safira/controller/HelloController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/safira/domain/Menus.java" afterPath="$PROJECT_DIR$/src/main/java/com/safira/domain/Menus.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/safira/domain/Pedidos.java" afterPath="$PROJECT_DIR$/src/main/java/com/safira/domain/Pedidos.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/safira/domain/Restaurantes.java" afterPath="$PROJECT_DIR$/src/main/java/com/safira/domain/Restaurantes.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/safira/domain/Usuarios.java" afterPath="$PROJECT_DIR$/src/main/java/com/safira/domain/Usuarios.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/safira/controller/UsuariosController.java" afterPath="$PROJECT_DIR$/src/main/java/com/safira/controller/UsuariosController.java" />
     </list>
     <ignored path="deliverytest.iws" />
@@ -69,11 +70,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="HelloController.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="HelloController.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/safira/controller/HelloController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.9527559" vertical-offset="120" max-vertical-offset="1008">
-              <caret line="61" column="24" selection-start-line="61" selection-start-column="24" selection-end-line="61" selection-end-column="24" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="120" max-vertical-offset="1026">
+              <caret line="58" column="43" selection-start-line="58" selection-start-column="43" selection-end-line="58" selection-end-column="43" />
               <folding />
             </state>
           </provider>
@@ -83,7 +84,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/com/safira/controller/MenusController.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="162" max-vertical-offset="1278">
-              <caret line="10" column="15" selection-start-line="10" selection-start-column="15" selection-end-line="10" selection-end-column="15" />
+              <caret line="45" column="49" selection-start-line="45" selection-start-column="49" selection-end-line="45" selection-end-column="49" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -129,14 +130,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UsuariosController.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="UsuariosController.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/safira/controller/UsuariosController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="792">
-              <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
+            <state vertical-scroll-proportion="0.7637795" vertical-offset="138" max-vertical-offset="972">
+              <caret line="40" column="9" selection-start-line="40" selection-start-column="9" selection-end-line="40" selection-end-column="9" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="method#usuarioById#0;class#UsuariosController#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -641,13 +641,13 @@
         <option value="$PROJECT_DIR$/src/main/java/com/safira/entities/Menu.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/safira/controller/MenusController.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/safira/controller/RestaurantesController.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/safira/controller/UsuariosController.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/safira/domain/Menus.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/safira/domain/Pedidos.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/safira/domain/Restaurantes.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/safira/domain/Usuarios.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/safira/service/QueryService.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/safira/controller/HelloController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/safira/controller/UsuariosController.java" />
       </list>
     </option>
   </component>
@@ -1209,14 +1209,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/safira/controller/UsuariosController.java</url>
-          <line>46</line>
-          <properties />
-        </line-breakpoint>
-      </breakpoints>
-      <option name="time" value="2" />
+      <option name="time" value="3" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1588,25 +1581,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/safira/controller/RestaurantesController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1044">
-          <caret line="17" column="45" selection-start-line="17" selection-start-column="30" selection-end-line="17" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/safira/controller/UsuariosController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="792">
-          <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#usuarioById#0;class#UsuariosController#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/safira/domain/Menus.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="648">
@@ -1668,21 +1642,39 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/safira/controller/HelloController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="120" max-vertical-offset="1026">
+          <caret line="58" column="43" selection-start-line="58" selection-start-column="43" selection-end-line="58" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/safira/controller/MenusController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="162" max-vertical-offset="1278">
-          <caret line="10" column="15" selection-start-line="10" selection-start-column="15" selection-end-line="10" selection-end-column="15" />
+          <caret line="45" column="49" selection-start-line="45" selection-start-column="49" selection-end-line="45" selection-end-column="49" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/safira/controller/HelloController.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/safira/controller/RestaurantesController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.9527559" vertical-offset="120" max-vertical-offset="1008">
-          <caret line="61" column="24" selection-start-line="61" selection-start-column="24" selection-end-line="61" selection-end-column="24" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1044">
+          <caret line="17" column="45" selection-start-line="17" selection-start-column="30" selection-end-line="17" selection-end-column="45" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/safira/controller/UsuariosController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7637795" vertical-offset="138" max-vertical-offset="972">
+          <caret line="40" column="9" selection-start-line="40" selection-start-column="9" selection-end-line="40" selection-end-column="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

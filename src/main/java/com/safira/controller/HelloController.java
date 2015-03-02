@@ -3,6 +3,7 @@ package com.safira.controller;
 
 import com.safira.domain.Usuarios;
 import com.safira.entities.Usuario;
+import com.safira.service.HibernateSessionService;
 import com.safira.service.QueryService;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.api.FacebookProfile;
@@ -55,6 +56,7 @@ public class HelloController {
                     .build();
             queryService.InsertObject(usuario);
         }
+        HibernateSessionService.shutDown();
         model.addAttribute(facebook.userOperations().getUserProfile());
         PagedList<Post> homeFeed = facebook.feedOperations().getHomeFeed();
         model.addAttribute("feed", homeFeed);
