@@ -18,6 +18,10 @@ public class Pedidos {
         return pedidos.get(i);
     }
 
+    public List<Pedido> getPedidos() {
+        return pedidos;
+    }
+
     @Override
     public String toString() {
         String s = "Pedidos{";

@@ -45,4 +45,6 @@ public class UsuariosController {
         HibernateSessionService.shutDown();
         return usuario;
     }
+
+
 }

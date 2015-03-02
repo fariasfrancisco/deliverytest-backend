@@ -18,6 +18,10 @@ public class Restaurantes {
         return restaurantes.get(i);
     }
 
+    public List<Restaurante> getRestaurantes() {
+        return restaurantes;
+    }
+
     @Override
     public String toString() {
         String s = "Restaurantes{";

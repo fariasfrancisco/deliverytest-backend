@@ -18,6 +18,10 @@ public class Menus {
         return menus.get(i);
     }
 
+    public List<Menu> getMenus() {
+        return menus;
+    }
+
     @Override
     public String toString() {
         String s = "Menus{";

@@ -18,6 +18,10 @@ public class Usuarios {
         return usuarios.get(i);
     }
 
+    public List<Usuario> getUsuarios() {
+        return usuarios;
+    }
+
     @Override
     public String toString() {
         String s = "Usuarios{";
