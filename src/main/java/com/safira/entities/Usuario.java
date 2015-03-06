@@ -55,7 +55,7 @@ public class Usuario implements Serializable {
         this.facebookId = facebookId;
     }
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email")
     public String getEmail() {
         return email;
     }

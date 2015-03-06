@@ -24,6 +24,7 @@ public class Restaurante implements Serializable {
     private String direccion;
     private String telefono;
     private String email;
+    private RestauranteLogin restauranteLogin;
     private Set<Menu> menus = new HashSet<>(0);
     private Set<Pedido> pedidos = new HashSet<>(0);
 
@@ -34,6 +35,7 @@ public class Restaurante implements Serializable {
         this.nombre = builder.nombre;
         this.direccion = builder.direccion;
         this.telefono = builder.telefono;
+        this.restauranteLogin = builder.restauranteLogin;
         this.email = builder.email;
         this.menus = builder.menus;
         this.pedidos = builder.pedidos;
@@ -86,6 +88,15 @@ public class Restaurante implements Serializable {
         this.email = email;
     }
 
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "restaurante", cascade = CascadeType.ALL)
+    public RestauranteLogin getRestauranteLogin() {
+        return restauranteLogin;
+    }
+
+    public void setRestauranteLogin(RestauranteLogin restauranteLogin) {
+        this.restauranteLogin = restauranteLogin;
+    }
+
     @JsonIgnore
     @OneToMany(mappedBy = "restaurante")
     public Set<Menu> getMenus() {
@@ -112,6 +123,7 @@ public class Restaurante implements Serializable {
         private String direccion;
         private String telefono;
         private String email;
+        private RestauranteLogin restauranteLogin;
         private Set<Menu> menus = new HashSet<>();
         private Set<Pedido> pedidos = new HashSet<>(0);
 
@@ -132,6 +144,11 @@ public class Restaurante implements Serializable {
 
         public Builder withEmail(String email) {
             this.email = email;
+            return this;
+        }
+
+        public Builder withRestauranteLogin(RestauranteLogin restauranteLogin) {
+            this.restauranteLogin = restauranteLogin;
             return this;
         }
 

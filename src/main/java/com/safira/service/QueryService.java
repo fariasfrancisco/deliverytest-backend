@@ -1,9 +1,10 @@
 package com.safira.service;
 
-import com.safira.entities.Menu;
-import com.safira.entities.Pedido;
-import com.safira.entities.Restaurante;
-import com.safira.entities.Usuario;
+/**
+ * Created by Francisco on 25/02/2015.
+ */
+
+import com.safira.entities.*;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -11,9 +12,6 @@ import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
 
-/**
- * Created by Francisco on 25/02/2015.
- */
 public class QueryService {
 
     private Session session;
@@ -30,9 +28,15 @@ public class QueryService {
         return criteria.list();
     }
 
-    public List GetRestaurante(Integer id){
+    public List GetRestaurante(Integer id) {
         criteria = session.createCriteria(Restaurante.class)
                 .add(Restrictions.eq("id", id));
+        return criteria.list();
+    }
+
+    public List GetRestauranteLoginByUsuario(String usuario) {
+        criteria = session.createCriteria(RestauranteLogin.class)
+                .add(Restrictions.eq("usuario", usuario));
         return criteria.list();
     }
 
@@ -49,7 +53,7 @@ public class QueryService {
         return criteria.list();
     }
 
-    public List GetUsuarios(){
+    public List GetUsuarios() {
         criteria = session.createCriteria(Usuario.class);
         return criteria.list();
     }
@@ -59,7 +63,6 @@ public class QueryService {
                 .add(Restrictions.eq("facebookId", facebookId));
         return criteria.list();
     }
-
 
     public List<Usuario> GetUsuario(int id) {
         criteria = session.createCriteria(Usuario.class)
