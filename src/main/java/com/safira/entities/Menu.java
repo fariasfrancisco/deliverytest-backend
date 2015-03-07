@@ -139,4 +139,12 @@ public class Menu implements Serializable {
                 ", costo=" + costo +
                 '}';
     }
+
+    public String getIdAsString(){
+        return String.valueOf(id);
+    }
+
+    public String getCostoAsString(){
+        return costo.toString();
+    }
 }

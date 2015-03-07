@@ -5,6 +5,7 @@ import com.safira.service.LocalDatePersistenceConverter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -217,5 +218,25 @@ public class Pedido implements Serializable {
                 ", telefono='" + telefono + '\'' +
                 ", fecha=" + fecha.toString() +
                 '}';
+    }
+
+    public String getIdAsString(){
+        return String.valueOf(id);
+    }
+
+    public String getFechaAsString(){
+        return fecha.toString();
+    }
+
+    public  String getCantidadAsString(){
+        return String.valueOf(menus.size());
+    }
+
+    public String getCostoTotalAsString(){
+        BigDecimal total = BigDecimal.ZERO;
+        for(Menu menu : menus){
+            total = total.add(menu.getCosto());
+        }
+        return total.toString();
     }
 }
