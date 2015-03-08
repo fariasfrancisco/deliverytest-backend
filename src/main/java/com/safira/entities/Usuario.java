@@ -139,4 +139,8 @@ public class Usuario implements Serializable {
                 ", apellido='" + apellido + '\'' +
                 '}';
     }
+
+    public String getIdAsString(){
+        return String.valueOf(id);
+    }
 }

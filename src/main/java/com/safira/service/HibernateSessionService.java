@@ -19,14 +19,14 @@ public class HibernateSessionService {
     }
 
     public static SessionFactory getSessionFactory() {
-        if(sessionFactory == null || sessionFactory.isClosed()){
+        if (sessionFactory == null || sessionFactory.isClosed()) {
             createSessionFactory();
         }
         return sessionFactory;
     }
 
-    public static void shutDown(){
-        if(!sessionFactory.isClosed()){
+    public static void shutDown() {
+        if (!sessionFactory.isClosed()) {
             sessionFactory.close();
         }
     }

@@ -35,8 +35,8 @@ public class Restaurante implements Serializable {
         this.nombre = builder.nombre;
         this.direccion = builder.direccion;
         this.telefono = builder.telefono;
-        this.restauranteLogin = builder.restauranteLogin;
         this.email = builder.email;
+        this.restauranteLogin = builder.restauranteLogin;
         this.menus = builder.menus;
         this.pedidos = builder.pedidos;
     }
@@ -88,6 +88,7 @@ public class Restaurante implements Serializable {
         this.email = email;
     }
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "restaurante", cascade = CascadeType.ALL)
     public RestauranteLogin getRestauranteLogin() {
         return restauranteLogin;
@@ -177,5 +178,9 @@ public class Restaurante implements Serializable {
                 ", telefono='" + telefono + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    public String getIdAsString() {
+        return String.valueOf(id);
     }
 }

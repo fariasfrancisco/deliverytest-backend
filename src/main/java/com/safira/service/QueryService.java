@@ -28,7 +28,7 @@ public class QueryService {
         return criteria.list();
     }
 
-    public List GetRestaurante(Integer id) {
+    public List GetRestauranteById(Integer id) {
         criteria = session.createCriteria(Restaurante.class)
                 .add(Restrictions.eq("id", id));
         return criteria.list();

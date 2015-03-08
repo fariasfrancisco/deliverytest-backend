@@ -12,12 +12,12 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "retauranteslogin", uniqueConstraints = {@UniqueConstraint(columnNames = "username")})
-public class RestauranteLogin implements Serializable{
+public class RestauranteLogin implements Serializable {
 
     private int id;
     private String usuario;
-    private String hashedAndSaltedPassword;
-    private String salt;
+    private byte[] hash;
+    private byte[] salt;
     private Restaurante restaurante;
 
     public RestauranteLogin() {
@@ -25,7 +25,7 @@ public class RestauranteLogin implements Serializable{
 
     public RestauranteLogin(Builder builder) {
         this.usuario = builder.userName;
-        this.hashedAndSaltedPassword = builder.hashedAndSaltedPassword;
+        this.hash = builder.hash;
         this.salt = builder.salt;
         this.restaurante = builder.restaurante;
     }
@@ -53,20 +53,20 @@ public class RestauranteLogin implements Serializable{
     }
 
     @Column(name = "password", nullable = false, length = 30)
-    public String getHashedAndSaltedPassword() {
-        return hashedAndSaltedPassword;
+    public byte[] getHash() {
+        return hash;
     }
 
-    public void setHashedAndSaltedPassword(String hashedAndSaltedPassword) {
-        this.hashedAndSaltedPassword = hashedAndSaltedPassword;
+    public void setHash(byte[] hash) {
+        this.hash = hash;
     }
 
     @Column(name = "salt", nullable = false, length = 30)
-    public String getSalt() {
+    public byte[] getSalt() {
         return salt;
     }
 
-    public void setSalt(String salt) {
+    public void setSalt(byte[] salt) {
         this.salt = salt;
     }
 
@@ -84,8 +84,8 @@ public class RestauranteLogin implements Serializable{
     public static class Builder {
 
         private String userName;
-        private String hashedAndSaltedPassword;
-        private String salt;
+        private byte[] hash;
+        private byte[] salt;
         private Restaurante restaurante;
 
         public Builder withUserName(String userName) {
@@ -93,12 +93,12 @@ public class RestauranteLogin implements Serializable{
             return this;
         }
 
-        public Builder withHashedAndSaltedPassword(String hashedAndSaltedPassword) {
-            this.hashedAndSaltedPassword = hashedAndSaltedPassword;
+        public Builder withHashedAndSaltedPassword(byte[] hash) {
+            this.hash = hash;
             return this;
         }
 
-        public Builder withSalt(String salt) {
+        public Builder withSalt(byte[] salt) {
             this.salt = salt;
             return this;
         }
@@ -119,8 +119,20 @@ public class RestauranteLogin implements Serializable{
         return "RestauranteLogin{" +
                 "id=" + id +
                 ", usuario='" + usuario + '\'' +
-                ", hashedAndSaltedPassword='" + hashedAndSaltedPassword + '\'' +
+                ", hash='" + hash + '\'' +
                 ", salt='" + salt + '\'' +
                 '}';
+    }
+
+    public String getIdAsAtring() {
+        return String.valueOf(id);
+    }
+
+    public String getHashAsString() {
+        return new String(hash);
+    }
+
+    public String getSaltAsString() {
+        return new String(salt);
     }
 }

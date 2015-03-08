@@ -34,6 +34,13 @@ public class Menu implements Serializable {
         this.pedidos = builder.pedidos;
     }
 
+    public Menu(Menu menu) {
+        this.nombre = menu.nombre;
+        this.descripcion = menu.descripcion;
+        this.costo = menu.costo;
+        this.restaurante = menu.restaurante;
+    }
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "MenuId", unique = true, nullable = false)
@@ -140,11 +147,11 @@ public class Menu implements Serializable {
                 '}';
     }
 
-    public String getIdAsString(){
+    public String getIdAsString() {
         return String.valueOf(id);
     }
 
-    public String getCostoAsString(){
+    public String getCostoAsString() {
         return costo.toString();
     }
 }

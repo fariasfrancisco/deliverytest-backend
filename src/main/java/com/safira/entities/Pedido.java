@@ -134,6 +134,7 @@ public class Pedido implements Serializable {
         this.restaurante = restaurante;
     }
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "menu_pedido", joinColumns = {
             @JoinColumn(name = "PedidoId", nullable = false, updatable = false)},
@@ -220,21 +221,21 @@ public class Pedido implements Serializable {
                 '}';
     }
 
-    public String getIdAsString(){
+    public String getIdAsString() {
         return String.valueOf(id);
     }
 
-    public String getFechaAsString(){
+    public String getFechaAsString() {
         return fecha.toString();
     }
 
-    public  String getCantidadAsString(){
+    public String getCantidadAsString() {
         return String.valueOf(menus.size());
     }
 
-    public String getCostoTotalAsString(){
+    public String getCostoTotalAsString() {
         BigDecimal total = BigDecimal.ZERO;
-        for(Menu menu : menus){
+        for (Menu menu : menus) {
             total = total.add(menu.getCosto());
         }
         return total.toString();
