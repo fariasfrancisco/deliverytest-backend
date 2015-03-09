@@ -14,7 +14,7 @@ import static javax.persistence.GenerationType.IDENTITY;
  */
 @Entity
 @Table(name = "usuarios", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "facebookId"),
+        @UniqueConstraint(columnNames = "facebook_id"),
         @UniqueConstraint(columnNames = "email")})
 public class Usuario implements Serializable {
     private int id;
@@ -37,7 +37,7 @@ public class Usuario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "UsuarioId", unique = true, nullable = false)
+    @Column(name = "usuario_id", unique = true, nullable = false)
     public int getId() {
         return id;
     }
@@ -46,7 +46,7 @@ public class Usuario implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "facebookId", nullable = false)
+    @Column(name = "facebook_id", nullable = false)
     public String getFacebookId() {
         return facebookId;
     }
@@ -140,7 +140,4 @@ public class Usuario implements Serializable {
                 '}';
     }
 
-    public String getIdAsString(){
-        return String.valueOf(id);
-    }
 }

@@ -14,7 +14,7 @@ import static javax.persistence.GenerationType.IDENTITY;
  * Created by Francisco on 21/02/2015.
  */
 @Entity
-@Table(name = "menu")
+@Table(name = "menus")
 public class Menu implements Serializable {
     private int id;
     private String nombre;
@@ -43,7 +43,7 @@ public class Menu implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "MenuId", unique = true, nullable = false)
+    @Column(name = "menu_id", unique = true, nullable = false)
     public int getId() {
         return id;
     }
@@ -81,7 +81,7 @@ public class Menu implements Serializable {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "RestauranteId", nullable = false)
+    @JoinColumn(name = "restaurante_id", nullable = false)
     public Restaurante getRestaurante() {
         return restaurante;
     }
@@ -145,13 +145,5 @@ public class Menu implements Serializable {
                 ", descripcion='" + descripcion + '\'' +
                 ", costo=" + costo +
                 '}';
-    }
-
-    public String getIdAsString() {
-        return String.valueOf(id);
-    }
-
-    public String getCostoAsString() {
-        return costo.toString();
     }
 }

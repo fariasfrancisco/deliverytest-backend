@@ -2,8 +2,8 @@ package com.safira.controller;
 
 import com.safira.domain.Menus;
 import com.safira.entities.Menu;
-import com.safira.service.HibernateSessionService;
-import com.safira.service.QueryService;
+import com.safira.service.Hibernate.HibernateSessionService;
+import com.safira.service.Hibernate.QueryService;
 import org.hibernate.HibernateException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,15 +21,20 @@ public class MenusController {
         try {
             restauranteId = Integer.valueOf(id);
         } catch (NumberFormatException e) {
+            //TODO log stacktrace
             restauranteId = 0;
         }
         Menus menus = null;
         try {
             QueryService queryService = new QueryService();
-            menus = new Menus(queryService.GetMenuByRestauranteId(restauranteId));
+            menus = new Menus(queryService.getMenusByRestauranteId(restauranteId));
             HibernateSessionService.shutDown();
+            if (menus.getMenus().isEmpty()) {
+                return new ResponseEntity<>(menus, HttpStatus.NOT_FOUND);
+            }
         } catch (HibernateException e) {
-
+            //TODO log stacktrace
+            return new ResponseEntity<>(menus, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(menus, HttpStatus.OK);
     }
@@ -40,27 +45,37 @@ public class MenusController {
         try {
             pedidoId = Integer.valueOf(id);
         } catch (NumberFormatException e) {
+            //TODO log stacktrace
             pedidoId = 0;
         }
-        QueryService queryService = new QueryService();
-        Menus menus = new Menus(queryService.GetMenusForPedido(pedidoId));
-        HibernateSessionService.shutDown();
+        Menus menus = null;
+        try {
+            QueryService queryService = new QueryService();
+            menus = new Menus(queryService.getMenusForPedido(pedidoId));
+            HibernateSessionService.shutDown();
+            if (menus.getMenus().isEmpty()) {
+                return new ResponseEntity<>(menus, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            //TODO log stacktrace
+            return new ResponseEntity<>(menus, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return new ResponseEntity<>(menus, HttpStatus.OK);
     }
 
 
     @RequestMapping(value = "/insertMenu", method = RequestMethod.POST)
-    public HttpStatus menu(@RequestBody Menu menu) {
+    public ResponseEntity<Menu> menu(@RequestBody Menu menu) {
         try {
             QueryService queryService = new QueryService();
-            queryService = new QueryService();
-            queryService.InsertObject(new Menu(menu));
+            menu = new Menu(menu);
+            queryService.insertObject(menu);
             HibernateSessionService.shutDown();
         } catch (Exception e) {
-            //TODO Log error
-            return HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-        return HttpStatus.OK;
+            //TODO Log Menu's failed insert & stacktrace
+            return new ResponseEntity<>(menu, HttpStatus.INTERNAL_SERVER_ERROR);
+        }//TODO Log Menu's successful insert
+        return new ResponseEntity<>(menu, HttpStatus.OK);
     }
 
 

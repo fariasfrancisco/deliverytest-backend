@@ -1,7 +1,7 @@
 package com.safira.service;
 
 /**
- * Created by francisco on 05/03/15.
+ * Service class adapted from foreign project
  */
 
 import javax.crypto.SecretKeyFactory;

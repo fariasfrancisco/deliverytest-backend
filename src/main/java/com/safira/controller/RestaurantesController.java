@@ -1,12 +1,11 @@
 package com.safira.controller;
 
-import com.safira.domain.RestauranteLogins;
 import com.safira.domain.Restaurantes;
 import com.safira.entities.Restaurante;
 import com.safira.entities.RestauranteLogin;
-import com.safira.service.HibernateSessionService;
+import com.safira.service.Hibernate.HibernateSessionService;
 import com.safira.service.PasswordService;
-import com.safira.service.QueryService;
+import com.safira.service.Hibernate.QueryService;
 import com.safira.service.RestauranteDeserializer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +19,15 @@ public class RestaurantesController {
 
     @RequestMapping(value = "/getRestaurantes", method = RequestMethod.GET)
     public ResponseEntity<Restaurantes> get() {
-        QueryService queryService = new QueryService();
-        Restaurantes restaurantes = new Restaurantes(queryService.GetRestaurantes());
-        HibernateSessionService.shutDown();
+        Restaurantes restaurantes = null;
+        try {
+            QueryService queryService = new QueryService();
+            restaurantes = new Restaurantes(queryService.getRestaurantes());
+            HibernateSessionService.shutDown();
+        } catch (Exception e) {
+            //TODO log stacktrace
+            return new ResponseEntity<>(restaurantes, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return new ResponseEntity<>(restaurantes, HttpStatus.OK);
     }
 
@@ -32,12 +37,18 @@ public class RestaurantesController {
         try {
             restauranteId = Integer.valueOf(id);
         } catch (NumberFormatException e) {
+            //TODO log stacktrace
             restauranteId = 0;
         }
-        QueryService queryService = new QueryService();
-        Restaurantes restaurantes = new Restaurantes(queryService.GetRestauranteById(restauranteId));
-        Restaurante restaurante = restaurantes.get(0);
-        HibernateSessionService.shutDown();
+        Restaurante restaurante = null;
+        try {
+            QueryService queryService = new QueryService();
+            restaurante = queryService.getRestauranteById(restauranteId);
+            HibernateSessionService.shutDown();
+        } catch (Exception e) {
+            //TODO log stacktrace
+            return new ResponseEntity<>(restaurante, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return new ResponseEntity<>(restaurante, HttpStatus.OK);
     }
 
@@ -48,16 +59,17 @@ public class RestaurantesController {
         Restaurante restaurante = null;
         try {
             QueryService queryService = new QueryService();
-            RestauranteLogins restauranteLogins = new RestauranteLogins(queryService.GetRestauranteLoginByUsuario(username));
-            RestauranteLogin restauranteLogin = restauranteLogins.get(0);
+            RestauranteLogin restauranteLogin = queryService.getRestauranteLoginByUsuario(username);
             if (PasswordService.isExpectedPassword(password, restauranteLogin.getSalt(), restauranteLogin.getHash())) {
-                Restaurantes restaurantes = new Restaurantes(queryService.GetRestauranteById(restauranteLogin.getId()));
-                restaurante = restaurantes.get(0);
+                restaurante = queryService.getRestauranteById(restauranteLogin.getId());
+                //TODO log Restaurante's successful login
                 return new ResponseEntity<>(restaurante, HttpStatus.OK);
             } else {
+                //TODO log Restaurante's failed login
                 return new ResponseEntity<>(restaurante, HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
+            //TODO log Restaurante's failed login & stacktrace
             return new ResponseEntity<>(restaurante, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -69,14 +81,16 @@ public class RestaurantesController {
         try {
             RestauranteDeserializer restauranteDeserializer = new RestauranteDeserializer(serializedRestaurante);
             QueryService queryService = new QueryService();
-            queryService.InsertObject(restauranteDeserializer.getRestaurante());
-            queryService.InsertObject(restauranteDeserializer.getRestauranteLogin());
+            queryService.insertObject(restauranteDeserializer.getRestaurante());
+            queryService.insertObject(restauranteDeserializer.getRestauranteLogin());
             HibernateSessionService.shutDown();
             restaurante = restauranteDeserializer.getRestaurante();
         } catch (Exception e) {
+            //TODO log Restaurante's failed registration & stacktrace
             return new ResponseEntity<>(restaurante, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(restaurante,HttpStatus.OK);
+        //TODO log Restaurante's successful registration
+        return new ResponseEntity<>(restaurante, HttpStatus.OK);
     }
 
 

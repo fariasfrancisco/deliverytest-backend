@@ -11,7 +11,7 @@ import java.io.Serializable;
  * Created by francisco on 02/03/15.
  */
 @Entity
-@Table(name = "retauranteslogin", uniqueConstraints = {@UniqueConstraint(columnNames = "username")})
+@Table(name = "retaurantes_login", uniqueConstraints = {@UniqueConstraint(columnNames = "usuario")})
 public class RestauranteLogin implements Serializable {
 
     private int id;
@@ -24,17 +24,16 @@ public class RestauranteLogin implements Serializable {
     }
 
     public RestauranteLogin(Builder builder) {
-        this.usuario = builder.userName;
+        this.usuario = builder.usuario;
         this.hash = builder.hash;
         this.salt = builder.salt;
         this.restaurante = builder.restaurante;
     }
 
-    @GenericGenerator(name = "generator", strategy = "foreign",
-            parameters = @Parameter(name = "property", value = "restaurante"))
     @Id
-    @GeneratedValue(generator = "generator")
-    @Column(name = "RestauranteId", unique = true, nullable = false)
+    @Column(name = "restaurante_id", unique = true, nullable = false)
+    @GeneratedValue(generator = "gen")
+    @GenericGenerator(name = "gen", strategy = "foreign", parameters = @Parameter(name = "property", value = "restaurante"))
     public int getId() {
         return id;
     }
@@ -52,7 +51,7 @@ public class RestauranteLogin implements Serializable {
         this.usuario = usuario;
     }
 
-    @Column(name = "password", nullable = false, length = 30)
+    @Column(name = "hash", nullable = false, length = 30)
     public byte[] getHash() {
         return hash;
     }
@@ -83,13 +82,13 @@ public class RestauranteLogin implements Serializable {
 
     public static class Builder {
 
-        private String userName;
+        private String usuario;
         private byte[] hash;
         private byte[] salt;
         private Restaurante restaurante;
 
-        public Builder withUserName(String userName) {
-            this.userName = userName;
+        public Builder withUsuario(String usuario) {
+            this.usuario = usuario;
             return this;
         }
 
@@ -122,17 +121,5 @@ public class RestauranteLogin implements Serializable {
                 ", hash='" + hash + '\'' +
                 ", salt='" + salt + '\'' +
                 '}';
-    }
-
-    public String getIdAsAtring() {
-        return String.valueOf(id);
-    }
-
-    public String getHashAsString() {
-        return new String(hash);
-    }
-
-    public String getSaltAsString() {
-        return new String(salt);
     }
 }

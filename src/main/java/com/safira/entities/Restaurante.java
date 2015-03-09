@@ -43,7 +43,7 @@ public class Restaurante implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "RestauranteId", unique = true, nullable = false)
+    @Column(name = "restaurante_id", unique = true, nullable = false)
     public int getId() {
         return id;
     }
@@ -180,7 +180,5 @@ public class Restaurante implements Serializable {
                 '}';
     }
 
-    public String getIdAsString() {
-        return String.valueOf(id);
-    }
+
 }

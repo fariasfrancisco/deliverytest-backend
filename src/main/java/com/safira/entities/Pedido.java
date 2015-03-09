@@ -1,12 +1,12 @@
 package com.safira.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.safira.service.LocalDatePersistenceConverter;
+import com.safira.service.Hibernate.LocalDatePersistenceConverter;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,7 +27,7 @@ public class Pedido implements Serializable {
     private String departamento;
     private String telefono;
     @Convert(converter = LocalDatePersistenceConverter.class)
-    private LocalDate fecha;
+    private LocalDateTime fecha;
     private Usuario usuario;
     private Restaurante restaurante;
     private Set<Menu> menus = new HashSet<>(0);
@@ -49,7 +49,7 @@ public class Pedido implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "PedidoId", unique = true, nullable = false)
+    @Column(name = "menu_id", unique = true, nullable = false)
     public int getId() {
         return id;
     }
@@ -104,17 +104,17 @@ public class Pedido implements Serializable {
     }
 
     @Column(name = "fecha", nullable = false)
-    public LocalDate getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDate fecha) {
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "UsuarioId", nullable = false)
+    @JoinColumn(name = "usuario_id", nullable = false)
     public Usuario getUsuario() {
         return usuario;
     }
@@ -125,7 +125,7 @@ public class Pedido implements Serializable {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "RestauranteId", nullable = false)
+    @JoinColumn(name = "restaurante_id", nullable = false)
     public Restaurante getRestaurante() {
         return restaurante;
     }
@@ -137,8 +137,8 @@ public class Pedido implements Serializable {
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "menu_pedido", joinColumns = {
-            @JoinColumn(name = "PedidoId", nullable = false, updatable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "MenuId", nullable = false, updatable = false)})
+            @JoinColumn(name = "pedido_id", nullable = false, updatable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "menu_id", nullable = false, updatable = false)})
     public Set<Menu> getMenus() {
         return menus;
     }
@@ -153,7 +153,7 @@ public class Pedido implements Serializable {
         private String piso;
         private String departamento;
         private String telefono;
-        private LocalDate fecha;
+        private LocalDateTime fecha;
         private Usuario usuario;
         private Restaurante restaurante;
         private Set<Menu> menus = new HashSet<>(0);
@@ -173,7 +173,7 @@ public class Pedido implements Serializable {
             return this;
         }
 
-        public Builder withDeepartamento(String departamento) {
+        public Builder withDepartamento(String departamento) {
             this.departamento = departamento;
             return this;
         }
@@ -183,7 +183,7 @@ public class Pedido implements Serializable {
             return this;
         }
 
-        public Builder withFecha(LocalDate fecha) {
+        public Builder withFecha(LocalDateTime fecha) {
             this.fecha = fecha;
             return this;
         }
@@ -221,19 +221,7 @@ public class Pedido implements Serializable {
                 '}';
     }
 
-    public String getIdAsString() {
-        return String.valueOf(id);
-    }
-
-    public String getFechaAsString() {
-        return fecha.toString();
-    }
-
-    public String getCantidadAsString() {
-        return String.valueOf(menus.size());
-    }
-
-    public String getCostoTotalAsString() {
+    public String costoTotalAsString() {
         BigDecimal total = BigDecimal.ZERO;
         for (Menu menu : menus) {
             total = total.add(menu.getCosto());
