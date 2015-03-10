@@ -3,10 +3,10 @@ package com.safira.domain;
 /**
  * Created by Francisco on 09/03/2015.
  */
-public class SerializedObjectReciever {
+public class SerializedObject {
     private String serializedObject;
 
-    public SerializedObjectReciever(){
+    public SerializedObject(){
     }
 
     public String getSerializedObject() {
