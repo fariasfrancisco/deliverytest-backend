@@ -12,20 +12,14 @@ import java.time.LocalDateTime;
  */
 public class MenusXMLWriter {
 
-    public Document createDocument(Menu menu) {
+    public static Document createDocument(Menu menu) {
         Document document = DocumentHelper.createDocument();
-
         Element root = document.addElement("Menu")
                 .addAttribute("Id", String.valueOf(menu.getId()))
                 .addAttribute("Nombre", menu.getNombre())
                 .addAttribute("Costo", menu.getCosto().toString());
-
         Element descripcion = root.addElement("Descripcion")
                 .addText(menu.getDescripcion());
-
-        Element timeStamp = root.addElement("TimeStamp")
-                .addText(LocalDateTime.now().toString());
-
         return document;
     }
 }

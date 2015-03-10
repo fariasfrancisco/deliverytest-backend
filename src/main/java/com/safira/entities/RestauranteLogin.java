@@ -11,7 +11,7 @@ import java.io.Serializable;
  * Created by francisco on 02/03/15.
  */
 @Entity
-@Table(name = "retaurantes_login", uniqueConstraints = {@UniqueConstraint(columnNames = "usuario")})
+@Table(name = "restaurantes_login", uniqueConstraints = {@UniqueConstraint(columnNames = "usuario")})
 public class RestauranteLogin implements Serializable {
 
     private int id;

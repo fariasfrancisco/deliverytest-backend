@@ -6,6 +6,7 @@ package com.safira.service.Hibernate;
 
 import com.safira.entities.*;
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
@@ -23,55 +24,68 @@ public class QueryService {
         this.transaction = session.getTransaction();
     }
 
-    public List getRestaurantes() {
+    public List getRestaurantes() throws HibernateException {
         criteria = session.createCriteria(Restaurante.class);
         return criteria.list();
     }
 
-    public Restaurante getRestauranteById(Integer id) {
+    public Restaurante getRestauranteById(Integer id) throws HibernateException, IndexOutOfBoundsException {
         criteria = session.createCriteria(Restaurante.class)
                 .add(Restrictions.eq("id", id));
         return (Restaurante) criteria.list().get(0);
     }
 
-    public RestauranteLogin getRestauranteLoginByUsuario(String usuario) {
+    public RestauranteLogin getRestauranteLoginByUsuario(String usuario) throws HibernateException, IndexOutOfBoundsException {
         criteria = session.createCriteria(RestauranteLogin.class)
                 .add(Restrictions.eq("usuario", usuario));
         return (RestauranteLogin) criteria.list().get(0);
     }
 
-    public List getMenusByRestauranteId(Integer id) {
+    public List getMenusByRestauranteId(Integer id) throws HibernateException {
         criteria = session.createCriteria(Menu.class)
                 .add(Restrictions.eq("restaurante.id", id));
         return criteria.list();
     }
 
-    public List getMenusForPedido(Integer id) {
+    public List getMenusByPedidoId(Integer id) throws HibernateException {
         criteria = session.createCriteria(Menu.class)
                 .createAlias("pedidos", "p")
                 .add(Restrictions.eq("p.id", id));
         return criteria.list();
     }
 
-    public Menu getMenuById(Integer id) {
+    public Menu getMenuById(Integer id) throws HibernateException, IndexOutOfBoundsException {
         criteria = session.createCriteria(Menu.class)
                 .add(Restrictions.eq("id", id));
         return (Menu) criteria.list().get(0);
     }
 
-    public Usuario getUsuario(String facebookId) {
+    public Usuario getUsuario(String facebookId) throws HibernateException, IndexOutOfBoundsException {
         criteria = session.createCriteria(Usuario.class)
                 .add(Restrictions.eq("facebookId", facebookId));
         return (Usuario) criteria.list().get(0);
     }
 
-    public List getPedidosByRestauranteId(Integer id) {
+    public Pedido getPedidoById(Integer id) throws HibernateException, IndexOutOfBoundsException {
+        criteria = session.createCriteria(Pedido.class)
+                .add(Restrictions.eq("id", id));
+        return (Pedido) criteria.list().get(0);
+    }
+
+    public List getPedidosByRestauranteIdAndUsuarioId(Integer restauranteid, Integer usuarioId) throws HibernateException {
+        criteria = session.createCriteria(Pedido.class)
+                .add(Restrictions.eq("restaurante.id", restauranteid))
+                .add(Restrictions.eq("usuario.id", usuarioId));
+        return criteria.list();
+    }
+
+    public List getPedidosByRestauranteId(Integer id) throws HibernateException {
         criteria = session.createCriteria(Pedido.class)
                 .add(Restrictions.eq("restaurante.id", id));
         return criteria.list();
     }
 
-    public List getPedidosByUsuarioId(Integer id) {
+    public List getPedidosByUsuarioId(Integer id) throws HibernateException {
         criteria = session.createCriteria(Pedido.class)
                 .add(Restrictions.eq("usuario.id", id));
         return criteria.list();

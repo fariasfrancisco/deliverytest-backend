@@ -12,15 +12,13 @@ import java.time.LocalDateTime;
  * Created by Francisco on 07/03/2015.
  */
 public class PedidosXMLWriter {
-    public Document createDocument(Pedido pedido) {
+    public static Document createDocument(Pedido pedido) {
         Document document = DocumentHelper.createDocument();
-
         Element root = document.addElement("Pedido")
                 .addAttribute("Id", String.valueOf(pedido.getId()))
                 .addAttribute("Fecha", pedido.getFecha().toString())
                 .addAttribute("Cantidad", String.valueOf(pedido.getMenus().size()))
                 .addAttribute("CostoTotal", pedido.costoTotalAsString());
-
         for (Menu menu : pedido.getMenus()) {
             Element element = root.addElement("Menu")
                     .addAttribute("Id", String.valueOf(menu.getId()))
@@ -29,10 +27,6 @@ public class PedidosXMLWriter {
             Element descripcion = element.addElement("Descripcion")
                     .addText(menu.getDescripcion());
         }
-
-        Element timeStamp = root.addElement("TimeStamp")
-                .addText(LocalDateTime.now().toString());
-
         return document;
     }
 }

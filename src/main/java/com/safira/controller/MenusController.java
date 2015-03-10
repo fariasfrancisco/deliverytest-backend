@@ -51,7 +51,7 @@ public class MenusController {
         Menus menus = null;
         try {
             QueryService queryService = new QueryService();
-            menus = new Menus(queryService.getMenusForPedido(pedidoId));
+            menus = new Menus(queryService.getMenusByPedidoId(pedidoId));
             HibernateSessionService.shutDown();
             if (menus.getMenus().isEmpty()) {
                 return new ResponseEntity<>(menus, HttpStatus.NOT_FOUND);

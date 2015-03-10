@@ -35,6 +35,7 @@ public class RestauranteDeserializer {
                 .withSalt(salt)
                 .withHashedAndSaltedPassword(PasswordService.hash(password, salt))
                 .build();
+        restauranteLogin.setId(restaurante.getId());
         restaurante.setRestauranteLogin(restauranteLogin);
         restauranteLogin.setRestaurante(restaurante);
     }
