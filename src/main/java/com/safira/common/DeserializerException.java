@@ -8,7 +8,7 @@ public class DeserializerException extends Exception {
     }
 
     public DeserializerException(String message) {
-        super(message);
+        super("Unexpected exception found when trying to deserialize recieved String");
     }
 
     public DeserializerException(Throwable cause) {
