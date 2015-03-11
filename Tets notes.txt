@@ -1,0 +1,63 @@
+UsuariosController
+	.registerUsuario()
+		SUCCESS:							[]
+		FAIL: BAD_REQUEST					[]
+		FAIL: INTERNAL_SERVER ERROR			[]
+	.loginUsuario()
+		SUCCESS:							[]
+		FAIL: NOT_FOUND						[]
+		FAIL: INTERNAL_SERVER_ERROR			[]
+----------------------------------------------
+RestaurantesController
+	.registerNewRestaurante()
+		SUCCESS:							[]
+		FAIL: BAD_REQUEST					[]
+		FAIL: INTERNAL_SERVER ERROR			[]
+	.loginRestaurante()
+		SUCCESS:							[]
+		FAIL: NOT_FOUND						[]
+		FAIL: INTERNAL_SERVER_ERROR			[]
+	.getRestaurantes()
+		SUCCESS:							[]
+		FAIL: NOT_FOUND						[]
+		FAIL: INTERNAL_SERVER_ERROR			[]
+	.getRestauranteById()
+		SUCCESS:							[]
+		FAIL: NOT_FOUND						[]
+		FAIL: INTERNAL_SERVER_ERROR			[]
+----------------------------------------------
+MenusController
+	.insertMenu()
+		SUCCESS:							[]
+		FAIL: BAD_REQUEST					[]
+		FAIL: INTERNAL_SERVER ERROR			[]
+	.getMenusByRestaurante()	
+		SUCCESS:							[]
+		FAIL: NOT_FOUND						[]
+		FAIL: INTERNAL_SERVER_ERROR			[]
+	.getMenusByPedido()
+		SUCCESS:							[]
+		FAIL: NOT_FOUND						[]
+		FAIL: INTERNAL_SERVER_ERROR			[]
+----------------------------------------------
+PedidosController
+	.registerPedido()
+		SUCCESS:							[]
+		FAIL: BAD_REQUEST					[]
+		FAIL: INTERNAL_SERVER ERROR			[]
+	.getPedidoById	()
+		SUCCESS:							[]
+		FAIL: NOT_FOUND						[]
+		FAIL: INTERNAL_SERVER_ERROR			[]
+	.getPedidosByRestauranteId()
+		SUCCESS:							[]
+		FAIL: NOT_FOUND						[]
+		FAIL: INTERNAL_SERVER_ERROR			[]
+	.getPedidosByUsuarioId()
+		SUCCESS:							[]
+		FAIL: NOT_FOUND						[]
+		FAIL: INTERNAL_SERVER_ERROR			[]
+	.getPedidosByRestauranteIdAndUsuarioId()
+		SUCCESS:							[]
+		FAIL: NOT_FOUND						[]
+		FAIL: INTERNAL_SERVER_ERROR			[]

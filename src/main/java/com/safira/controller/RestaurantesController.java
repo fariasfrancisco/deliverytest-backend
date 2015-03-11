@@ -27,7 +27,7 @@ public class RestaurantesController {
     final static Logger restauranteErrorLogger = Logger.getLogger("restauranteErrorLogger");
 
     @RequestMapping(value = "/registerNewRestaurante", method = RequestMethod.POST)
-    public ResponseEntity<Object> post(@RequestBody SerializedObject serializedObject) {
+    public ResponseEntity<Object> registerNewRestaurante(@RequestBody SerializedObject serializedObject) {
         Restaurante restaurante;
         RestauranteLogin restauranteLogin;
         try {
@@ -54,7 +54,7 @@ public class RestaurantesController {
     }
 
     @RequestMapping(value = "/loginRestaurante", method = RequestMethod.POST)
-    public ResponseEntity<Object> login(@RequestBody SerializedObject serializedObject) {
+    public ResponseEntity<Object> loginRestaurante(@RequestBody SerializedObject serializedObject) {
         String userNameAndPassword = serializedObject.getSerializedObject();
         String username = userNameAndPassword.split(":")[0];
         char[] password = userNameAndPassword.split(":")[1].toCharArray();
@@ -79,7 +79,7 @@ public class RestaurantesController {
     }
 
     @RequestMapping(value = "/getRestaurantes", method = RequestMethod.GET)
-    public ResponseEntity<Object> get() {
+    public ResponseEntity<Object> getRestaurantes() {
         Restaurantes restaurantes;
         try {
             QueryService queryService = new QueryService();
@@ -97,7 +97,7 @@ public class RestaurantesController {
     }
 
     @RequestMapping(value = "/getRestauranteById", method = RequestMethod.GET)
-    public ResponseEntity<Object> get(@RequestParam(value = "id", required = true, defaultValue = "0") String id) {
+    public ResponseEntity<Object> getRestauranteById(@RequestParam(value = "id", required = true, defaultValue = "0") String id) {
         int restauranteId;
         try {
             restauranteId = Integer.valueOf(id);

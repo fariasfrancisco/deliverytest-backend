@@ -28,7 +28,7 @@ public class PedidosController {
     final static Logger pedidoErrorLogger = Logger.getLogger("pedidoExceptionLogger");
 
     @RequestMapping(value = "/registerPedido", method = RequestMethod.POST)
-    public ResponseEntity<Object> register(@RequestBody SerializedObject serializedObject) {
+    public ResponseEntity<Object> registerPedido(@RequestBody SerializedObject serializedObject) {
         Pedido pedido;
         try {
             String serializedPedido = serializedObject.getSerializedObject();
@@ -51,7 +51,7 @@ public class PedidosController {
     }
 
     @RequestMapping(value = "/getPedidoById", method = RequestMethod.GET)
-    public ResponseEntity<Object> get(@RequestParam(value = "id", required = true) String id) {
+    public ResponseEntity<Object> getPedidoById(@RequestParam(value = "id", required = true) String id) {
         Pedido pedido;
         try {
             QueryService queryService = new QueryService();
@@ -68,7 +68,7 @@ public class PedidosController {
     }
 
     @RequestMapping(value = "/getPedidosByRestauranteId", method = RequestMethod.GET)
-    public ResponseEntity<Object> getByRestaurante(@RequestParam(value = "id", required = true) String restauranteId) {
+    public ResponseEntity<Object> getPedidosByRestauranteId(@RequestParam(value = "id", required = true) String restauranteId) {
         Pedidos pedidos;
         try {
             QueryService queryService = new QueryService();
@@ -86,7 +86,7 @@ public class PedidosController {
     }
 
     @RequestMapping(value = "/getPedidosByUsuarioId", method = RequestMethod.GET)
-    public ResponseEntity<Object> getByUsuario(@RequestParam(value = "id", required = true) String usuarioId) {
+    public ResponseEntity<Object> getPedidosByUsuarioId(@RequestParam(value = "id", required = true) String usuarioId) {
         Pedidos pedidos;
         try {
             QueryService queryService = new QueryService();
@@ -105,7 +105,7 @@ public class PedidosController {
     }
 
     @RequestMapping(value = "/getPedidosByRestauranteIdAndUsuarioId", method = RequestMethod.GET)
-    public ResponseEntity<Object> getByRestauranteAndUsuario(
+    public ResponseEntity<Object> getPedidosByRestauranteIdAndUsuarioId(
             @RequestParam(value = "resid", required = true) String restauranteId,
             @RequestParam(value = "usrid", required = true) String usuarioId) {
         Pedidos pedidos;

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * Controller dedicated to serving json RESTful webservice for Usuarios
+ *
  */
 @RestController
 public class UsuariosController {
@@ -24,7 +25,7 @@ public class UsuariosController {
     final static Logger usuarioErrorLogger = Logger.getLogger("usuarioErrorLogger");
 
     @RequestMapping(value = "/registerUsuario", method = RequestMethod.POST)
-    public ResponseEntity<Object> register(@RequestBody SerializedObject serializedObject) {
+    public ResponseEntity<Object> registerUsuario(@RequestBody SerializedObject serializedObject) {
         Usuario usuario;
         try {
             String serializedUsuario = serializedObject.getSerializedObject();
@@ -47,7 +48,7 @@ public class UsuariosController {
     }
 
     @RequestMapping(value = "/loginUsuario", method = RequestMethod.GET)
-    public ResponseEntity<Object> login(@RequestParam(value = "fbid", required = true) SerializedObject serializedObject) {
+    public ResponseEntity<Object> loginUsuario(@RequestParam(value = "fbid", required = true) SerializedObject serializedObject) {
         String facebookId = serializedObject.getSerializedObject();
         Usuario usuario;
         try {

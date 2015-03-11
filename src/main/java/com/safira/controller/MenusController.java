@@ -25,7 +25,7 @@ public class MenusController {
     final static Logger menuErrorLogger = Logger.getLogger("menuErrorLogger");
 
     @RequestMapping(value = "/insertMenu", method = RequestMethod.POST)
-    public ResponseEntity<Object> insert(@RequestBody SerializedObject serializedObject) {
+    public ResponseEntity<Object> insertMenu(@RequestBody SerializedObject serializedObject) {
         Menu menu;
         try {
             String serializedMenu = serializedObject.getSerializedObject();
@@ -48,7 +48,7 @@ public class MenusController {
     }
 
     @RequestMapping(value = "/getMenusByRestaurante", method = RequestMethod.GET)
-    public ResponseEntity<Object> getByRestaurante(@RequestParam(value = "id", required = true, defaultValue = "0") String id) {
+    public ResponseEntity<Object> getMenusByRestaurante(@RequestParam(value = "id", required = true, defaultValue = "0") String id) {
         int restauranteId;
         try {
             restauranteId = Integer.valueOf(id);
@@ -72,7 +72,7 @@ public class MenusController {
     }
 
     @RequestMapping(value = "/getMenusByPedido", method = RequestMethod.GET)
-    public ResponseEntity<Object> getByPedido(@RequestParam(value = "id", required = true, defaultValue = "0") String id) {
+    public ResponseEntity<Object> getMenusByPedido(@RequestParam(value = "id", required = true, defaultValue = "0") String id) {
         int pedidoId;
         try {
             pedidoId = Integer.valueOf(id);
