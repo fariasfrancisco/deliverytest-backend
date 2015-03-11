@@ -1,4 +1,4 @@
-package com.safira.service.Hibernate;
+package com.safira.service.hibernate;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

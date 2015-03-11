@@ -1,15 +1,16 @@
 package com.safira.controller;
 
+import com.safira.common.DeserializerException;
 import com.safira.common.ErrorObject;
 import com.safira.domain.Restaurantes;
 import com.safira.domain.SerializedObject;
 import com.safira.entities.Restaurante;
 import com.safira.entities.RestauranteLogin;
-import com.safira.service.Hibernate.HibernateSessionService;
-import com.safira.service.Hibernate.QueryService;
-import com.safira.service.Log.RestauranteXMLWriter;
 import com.safira.service.PasswordService;
-import com.safira.service.RestauranteDeserializer;
+import com.safira.service.deserialize.RestauranteDeserializer;
+import com.safira.service.hibernate.HibernateSessionService;
+import com.safira.service.hibernate.QueryService;
+import com.safira.service.log.RestauranteXMLWriter;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +28,17 @@ public class RestaurantesController {
 
     @RequestMapping(value = "/registerNewRestaurante", method = RequestMethod.POST)
     public ResponseEntity<Object> post(@RequestBody SerializedObject serializedObject) {
-        String serializedRestaurante = serializedObject.getSerializedObject();
-        RestauranteDeserializer restauranteDeserializer = new RestauranteDeserializer(serializedRestaurante);
-        Restaurante restaurante= restauranteDeserializer.getRestaurante();
-        RestauranteLogin restauranteLogin= restauranteDeserializer.getRestauranteLogin();
+        Restaurante restaurante;
+        RestauranteLogin restauranteLogin;
+        try {
+            String serializedRestaurante = serializedObject.getSerializedObject();
+            RestauranteDeserializer restauranteDeserializer = new RestauranteDeserializer(serializedRestaurante);
+            restaurante = restauranteDeserializer.getRestaurante();
+            restauranteLogin = restauranteDeserializer.getRestauranteLogin();
+        } catch (DeserializerException e) {
+            restauranteErrorLogger.error("An error occured when deserializing recieved String", e);
+            return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
         try {
             QueryService queryService = new QueryService();
             queryService.insertObject(restaurante);

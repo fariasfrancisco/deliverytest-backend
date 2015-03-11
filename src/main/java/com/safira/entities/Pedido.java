@@ -1,7 +1,7 @@
 package com.safira.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.safira.service.Hibernate.LocalDatePersistenceConverter;
+import com.safira.service.hibernate.LocalDatePersistenceConverter;
 
 import javax.persistence.*;
 import java.io.Serializable;

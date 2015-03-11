@@ -1,11 +1,12 @@
-package com.safira.service;
+package com.safira.service.deserialize;
 
+import com.safira.common.DeserializerException;
 import com.safira.entities.Menu;
 import com.safira.entities.Pedido;
 import com.safira.entities.Restaurante;
 import com.safira.entities.Usuario;
-import com.safira.service.Hibernate.HibernateSessionService;
-import com.safira.service.Hibernate.QueryService;
+import com.safira.service.hibernate.HibernateSessionService;
+import com.safira.service.hibernate.QueryService;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -27,25 +28,30 @@ public class PedidoDeserializer {
     private static final int RESTAURANTE_ID = 6;
     private static final int MENUS = 7;
 
-    private String[] splitFields;
-    private String[] splitMenus;
-    private Restaurante restaurante;
-    private Usuario usuario;
-    private Set<Menu> menus = new HashSet<>();
     private Pedido pedido;
 
-    public PedidoDeserializer(String serializedPedido) {
-        splitFields = serializedPedido.split(FIELD_SEPARATOR);
-        splitMenus = splitFields[MENUS].split(MENU_SEPARATOR);
+    public PedidoDeserializer(String serializedPedido) throws DeserializerException {
+        Restaurante restaurante;
+        Usuario usuario;
         QueryService queryService = new QueryService();
-        restaurante = queryService.getRestauranteById(Integer.valueOf(splitFields[RESTAURANTE_ID]));
-        usuario = queryService.getUsuario(splitFields[FACEBOOK_ID]);
-        Menu menu;
-        for (String menuId : splitMenus) {
-            menu = queryService.getMenuById(Integer.valueOf(menuId));
-            menus.add(menu);
+        Set<Menu> menus = new HashSet<>();
+        String[] splitFields = serializedPedido.split(FIELD_SEPARATOR);
+        if (splitFields.length < 8) {
+            throw new DeserializerException();
         }
-        pedido = new Pedido.Builder()
+        String[] splitMenus = splitFields[MENUS].split(MENU_SEPARATOR);
+        try {
+            restaurante = queryService.getRestauranteById(Integer.valueOf(splitFields[RESTAURANTE_ID]));
+            usuario = queryService.getUsuario(splitFields[FACEBOOK_ID]);
+            Menu menu;
+            for (String menuId : splitMenus) {
+                menu = queryService.getMenuById(Integer.valueOf(menuId));
+                menus.add(menu);
+            }
+        } catch (Exception e) {
+            throw new DeserializerException();
+        }
+        this.pedido = new Pedido.Builder()
                 .withCalle(splitFields[CALLE])
                 .withNumero(splitFields[NUMERO])
                 .withPiso(splitFields[PISO])

@@ -1,7 +1,9 @@
-package com.safira.service;
+package com.safira.service.deserialize;
 
+import com.safira.common.DeserializerException;
 import com.safira.entities.Restaurante;
 import com.safira.entities.RestauranteLogin;
+import com.safira.service.PasswordService;
 
 /**
  * Created by Francisco on 08/03/2015.
@@ -16,28 +18,30 @@ public class RestauranteDeserializer {
     private static final int USUARIO = 4;
     private static final int PASSWORD = 5;
 
-    private final String[] splitFields;
     private final Restaurante restaurante;
     private final RestauranteLogin restauranteLogin;
 
-    public RestauranteDeserializer(String serializedRestaurante) {
-        this.splitFields = serializedRestaurante.split(FIELD_SEPARATOR);
-        restaurante = new Restaurante.Builder()
+    public RestauranteDeserializer(String serializedRestaurante) throws DeserializerException {
+        String[] splitFields = serializedRestaurante.split(FIELD_SEPARATOR);
+        if (splitFields.length != 6) {
+            throw new DeserializerException();
+        }
+        byte[] salt = PasswordService.getNextSalt();
+        char[] password = splitFields[PASSWORD].toCharArray();
+        this.restaurante = new Restaurante.Builder()
                 .withNombre(splitFields[NOMBRE])
                 .withDireccion(splitFields[DIRECCION])
                 .withTelefono(splitFields[TELEFONO])
                 .withEmail(splitFields[EMAIL])
                 .build();
-        byte[] salt = PasswordService.getNextSalt();
-        char[] password = splitFields[PASSWORD].toCharArray();
-        restauranteLogin = new RestauranteLogin.Builder()
+        this.restauranteLogin = new RestauranteLogin.Builder()
                 .withUsuario(splitFields[USUARIO])
                 .withSalt(salt)
                 .withHashedAndSaltedPassword(PasswordService.hash(password, salt))
                 .build();
-        restauranteLogin.setId(restaurante.getId());
-        restaurante.setRestauranteLogin(restauranteLogin);
-        restauranteLogin.setRestaurante(restaurante);
+        this.restauranteLogin.setId(restaurante.getId());
+        this.restaurante.setRestauranteLogin(restauranteLogin);
+        this.restauranteLogin.setRestaurante(restaurante);
     }
 
     public Restaurante getRestaurante() {

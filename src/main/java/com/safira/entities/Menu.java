@@ -34,13 +34,6 @@ public class Menu implements Serializable {
         this.pedidos = builder.pedidos;
     }
 
-    public Menu(Menu menu) {
-        this.nombre = menu.nombre;
-        this.descripcion = menu.descripcion;
-        this.costo = menu.costo;
-        this.restaurante = menu.restaurante;
-    }
-
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "menu_id", unique = true, nullable = false)

@@ -1,4 +1,4 @@
-package com.safira.service.Log;
+package com.safira.service.log;
 
 import com.safira.entities.Usuario;
 import org.dom4j.Document;

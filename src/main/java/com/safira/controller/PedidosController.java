@@ -1,13 +1,14 @@
 package com.safira.controller;
 
+import com.safira.common.DeserializerException;
 import com.safira.common.ErrorObject;
 import com.safira.domain.Pedidos;
 import com.safira.domain.SerializedObject;
 import com.safira.entities.Pedido;
-import com.safira.service.Hibernate.HibernateSessionService;
-import com.safira.service.Hibernate.QueryService;
-import com.safira.service.Log.PedidosXMLWriter;
-import com.safira.service.PedidoDeserializer;
+import com.safira.service.deserialize.PedidoDeserializer;
+import com.safira.service.hibernate.HibernateSessionService;
+import com.safira.service.hibernate.QueryService;
+import com.safira.service.log.PedidosXMLWriter;
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.springframework.http.HttpStatus;
@@ -28,9 +29,15 @@ public class PedidosController {
 
     @RequestMapping(value = "/registerPedido", method = RequestMethod.POST)
     public ResponseEntity<Object> register(@RequestBody SerializedObject serializedObject) {
-        String serializedPedido = serializedObject.getSerializedObject();
-        PedidoDeserializer pedidoDeserializer = new PedidoDeserializer(serializedPedido);
-        Pedido pedido = pedidoDeserializer.getPedido();
+        Pedido pedido;
+        try {
+            String serializedPedido = serializedObject.getSerializedObject();
+            PedidoDeserializer pedidoDeserializer = new PedidoDeserializer(serializedPedido);
+            pedido = pedidoDeserializer.getPedido();
+        } catch (DeserializerException e) {
+            pedidoErrorLogger.error("An error occured when deserializing recieved String", e);
+            return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
         try {
             QueryService queryService = new QueryService();
             queryService.insertObject(pedido);

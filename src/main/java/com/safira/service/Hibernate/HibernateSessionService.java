@@ -1,4 +1,4 @@
-package com.safira.service.Hibernate;
+package com.safira.service.hibernate;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;

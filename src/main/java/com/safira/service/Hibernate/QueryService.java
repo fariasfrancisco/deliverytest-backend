@@ -1,4 +1,4 @@
-package com.safira.service.Hibernate;
+package com.safira.service.hibernate;
 
 /**
  * Created by Francisco on 25/02/2015.

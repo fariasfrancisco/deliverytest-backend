@@ -1,12 +1,13 @@
 package com.safira.controller;
 
+import com.safira.common.DeserializerException;
 import com.safira.common.ErrorObject;
 import com.safira.domain.SerializedObject;
 import com.safira.entities.Usuario;
-import com.safira.service.Hibernate.HibernateSessionService;
-import com.safira.service.Hibernate.QueryService;
-import com.safira.service.Log.UsuarioXMLWriter;
-import com.safira.service.UsuarioDeserializer;
+import com.safira.service.deserialize.UsuarioDeserializer;
+import com.safira.service.hibernate.HibernateSessionService;
+import com.safira.service.hibernate.QueryService;
+import com.safira.service.log.UsuarioXMLWriter;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +25,15 @@ public class UsuariosController {
 
     @RequestMapping(value = "/registerUsuario", method = RequestMethod.POST)
     public ResponseEntity<Object> register(@RequestBody SerializedObject serializedObject) {
-        String serializedUsuario = serializedObject.getSerializedObject();
-        UsuarioDeserializer usuarioDeserializer = new UsuarioDeserializer(serializedUsuario);
-        Usuario usuario = usuarioDeserializer.getUsuario();
+        Usuario usuario;
+        try {
+            String serializedUsuario = serializedObject.getSerializedObject();
+            UsuarioDeserializer usuarioDeserializer = new UsuarioDeserializer(serializedUsuario);
+            usuario = usuarioDeserializer.getUsuario();
+        } catch (DeserializerException e) {
+            usuarioErrorLogger.error("An error occured when deserializing recieved String", e);
+            return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
         try {
             QueryService queryService = new QueryService();
             queryService.insertObject(usuario);

@@ -1,12 +1,10 @@
-package com.safira.service.Log;
+package com.safira.service.log;
 
 import com.safira.entities.Menu;
 import com.safira.entities.Pedido;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-
-import java.time.LocalDateTime;
 
 /**
  * Created by Francisco on 07/03/2015.
