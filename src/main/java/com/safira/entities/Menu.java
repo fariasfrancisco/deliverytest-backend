@@ -45,7 +45,7 @@ public class Menu implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "nombre", unique = true, nullable = false, length = 30)
+    @Column(name = "nombre", nullable = false, length = 50)
     public String getNombre() {
         return nombre;
     }
@@ -54,7 +54,7 @@ public class Menu implements Serializable {
         this.nombre = nombre;
     }
 
-    @Column(name = "descripcion", unique = true, nullable = false)
+    @Column(name = "descripcion", nullable = false, length = 255)
     public String getDescripcion() {
         return descripcion;
     }
@@ -63,7 +63,7 @@ public class Menu implements Serializable {
         this.descripcion = descripcion;
     }
 
-    @Column(name = "costo", unique = true, nullable = false, precision = 2)
+    @Column(name = "costo", nullable = false)
     public BigDecimal getCosto() {
         return costo;
     }
@@ -72,8 +72,7 @@ public class Menu implements Serializable {
         this.costo = costo;
     }
 
-    @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurante_id", nullable = false)
     public Restaurante getRestaurante() {
         return restaurante;
@@ -137,6 +136,7 @@ public class Menu implements Serializable {
                 ", nombre='" + nombre + '\'' +
                 ", descripcion='" + descripcion + '\'' +
                 ", costo=" + costo +
+                ", restauranteId =" + restaurante.getId() +
                 '}';
     }
 }

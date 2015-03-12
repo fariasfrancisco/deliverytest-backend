@@ -11,6 +11,12 @@ import java.math.BigDecimal;
  * Created by Francisco on 10/03/2015.
  */
 public class MenuDeserializer {
+
+    /**
+     * Desired jSon format:
+     * {"serializedObject":"NOMBRE:DESCRIPCION:COSTO:RESTAURANTE_ID"}
+     */
+
     private static final String FIELD_SEPARATOR = ":";
     private static final int NOMBRE = 0;
     private static final int DESCRIPCION = 1;

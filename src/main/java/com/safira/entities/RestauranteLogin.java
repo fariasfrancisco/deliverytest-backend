@@ -11,7 +11,7 @@ import java.io.Serializable;
  * Created by francisco on 02/03/15.
  */
 @Entity
-@Table(name = "restaurantes_login", uniqueConstraints = {@UniqueConstraint(columnNames = "usuario")})
+@Table(name = "restaurantes_login")
 public class RestauranteLogin implements Serializable {
 
     private int id;
@@ -42,7 +42,7 @@ public class RestauranteLogin implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "usuario", nullable = false, length = 30)
+    @Column(name = "usuario", nullable = false, length = 50, unique = true)
     public String getUsuario() {
         return usuario;
     }
@@ -51,7 +51,8 @@ public class RestauranteLogin implements Serializable {
         this.usuario = usuario;
     }
 
-    @Column(name = "hash", nullable = false, length = 30)
+    @JsonIgnore
+    @Column(name = "hash", nullable = false)
     public byte[] getHash() {
         return hash;
     }
@@ -60,7 +61,8 @@ public class RestauranteLogin implements Serializable {
         this.hash = hash;
     }
 
-    @Column(name = "salt", nullable = false, length = 30)
+    @JsonIgnore
+    @Column(name = "salt", nullable = false)
     public byte[] getSalt() {
         return salt;
     }
@@ -70,7 +72,7 @@ public class RestauranteLogin implements Serializable {
     }
 
     @JsonIgnore
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @PrimaryKeyJoinColumn
     public Restaurante getRestaurante() {
         return restaurante;

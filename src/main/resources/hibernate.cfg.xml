@@ -9,8 +9,9 @@
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">admin</property>
         <property name="connection_pool_size">1</property>
-        <property name="show_sql">true</property>
-
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.current_session_context_class">thread</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
         <mapping class="com.safira.entities.Restaurante"/>
         <mapping class="com.safira.entities.RestauranteLogin"/>
         <mapping class="com.safira.entities.Menu"/>

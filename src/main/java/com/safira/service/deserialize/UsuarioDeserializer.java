@@ -7,6 +7,12 @@ import com.safira.entities.Usuario;
  * Created by Francisco on 08/03/2015.
  */
 public class UsuarioDeserializer {
+
+    /**
+     * Desired jSon format:
+     * {"serializedObject":"FACEBOOK_ID:NOMBRE:APELLIDO:EMAIL"}
+     */
+
     private static final String FIELD_SEPARATOR = ":";
     private static final int FACEBOOK_ID = 0;
     private static final int NOMBRE = 1;

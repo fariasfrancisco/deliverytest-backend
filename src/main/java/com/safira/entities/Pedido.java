@@ -1,7 +1,7 @@
 package com.safira.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.safira.service.hibernate.LocalDatePersistenceConverter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -26,7 +26,6 @@ public class Pedido implements Serializable {
     private String piso;
     private String departamento;
     private String telefono;
-    @Convert(converter = LocalDatePersistenceConverter.class)
     private LocalDateTime fecha;
     private Usuario usuario;
     private Restaurante restaurante;
@@ -49,7 +48,7 @@ public class Pedido implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "menu_id", unique = true, nullable = false)
+    @Column(name = "pedido_id", unique = true, nullable = false)
     public int getId() {
         return id;
     }
@@ -58,7 +57,7 @@ public class Pedido implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "calle", nullable = false)
+    @Column(name = "calle", nullable = false, length = 50)
     public String getCalle() {
         return calle;
     }
@@ -67,7 +66,7 @@ public class Pedido implements Serializable {
         this.calle = calle;
     }
 
-    @Column(name = "numero", nullable = false)
+    @Column(name = "numero", nullable = false, length = 5)
     public String getNumero() {
         return numero;
     }
@@ -76,7 +75,7 @@ public class Pedido implements Serializable {
         this.numero = numero;
     }
 
-    @Column(name = "piso", nullable = true)
+    @Column(name = "piso", nullable = true, length = 3)
     public String getPiso() {
         return piso;
     }
@@ -85,7 +84,7 @@ public class Pedido implements Serializable {
         this.piso = piso;
     }
 
-    @Column(name = "departamento", nullable = true)
+    @Column(name = "departamento", nullable = true, length = 3)
     public String getDepartamento() {
         return departamento;
     }
@@ -94,7 +93,7 @@ public class Pedido implements Serializable {
         this.departamento = departamento;
     }
 
-    @Column(name = "telefono", nullable = false)
+    @Column(name = "telefono", nullable = false, length = 16)
     public String getTelefono() {
         return telefono;
     }
@@ -103,6 +102,7 @@ public class Pedido implements Serializable {
         this.telefono = telefono;
     }
 
+    @Type(type = "com.safira.service.hibernate.LocalDateTimeUserType")
     @Column(name = "fecha", nullable = false)
     public LocalDateTime getFecha() {
         return fecha;
@@ -112,8 +112,7 @@ public class Pedido implements Serializable {
         this.fecha = fecha;
     }
 
-    @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario_id", nullable = false)
     public Usuario getUsuario() {
         return usuario;
@@ -123,8 +122,7 @@ public class Pedido implements Serializable {
         this.usuario = usuario;
     }
 
-    @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurante_id", nullable = false)
     public Restaurante getRestaurante() {
         return restaurante;
@@ -137,8 +135,10 @@ public class Pedido implements Serializable {
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "menu_pedido", joinColumns = {
-            @JoinColumn(name = "pedido_id", nullable = false, updatable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "menu_id", nullable = false, updatable = false)})
+            @JoinColumn(name = "pedido_id", nullable = false, updatable = false)
+    }, inverseJoinColumns = {
+            @JoinColumn(name = "menu_id", nullable = false, updatable = false)
+    })
     public Set<Menu> getMenus() {
         return menus;
     }
@@ -199,7 +199,7 @@ public class Pedido implements Serializable {
         }
 
         public Builder withMenus(Set<Menu> menus) {
-            this.usuario = usuario;
+            this.menus = menus;
             return this;
         }
 
@@ -218,6 +218,8 @@ public class Pedido implements Serializable {
                 ", departamento='" + departamento + '\'' +
                 ", telefono='" + telefono + '\'' +
                 ", fecha=" + fecha.toString() +
+                ", restauranteId=" + restaurante.getId() + '\'' +
+                ", usuarioId=" + usuario.getId() + '\'' +
                 '}';
     }
 

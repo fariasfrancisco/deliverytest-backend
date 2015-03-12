@@ -13,14 +13,12 @@ import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by francisco on 01/03/15.
  */
+@RestController
 public class PedidosController {
 
     final static Logger pedidoLogger = Logger.getLogger("pedidoLogger");
@@ -41,12 +39,13 @@ public class PedidosController {
         try {
             QueryService queryService = new QueryService();
             queryService.insertObject(pedido);
-            HibernateSessionService.shutDown();
         } catch (Exception e) {
             pedidoErrorLogger.error("An error occured when registering a Pedido", e);
             return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+            HibernateSessionService.shutDown();
         }
-        pedidoLogger.info("Successfully registered Pedido: \n" + PedidosXMLWriter.createDocument(pedido));
+        pedidoLogger.info("Successfully registered Pedido: \n" + PedidosXMLWriter.createDocument(pedido).asXML());
         return new ResponseEntity<>(pedido, HttpStatus.OK);
     }
 
@@ -56,13 +55,14 @@ public class PedidosController {
         try {
             QueryService queryService = new QueryService();
             pedido = queryService.getPedidoById(Integer.valueOf(id));
-            HibernateSessionService.shutDown();
         } catch (HibernateException e) {
             pedidoErrorLogger.error("An error occured when retrieving Pedido with id = " + id, e);
             return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (IndexOutOfBoundsException e) {
             pedidoWarnLogger.warn("No Pedido was found with id = " + id);
             return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+            HibernateSessionService.shutDown();
         }
         return new ResponseEntity<>(pedido, HttpStatus.OK);
     }
@@ -73,7 +73,6 @@ public class PedidosController {
         try {
             QueryService queryService = new QueryService();
             pedidos = new Pedidos(queryService.getPedidosByRestauranteId(Integer.valueOf(restauranteId)));
-            HibernateSessionService.shutDown();
             if (pedidos.getPedidos().isEmpty()) {
                 pedidoWarnLogger.warn("No Pedido was found with restauranteId = " + restauranteId);
                 return new ResponseEntity<>(pedidos, HttpStatus.NOT_FOUND);
@@ -81,6 +80,8 @@ public class PedidosController {
         } catch (HibernateException e) {
             pedidoErrorLogger.error("An error occured when retrieving Pedido with restauranteId = " + restauranteId, e);
             return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+            HibernateSessionService.shutDown();
         }
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
     }
@@ -91,7 +92,6 @@ public class PedidosController {
         try {
             QueryService queryService = new QueryService();
             pedidos = new Pedidos(queryService.getPedidosByUsuarioId(Integer.valueOf(usuarioId)));
-            HibernateSessionService.shutDown();
             if (pedidos.getPedidos().isEmpty()) {
                 pedidoWarnLogger.warn("No Pedido was found with usuarioId = " + usuarioId);
                 return new ResponseEntity<>(pedidos, HttpStatus.NOT_FOUND);
@@ -100,6 +100,8 @@ public class PedidosController {
             pedidoErrorLogger.error("An error occured when retrieving Pedido with" +
                     " usuarioId = " + usuarioId, e);
             return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+            HibernateSessionService.shutDown();
         }
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
     }
@@ -113,7 +115,6 @@ public class PedidosController {
             QueryService queryService = new QueryService();
             pedidos = new Pedidos(queryService.
                     getPedidosByRestauranteIdAndUsuarioId(Integer.valueOf(restauranteId), Integer.valueOf(usuarioId)));
-            HibernateSessionService.shutDown();
             if (pedidos.getPedidos().isEmpty()) {
                 pedidoWarnLogger.warn("No Pedido was found with usuarioId = " + usuarioId +
                         " and  restauranteId = " + restauranteId);
@@ -123,6 +124,8 @@ public class PedidosController {
             pedidoErrorLogger.error("An error occured when retrieving Pedido with" +
                     " usuarioId = " + usuarioId + " and  restauranteId = " + restauranteId);
             return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+            HibernateSessionService.shutDown();
         }
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
     }

@@ -13,9 +13,7 @@ import static javax.persistence.GenerationType.IDENTITY;
  * Created by Francisco on 26/02/2015.
  */
 @Entity
-@Table(name = "usuarios", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "facebook_id"),
-        @UniqueConstraint(columnNames = "email")})
+@Table(name = "usuarios")
 public class Usuario implements Serializable {
     private int id;
     private String facebookId;
@@ -46,7 +44,7 @@ public class Usuario implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "facebook_id", nullable = false)
+    @Column(name = "facebook_id", nullable = false, unique = true)
     public String getFacebookId() {
         return facebookId;
     }
@@ -55,7 +53,7 @@ public class Usuario implements Serializable {
         this.facebookId = facebookId;
     }
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false, length = 50, unique = true)
     public String getEmail() {
         return email;
     }
@@ -64,7 +62,7 @@ public class Usuario implements Serializable {
         this.email = email;
     }
 
-    @Column(name = "nombre", nullable = false)
+    @Column(name = "nombre", nullable = false, length = 50)
     public String getNombre() {
         return nombre;
     }
@@ -73,7 +71,7 @@ public class Usuario implements Serializable {
         this.nombre = nombre;
     }
 
-    @Column(name = "apellido", nullable = false)
+    @Column(name = "apellido", nullable = false, length = 50)
     public String getApellido() {
         return apellido;
     }

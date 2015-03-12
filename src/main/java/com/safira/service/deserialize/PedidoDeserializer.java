@@ -17,6 +17,11 @@ import java.util.Set;
  */
 public class PedidoDeserializer {
 
+    /**
+     * Desired jSon format:
+     * {"serializedObject":"CALLE:NUMERO:PISO:DEPARTARMENTO:TELEFONO:FACEBOOK_ID:RESTAURANTE_ID:MENU_ID&...&MENU_ID"}
+     */
+
     private static final String FIELD_SEPARATOR = ":";
     private static final String MENU_SEPARATOR = "&";
     private static final int CALLE = 0;
@@ -33,23 +38,40 @@ public class PedidoDeserializer {
     public PedidoDeserializer(String serializedPedido) throws DeserializerException {
         Restaurante restaurante;
         Usuario usuario;
-        QueryService queryService = new QueryService();
         Set<Menu> menus = new HashSet<>();
+        Set<Menu> recievedMenus = new HashSet<>();
         String[] splitFields = serializedPedido.split(FIELD_SEPARATOR);
         if (splitFields.length < 8) {
             throw new DeserializerException();
         }
         String[] splitMenus = splitFields[MENUS].split(MENU_SEPARATOR);
-        try {
-            restaurante = queryService.getRestauranteById(Integer.valueOf(splitFields[RESTAURANTE_ID]));
+        try {                                                                                                           //This code is here until I learn
+            QueryService queryService = new QueryService();                                                             //how to solve the null foreign
+            restaurante = queryService.getRestauranteById(Integer.valueOf(splitFields[RESTAURANTE_ID]));                //object recieved with select
+            menus = restaurante.getMenus();                                                                             //query.
+            /*Menus menuses = new Menus(queryService.getMenusByRestauranteId(Integer.valueOf(splitFields[RESTAURANTE_ID]));
+            List<Menu> menusList = menuses.getMenus();*/
             usuario = queryService.getUsuario(splitFields[FACEBOOK_ID]);
             Menu menu;
+            boolean found;
             for (String menuId : splitMenus) {
+                found = false;
                 menu = queryService.getMenuById(Integer.valueOf(menuId));
-                menus.add(menu);
+                for (Menu m : menus) {
+                    if (m.getId() == menu.getId()) {
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    throw new DeserializerException();
+                }
+                menu.setRestaurante(restaurante);
+                recievedMenus.add(menu);
             }
         } catch (Exception e) {
             throw new DeserializerException();
+        } finally {
+            HibernateSessionService.shutDown();
         }
         this.pedido = new Pedido.Builder()
                 .withCalle(splitFields[CALLE])
@@ -62,7 +84,6 @@ public class PedidoDeserializer {
                 .withUsuario(usuario)
                 .withMenus(menus)
                 .build();
-        HibernateSessionService.shutDown();
     }
 
     public Pedido getPedido() {

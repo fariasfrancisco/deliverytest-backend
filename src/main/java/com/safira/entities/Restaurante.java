@@ -14,9 +14,7 @@ import static javax.persistence.GenerationType.IDENTITY;
  */
 
 @Entity
-@Table(name = "restaurantes", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "direccion"),
-        @UniqueConstraint(columnNames = "telefono")})
+@Table(name = "restaurantes")
 public class Restaurante implements Serializable {
 
     private int id;
@@ -52,7 +50,7 @@ public class Restaurante implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "nombre", nullable = false, length = 30)
+    @Column(name = "nombre", nullable = false, length = 50)
     public String getNombre() {
         return nombre;
     }
@@ -61,7 +59,7 @@ public class Restaurante implements Serializable {
         this.nombre = nombre;
     }
 
-    @Column(name = "direccion", nullable = false, length = 30)
+    @Column(name = "direccion", nullable = false, length = 50, unique = true)
     public String getDireccion() {
         return direccion;
     }
@@ -70,7 +68,7 @@ public class Restaurante implements Serializable {
         this.direccion = direccion;
     }
 
-    @Column(name = "telefono", nullable = false, length = 16)
+    @Column(name = "telefono", nullable = false, length = 16, unique = true)
     public String getTelefono() {
         return telefono;
     }
@@ -79,7 +77,7 @@ public class Restaurante implements Serializable {
         this.telefono = telefono;
     }
 
-    @Column(name = "email", nullable = false, length = 30)
+    @Column(name = "email", nullable = false, length = 50)
     public String getEmail() {
         return email;
     }
@@ -88,8 +86,7 @@ public class Restaurante implements Serializable {
         this.email = email;
     }
 
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "restaurante", cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "restaurante", cascade = CascadeType.ALL)
     public RestauranteLogin getRestauranteLogin() {
         return restauranteLogin;
     }
@@ -177,8 +174,7 @@ public class Restaurante implements Serializable {
                 ", direccion='" + direccion + '\'' +
                 ", telefono='" + telefono + '\'' +
                 ", email='" + email + '\'' +
+                ", usuario='" + restauranteLogin.getUsuario() + '\'' +
                 '}';
     }
-
-
 }

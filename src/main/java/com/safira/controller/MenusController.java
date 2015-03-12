@@ -14,18 +14,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
 /**
- * Controller dedicated to serving json RESTful webservice for Menus
+  * Controller dedicated to serving json RESTful webservice for Menus
  */
+@RestController
 public class MenusController {
 
     final static Logger menuLogger = Logger.getLogger("menuLogger");
     final static Logger menuWarnLogger = Logger.getLogger("menuWarnLogger");
     final static Logger menuErrorLogger = Logger.getLogger("menuErrorLogger");
 
-    @RequestMapping(value = "/insertMenu", method = RequestMethod.POST)
-    public ResponseEntity<Object> insertMenu(@RequestBody SerializedObject serializedObject) {
+    @RequestMapping(value = "/registerMenu", method = RequestMethod.POST)
+    public ResponseEntity<Object> registerMenu(@RequestBody SerializedObject serializedObject) {
         Menu menu;
         try {
             String serializedMenu = serializedObject.getSerializedObject();
@@ -38,12 +38,34 @@ public class MenusController {
         try {
             QueryService queryService = new QueryService();
             queryService.insertObject(menu);
-            HibernateSessionService.shutDown();
         } catch (Exception e) {
             menuErrorLogger.error("An error occured wehen registering Menu", e);
             return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+            HibernateSessionService.shutDown();
         }
-        menuLogger.info("Successfully registered Menu: \n" + MenusXMLWriter.createDocument(menu));
+        menuLogger.info("Successfully registered Menu: \n" + MenusXMLWriter.createDocument(menu).asXML());
+        return new ResponseEntity<>(menu, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/getMenuById", method = RequestMethod.GET)
+    public ResponseEntity<Object> getMenuById(@RequestParam(value = "id", required = true, defaultValue = "0") String id) {
+        int menuid;
+        try {
+            menuid = Integer.valueOf(id);
+        } catch (NumberFormatException e) {
+            menuid = 0;
+        }
+        Menu menu;
+        try {
+            QueryService queryService = new QueryService();
+            menu = queryService.getMenuById(menuid);
+        } catch (Exception e) {
+            menuErrorLogger.error("An error occured when retrieving Menus with id = " + id, e);
+            return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+            HibernateSessionService.shutDown();
+        }
         return new ResponseEntity<>(menu, HttpStatus.OK);
     }
 
@@ -59,7 +81,6 @@ public class MenusController {
         try {
             QueryService queryService = new QueryService();
             menus = new Menus(queryService.getMenusByRestauranteId(restauranteId));
-            HibernateSessionService.shutDown();
             if (menus.getMenus().isEmpty()) {
                 menuWarnLogger.warn("No Menus found with restauranteId = " + id);
                 return new ResponseEntity<>(menus, HttpStatus.NOT_FOUND);
@@ -67,6 +88,8 @@ public class MenusController {
         } catch (Exception e) {
             menuErrorLogger.error("An error occured when retrieving Menus with restauranteId = " + id, e);
             return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+            HibernateSessionService.shutDown();
         }
         return new ResponseEntity<>(menus, HttpStatus.OK);
     }
@@ -83,7 +106,6 @@ public class MenusController {
         try {
             QueryService queryService = new QueryService();
             menus = new Menus(queryService.getMenusByPedidoId(pedidoId));
-            HibernateSessionService.shutDown();
             if (menus.getMenus().isEmpty()) {
                 menuWarnLogger.warn("No Menus found with pedidoId = " + id);
                 return new ResponseEntity<>(menus, HttpStatus.NOT_FOUND);
@@ -91,6 +113,8 @@ public class MenusController {
         } catch (Exception e) {
             menuErrorLogger.error("An error occured when retrieving Menus with pedidoId = " + id, e);
             return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+            HibernateSessionService.shutDown();
         }
         return new ResponseEntity<>(menus, HttpStatus.OK);
     }

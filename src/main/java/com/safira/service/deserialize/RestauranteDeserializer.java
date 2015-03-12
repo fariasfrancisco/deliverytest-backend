@@ -10,6 +10,11 @@ import com.safira.service.PasswordService;
  */
 public class RestauranteDeserializer {
 
+    /**
+     * Desired jSon format:
+     * {"serializedObject":"NOMBRE:DIRECCION:TELEFONO:EMAIL:USUARIO:PASSWORD"}
+     */
+
     private static final String FIELD_SEPARATOR = ":";
     private static final int NOMBRE = 0;
     private static final int DIRECCION = 1;
