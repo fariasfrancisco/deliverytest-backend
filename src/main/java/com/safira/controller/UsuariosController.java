@@ -1,11 +1,9 @@
 package com.safira.controller;
 
 import com.safira.common.DeserializerException;
-import com.safira.common.ErrorObject;
 import com.safira.domain.SerializedObject;
 import com.safira.entities.Usuario;
 import com.safira.service.deserialize.UsuarioDeserializer;
-import com.safira.service.hibernate.HibernateSessionService;
 import com.safira.service.hibernate.QueryService;
 import com.safira.service.log.UsuarioXMLWriter;
 import org.apache.log4j.Logger;
@@ -25,44 +23,48 @@ public class UsuariosController {
 
     @RequestMapping(value = "/registerUsuario", method = RequestMethod.POST)
     public ResponseEntity<Object> registerUsuario(@RequestBody SerializedObject serializedObject) {
-        String serializedUsuario = serializedObject.getSerializedObject();
-        Usuario usuario;
+        QueryService queryService = QueryService.getQueryService();
         try {
-            UsuarioDeserializer usuarioDeserializer = new UsuarioDeserializer(serializedUsuario);
-            usuario = usuarioDeserializer.getUsuario();
-        } catch (DeserializerException e) {
-            usuarioErrorLogger.error("An error occured when deserializing recieved String", e);
-            return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.BAD_REQUEST);
-        }
-        try {
-            QueryService queryService = new QueryService();
-            queryService.insertObject(usuario);
-        } catch (Exception e) {
-            usuarioErrorLogger.error("An error ocurred when registering Usuario", e);
-            return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            String serializedUsuario = serializedObject.getSerializedObject();
+            Usuario usuario;
+            try {
+                UsuarioDeserializer usuarioDeserializer = new UsuarioDeserializer(serializedUsuario);
+                usuario = usuarioDeserializer.getUsuario();
+            } catch (DeserializerException e) {
+                usuarioErrorLogger.error("An error occured when deserializing recieved String", e);
+                return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+            }
+            try {
+                queryService.insertObject(usuario);
+            } catch (Exception e) {
+                usuarioErrorLogger.error("An error ocurred when registering Usuario", e);
+                return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            usuarioLogger.info("Successfully registered Usuario: \n" + UsuarioXMLWriter.createDocument(usuario).asXML());
+            return new ResponseEntity<>(usuario, HttpStatus.OK);
         } finally {
-            HibernateSessionService.shutDown();
+            queryService.closeSession();
         }
-        usuarioLogger.info("Successfully registered Usuario: \n" + UsuarioXMLWriter.createDocument(usuario).asXML());
-        return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/loginUsuario", method = RequestMethod.GET)
     public ResponseEntity<Object> loginUsuario(@RequestParam(value = "fbid", required = true) String facebookId) {
-        Usuario usuario;
+        QueryService queryService = QueryService.getQueryService();
         try {
-            QueryService queryService = new QueryService();
-            usuario = queryService.getUsuario(facebookId);
-        } catch (IndexOutOfBoundsException e) {
-            usuarioWarnLogger.warn("Failed attempt to login with facebookId = " + facebookId);
-            return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            usuarioErrorLogger.error("An error ocurred when loging in Usuario with facebookId = " + facebookId, e);
-            return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            Usuario usuario;
+            try {
+                usuario = queryService.getUsuario(facebookId);
+            } catch (IndexOutOfBoundsException e) {
+                usuarioWarnLogger.warn("Failed attempt to login with facebookId = " + facebookId);
+                return new ResponseEntity<>(e, HttpStatus.NOT_FOUND);
+            } catch (Exception e) {
+                usuarioErrorLogger.error("An error ocurred when loging in Usuario with facebookId = " + facebookId, e);
+                return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            usuarioLogger.info("Successful login with id = " + usuario.getId());
+            return new ResponseEntity<>(usuario, HttpStatus.OK);
         } finally {
-            HibernateSessionService.shutDown();
+            queryService.closeSession();
         }
-        usuarioLogger.info("Successful login with id = " + usuario.getId());
-        return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 }

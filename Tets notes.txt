@@ -3,19 +3,19 @@ UsuariosController
 	.loginUsuario()								[O]
 --------------------------------------------------
 RestaurantesController
-	.registerNewRestaurante()					[]
-	.loginRestaurante()							[]
-	.getRestaurantes()							[]
-	.getRestauranteById()						[]
+	.registerRestaurante()				    	[O]
+	.loginRestaurante()							[O]
+	.getRestaurantes()							[O]
+	.getRestauranteById()						[O]
 ---------------------------------------------------
 MenusController
-	.insertMenu()								[]
-	.getMenusByRestaurante()					[]
-	.getMenusByPedido()							[]		
+	.registerMenu()								[O]
+	.getMenusByRestaurante()					[O]
+	.getMenusByPedido()							[O]
 ---------------------------------------------------
 PedidosController
-	.registerPedido()							[]
-	.getPedidoById()							[]
-	.getPedidosByRestauranteId()				[]
-	.getPedidosByUsuarioId()					[]
-	.getPedidosByRestauranteIdAndUsuarioId()	[]
+	.registerPedido()							[O]
+	.getPedidoById()							[O]
+	.getPedidosByRestauranteId()				[O]
+	.getPedidosByUsuarioId()					[O]
+	.getPedidosByRestauranteIdAndUsuarioId()	[O]

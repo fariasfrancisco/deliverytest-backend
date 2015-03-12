@@ -31,6 +31,11 @@ public class Usuario implements Serializable {
         this.nombre = builder.nombre;
         this.apellido = builder.apellido;
         this.pedidos = builder.pedidos;
+        for (Pedido pedido : pedidos) {
+            if (pedido.getUsuario() != this) {
+                pedido.setUsuario(this);
+            }
+        }
     }
 
     @Id
@@ -81,13 +86,18 @@ public class Usuario implements Serializable {
     }
 
     @JsonIgnore
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
     public Set<Pedido> getPedidos() {
         return pedidos;
     }
 
     public void setPedidos(Set<Pedido> pedidos) {
         this.pedidos = pedidos;
+        for (Pedido pedido : pedidos) {
+            if (pedido.getUsuario() != this) {
+                pedido.setUsuario(this);
+            }
+        }
     }
 
     public static class Builder {

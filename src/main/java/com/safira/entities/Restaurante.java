@@ -35,8 +35,21 @@ public class Restaurante implements Serializable {
         this.telefono = builder.telefono;
         this.email = builder.email;
         this.restauranteLogin = builder.restauranteLogin;
+        if (restauranteLogin != null && restauranteLogin.getRestaurante() != this) {
+            restauranteLogin.setRestaurante(this);
+        }
         this.menus = builder.menus;
+        for (Menu menu : menus) {
+            if (menu.getRestaurante() != this) {
+                menu.setRestaurante(this);
+            }
+        }
         this.pedidos = builder.pedidos;
+        for (Pedido pedido : pedidos) {
+            if (pedido.getRestaurante() != this) {
+                pedido.setRestaurante(this);
+            }
+        }
     }
 
     @Id
@@ -93,26 +106,39 @@ public class Restaurante implements Serializable {
 
     public void setRestauranteLogin(RestauranteLogin restauranteLogin) {
         this.restauranteLogin = restauranteLogin;
+        if (restauranteLogin.getRestaurante() != this) {
+            restauranteLogin.setRestaurante(this);
+        }
     }
 
     @JsonIgnore
-    @OneToMany(mappedBy = "restaurante")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
     public Set<Menu> getMenus() {
         return menus;
     }
 
     public void setMenus(Set<Menu> menus) {
         this.menus = menus;
+        for (Menu menu : menus) {
+            if (menu.getRestaurante() != this) {
+                menu.setRestaurante(this);
+            }
+        }
     }
 
     @JsonIgnore
-    @OneToMany(mappedBy = "restaurante")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
     public Set<Pedido> getPedidos() {
         return pedidos;
     }
 
     public void setPedidos(Set<Pedido> pedidos) {
         this.pedidos = pedidos;
+        for (Pedido pedido : pedidos) {
+            if (pedido.getRestaurante() != this) {
+                pedido.setRestaurante(this);
+            }
+        }
     }
 
     public static class Builder {

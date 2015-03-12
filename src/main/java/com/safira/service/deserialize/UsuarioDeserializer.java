@@ -10,10 +10,10 @@ public class UsuarioDeserializer {
 
     /**
      * Desired jSon format:
-     * {"serializedObject":"FACEBOOK_ID:NOMBRE:APELLIDO:EMAIL"}
+     * {"serializedObject":"FACEBOOK_ID;NOMBRE;APELLIDO;EMAIL"}
      */
 
-    private static final String FIELD_SEPARATOR = ":";
+    private static final String FIELD_SEPARATOR = ";";
     private static final int FACEBOOK_ID = 0;
     private static final int NOMBRE = 1;
     private static final int APELLIDO = 2;

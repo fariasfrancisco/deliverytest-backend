@@ -14,10 +14,10 @@ public class MenuDeserializer {
 
     /**
      * Desired jSon format:
-     * {"serializedObject":"NOMBRE:DESCRIPCION:COSTO:RESTAURANTE_ID"}
+     * {"serializedObject":"NOMBRE;DESCRIPCION;COSTO;RESTAURANTE_ID"}
      */
 
-    private static final String FIELD_SEPARATOR = ":";
+    private static final String FIELD_SEPARATOR = ";";
     private static final int NOMBRE = 0;
     private static final int DESCRIPCION = 1;
     private static final int COSTO = 2;
@@ -25,10 +25,9 @@ public class MenuDeserializer {
 
     private Menu menu;
 
-    public MenuDeserializer(String serializedMenu) throws DeserializerException {
+    public MenuDeserializer(String serializedMenu, QueryService queryService) throws DeserializerException {
         Restaurante restaurante;
         BigDecimal costo;
-        QueryService queryService = new QueryService();
         String[] splitFields = serializedMenu.split(FIELD_SEPARATOR);
         if (splitFields.length != 4) {
             throw new DeserializerException();

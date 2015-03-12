@@ -28,6 +28,9 @@ public class RestauranteLogin implements Serializable {
         this.hash = builder.hash;
         this.salt = builder.salt;
         this.restaurante = builder.restaurante;
+        if (restaurante != null && restaurante.getRestauranteLogin() != this) {
+            restaurante.setRestauranteLogin(this);
+        }
     }
 
     @Id
@@ -80,6 +83,9 @@ public class RestauranteLogin implements Serializable {
 
     public void setRestaurante(Restaurante restaurante) {
         this.restaurante = restaurante;
+        if (restaurante.getRestauranteLogin() != this) {
+            restaurante.setRestauranteLogin(this);
+        }
     }
 
     public static class Builder {

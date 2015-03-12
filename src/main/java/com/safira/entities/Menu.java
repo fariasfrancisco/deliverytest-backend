@@ -31,7 +31,15 @@ public class Menu implements Serializable {
         this.descripcion = builder.descripcion;
         this.costo = builder.costo;
         this.restaurante = builder.restaurante;
+        if (!restaurante.getMenus().contains(this)) {
+            restaurante.getMenus().add(this);
+        }
         this.pedidos = builder.pedidos;
+        for (Pedido pedido : pedidos) {
+            if (!pedido.getMenus().contains(this)) {
+                pedido.getMenus().add(this);
+            }
+        }
     }
 
     @Id
@@ -78,8 +86,11 @@ public class Menu implements Serializable {
         return restaurante;
     }
 
-    public void setRestaurante(Restaurante Restaurante) {
+    public void setRestaurante(Restaurante restaurante) {
         this.restaurante = restaurante;
+        if (!restaurante.getMenus().contains(this)) {
+            restaurante.getMenus().add(this);
+        }
     }
 
     @JsonIgnore

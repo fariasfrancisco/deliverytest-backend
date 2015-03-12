@@ -42,8 +42,19 @@ public class Pedido implements Serializable {
         this.telefono = builder.telefono;
         this.fecha = builder.fecha;
         this.usuario = builder.usuario;
+        if (!usuario.getPedidos().contains(this)) {
+            usuario.getPedidos().add(this);
+        }
         this.restaurante = builder.restaurante;
+        if (!restaurante.getPedidos().contains(this)) {
+            restaurante.getPedidos().add(this);
+        }
         this.menus = builder.menus;
+        for (Menu menu : menus) {
+            if (!menu.getPedidos().contains(this)) {
+                menu.getPedidos().add(this);
+            }
+        }
     }
 
     @Id
@@ -120,6 +131,9 @@ public class Pedido implements Serializable {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+        if (!usuario.getPedidos().contains(this)) {
+            usuario.getPedidos().add(this);
+        }
     }
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -130,10 +144,13 @@ public class Pedido implements Serializable {
 
     public void setRestaurante(Restaurante restaurante) {
         this.restaurante = restaurante;
+        if (!restaurante.getPedidos().contains(this)) {
+            restaurante.getPedidos().add(this);
+        }
     }
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "menu_pedido", joinColumns = {
             @JoinColumn(name = "pedido_id", nullable = false, updatable = false)
     }, inverseJoinColumns = {
