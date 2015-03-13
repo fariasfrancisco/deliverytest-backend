@@ -7,9 +7,6 @@ import org.hibernate.annotations.Parameter;
 import javax.persistence.*;
 import java.io.Serializable;
 
-/**
- * Created by francisco on 02/03/15.
- */
 @Entity
 @Table(name = "restaurantes_login")
 public class RestauranteLogin implements Serializable {

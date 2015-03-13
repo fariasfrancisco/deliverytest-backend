@@ -12,10 +12,6 @@ import java.util.Set;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-/**
- * Created by Francisco on 26/02/2015.
- */
-
 @Entity
 @Table(name = "pedidos")
 public class Pedido implements Serializable {

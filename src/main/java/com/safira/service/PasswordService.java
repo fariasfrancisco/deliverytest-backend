@@ -1,7 +1,7 @@
 package com.safira.service;
 
 /**
- * Service class adapted from foreign project
+ * Service class adapted from foreign project in charge of password encryptation.
  */
 
 import javax.crypto.SecretKeyFactory;

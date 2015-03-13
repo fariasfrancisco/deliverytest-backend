@@ -1,12 +1,16 @@
 package com.safira.domain;
 
 /**
- * Created by Francisco on 09/03/2015.
+ * Class intended to store recieved serialized objects..
  */
 public class SerializedObject {
     private String serializedObject;
 
     public SerializedObject(){
+    }
+
+    public SerializedObject(String serializedObject) {
+        this.serializedObject = serializedObject;
     }
 
     public String getSerializedObject() {

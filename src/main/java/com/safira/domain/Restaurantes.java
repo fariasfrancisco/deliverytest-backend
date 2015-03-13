@@ -5,7 +5,7 @@ import com.safira.entities.Restaurante;
 import java.util.List;
 
 /**
- * Created by Francisco on 26/02/2015.
+ * Class intended to simplify List storage of Restaurante objects and ease jSon transmision.
  */
 public class Restaurantes {
     private List<Restaurante> restaurantes;

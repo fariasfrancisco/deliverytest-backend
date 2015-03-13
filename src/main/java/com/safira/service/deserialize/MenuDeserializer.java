@@ -1,6 +1,7 @@
 package com.safira.service.deserialize;
 
-import com.safira.common.DeserializerException;
+import com.safira.common.Regex;
+import com.safira.common.exceptions.DeserializerException;
 import com.safira.entities.Menu;
 import com.safira.entities.Restaurante;
 import com.safira.service.hibernate.QueryService;
@@ -8,7 +9,7 @@ import com.safira.service.hibernate.QueryService;
 import java.math.BigDecimal;
 
 /**
- * Created by Francisco on 10/03/2015.
+ * Class in charge of deserilizing recieved String and create a Menu object out of it.
  */
 public class MenuDeserializer {
 
@@ -32,6 +33,7 @@ public class MenuDeserializer {
         if (splitFields.length != 4) {
             throw new DeserializerException();
         }
+        validate(splitFields);
         try {
             costo = new BigDecimal(splitFields[COSTO]);
             restaurante = queryService.getRestauranteById(Integer.valueOf(splitFields[RESTAURANTE_ID]));
@@ -48,5 +50,10 @@ public class MenuDeserializer {
 
     public Menu getMenu() {
         return menu;
+    }
+
+    private void validate(String[] splitFields) throws DeserializerException {
+        if (!splitFields[COSTO].matches(Regex.MONEY_FORMAT)) throw new DeserializerException();
+        if (!splitFields[RESTAURANTE_ID].matches(Regex.ID_FORMAT)) throw new DeserializerException();
     }
 }

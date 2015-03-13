@@ -10,9 +10,6 @@ import java.util.Set;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-/**
- * Created by Francisco on 21/02/2015.
- */
 @Entity
 @Table(name = "menus")
 public class Menu implements Serializable {

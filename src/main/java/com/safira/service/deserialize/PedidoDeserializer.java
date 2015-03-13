@@ -1,6 +1,7 @@
 package com.safira.service.deserialize;
 
-import com.safira.common.DeserializerException;
+import com.safira.common.Regex;
+import com.safira.common.exceptions.DeserializerException;
 import com.safira.entities.Menu;
 import com.safira.entities.Pedido;
 import com.safira.entities.Restaurante;
@@ -12,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by Francisco on 08/03/2015.
+ * Class in charge of deserilizing recieved String and create a Pedido object out of it.
  */
 public class PedidoDeserializer {
 
@@ -43,6 +44,7 @@ public class PedidoDeserializer {
             throw new DeserializerException();
         }
         String[] splitMenus = splitFields[MENUS].split(MENU_SEPARATOR);
+        validate(splitFields, splitMenus);
         try {
             restaurante = queryService.getRestauranteById(Integer.valueOf(splitFields[RESTAURANTE_ID]));
             usuario = queryService.getUsuario(splitFields[FACEBOOK_ID]);
@@ -72,5 +74,14 @@ public class PedidoDeserializer {
 
     public Pedido getPedido() {
         return pedido;
+    }
+
+    private void validate(String[] splitFields, String[] splitMenus) throws DeserializerException {
+        if (!splitFields[NUMERO].matches(Regex.NUMBER_FORMAT)) throw new DeserializerException();
+        if (!splitFields[TELEFONO].matches(Regex.PHONE_FORMAT)) throw new DeserializerException();
+        if (!splitFields[RESTAURANTE_ID].matches(Regex.ID_FORMAT)) throw new DeserializerException();
+        for (String menuId : splitMenus) {
+            if (!menuId.matches(Regex.ID_FORMAT)) throw new DeserializerException();
+        }
     }
 }

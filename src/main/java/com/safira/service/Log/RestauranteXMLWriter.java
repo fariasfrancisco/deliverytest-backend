@@ -7,7 +7,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 /**
- * Created by Francisco on 08/03/2015.
+ * Class in charge of creating XML data for a new created Restaurante and RestauranteLogin.
  */
 public class RestauranteXMLWriter {
     public static Document createDocument(Restaurante restaurante, RestauranteLogin restauranteLogin) {

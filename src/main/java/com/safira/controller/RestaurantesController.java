@@ -1,6 +1,7 @@
 package com.safira.controller;
 
-import com.safira.common.DeserializerException;
+import com.safira.common.exceptions.DeserializerException;
+import com.safira.common.exceptions.LoginException;
 import com.safira.domain.Restaurantes;
 import com.safira.domain.SerializedObject;
 import com.safira.entities.Restaurante;
@@ -71,7 +72,7 @@ public class RestaurantesController {
                 RestauranteLogin restauranteLogin = queryService.getRestauranteLoginByUsuario(username);
                 if (!PasswordService.isExpectedPassword(password, restauranteLogin.getSalt(), restauranteLogin.getHash())) {
                     restauranteLogger.info("Failed attemp to log in with Usuario = " + username);
-                    return new ResponseEntity<>("failed attempt to log in", HttpStatus.NOT_FOUND);
+                    return new ResponseEntity<>(new LoginException(), HttpStatus.NOT_FOUND);
                 }
                 restaurante = queryService.getRestauranteById(restauranteLogin.getId());
             } catch (Exception e) {

@@ -6,7 +6,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 /**
- * Created by Francisco on 08/03/2015.
+ * Class in charge of creating XML data for a new created Usuario.
  */
 public class UsuarioXMLWriter {
     public static Document createDocument(Usuario usuario) {

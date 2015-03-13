@@ -5,7 +5,7 @@ import com.safira.entities.Menu;
 import java.util.List;
 
 /**
- * Created by Francisco on 26/02/2015.
+ * Class intended to simplify List storage of Menu objects and ease jSon transmision.
  */
 public class Menus {
     private List<Menu> menus;

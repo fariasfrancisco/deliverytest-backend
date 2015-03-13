@@ -1,6 +1,6 @@
 package com.safira.controller;
 
-import com.safira.common.DeserializerException;
+import com.safira.common.exceptions.DeserializerException;
 import com.safira.domain.Pedidos;
 import com.safira.domain.SerializedObject;
 import com.safira.entities.Pedido;

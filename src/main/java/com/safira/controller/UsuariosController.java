@@ -1,6 +1,7 @@
 package com.safira.controller;
 
-import com.safira.common.DeserializerException;
+import com.safira.common.exceptions.DeserializerException;
+import com.safira.common.exceptions.LoginException;
 import com.safira.domain.SerializedObject;
 import com.safira.entities.Usuario;
 import com.safira.service.deserialize.UsuarioDeserializer;
@@ -56,7 +57,7 @@ public class UsuariosController {
                 usuario = queryService.getUsuario(facebookId);
             } catch (IndexOutOfBoundsException e) {
                 usuarioWarnLogger.warn("Failed attempt to login with facebookId = " + facebookId);
-                return new ResponseEntity<>(e, HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(new LoginException(e), HttpStatus.NOT_FOUND);
             } catch (Exception e) {
                 usuarioErrorLogger.error("An error ocurred when loging in Usuario with facebookId = " + facebookId, e);
                 return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);

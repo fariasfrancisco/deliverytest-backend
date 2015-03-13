@@ -7,7 +7,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 /**
- * Created by Francisco on 07/03/2015.
+ * Class in charge of creating XML data for a new created Pedido.
  */
 public class PedidosXMLWriter {
     public static Document createDocument(Pedido pedido) {

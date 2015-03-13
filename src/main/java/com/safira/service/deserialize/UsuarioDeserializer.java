@@ -1,10 +1,11 @@
 package com.safira.service.deserialize;
 
-import com.safira.common.DeserializerException;
+import com.safira.common.Regex;
+import com.safira.common.exceptions.DeserializerException;
 import com.safira.entities.Usuario;
 
 /**
- * Created by Francisco on 08/03/2015.
+ * Class in charge of deserilizing recieved String and create an Usuario object out of it.
  */
 public class UsuarioDeserializer {
 
@@ -23,7 +24,7 @@ public class UsuarioDeserializer {
 
     public UsuarioDeserializer(String serializedUsuario) throws DeserializerException {
         String[] splitFields = serializedUsuario.split(FIELD_SEPARATOR);
-        if(splitFields.length != 4){
+        if (splitFields.length != 4) {
             throw new DeserializerException();
         }
         this.usuario = new Usuario.Builder()
@@ -36,5 +37,9 @@ public class UsuarioDeserializer {
 
     public Usuario getUsuario() {
         return usuario;
+    }
+
+    private void validate(String[] splitFields) throws DeserializerException {
+        if (!splitFields[EMAIL].matches(Regex.EMAIL_FORMAT)) throw new DeserializerException();
     }
 }

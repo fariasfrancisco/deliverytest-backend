@@ -1,12 +1,13 @@
 package com.safira.service.deserialize;
 
-import com.safira.common.DeserializerException;
+import com.safira.common.Regex;
+import com.safira.common.exceptions.DeserializerException;
 import com.safira.entities.Restaurante;
 import com.safira.entities.RestauranteLogin;
 import com.safira.service.PasswordService;
 
 /**
- * Created by Francisco on 08/03/2015.
+ * Class in charge of deserilizing recieved String and create Restaurante and RestauranteLogin objects out of it.
  */
 public class RestauranteDeserializer {
 
@@ -31,6 +32,7 @@ public class RestauranteDeserializer {
         if (splitFields.length != 6) {
             throw new DeserializerException();
         }
+        validate(splitFields);
         byte[] salt = PasswordService.getNextSalt();
         char[] password = splitFields[PASSWORD].toCharArray();
         this.restaurante = new Restaurante.Builder()
@@ -55,5 +57,12 @@ public class RestauranteDeserializer {
 
     public RestauranteLogin getRestauranteLogin() {
         return restauranteLogin;
+    }
+
+    private void validate(String[] splitFields) throws DeserializerException {
+        if (!splitFields[TELEFONO].matches(Regex.PHONE_FORMAT)) throw new DeserializerException();
+        if (!splitFields[EMAIL].matches(Regex.EMAIL_FORMAT)) throw new DeserializerException();
+        if (!splitFields[PASSWORD].matches(Regex.PASSWORD_FORMAT)) throw new DeserializerException();
+        if (!splitFields[USUARIO].matches(Regex.USERNAME_FORMAT)) throw new DeserializerException();
     }
 }

@@ -5,7 +5,7 @@ import com.safira.entities.Pedido;
 import java.util.List;
 
 /**
- * Created by Francisco on 26/02/2015.
+ * Class intended to simplify List storage of Pedido objects and ease jSon transmision.
  */
 public class Pedidos {
     private List<Pedido> pedidos;

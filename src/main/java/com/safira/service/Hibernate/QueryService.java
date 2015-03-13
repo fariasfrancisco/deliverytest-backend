@@ -1,7 +1,7 @@
 package com.safira.service.hibernate;
 
 /**
- * Created by Francisco on 25/02/2015.
+ * Class intended to manage all Hibernate logic and perform all required queries.
  */
 
 import com.safira.entities.*;
@@ -162,5 +162,4 @@ public class QueryService {
             }
         }
     }
-
 }
