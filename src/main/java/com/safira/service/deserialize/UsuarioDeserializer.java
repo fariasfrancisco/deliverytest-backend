@@ -27,6 +27,7 @@ public class UsuarioDeserializer {
         if (splitFields.length != 4) {
             throw new DeserializerException();
         }
+        if (!validate(splitFields)) throw new DeserializerException();
         this.usuario = new Usuario.Builder()
                 .withFacebookId(splitFields[FACEBOOK_ID])
                 .withNombre(splitFields[NOMBRE])
@@ -39,7 +40,8 @@ public class UsuarioDeserializer {
         return usuario;
     }
 
-    private void validate(String[] splitFields) throws DeserializerException {
-        if (!splitFields[EMAIL].matches(Regex.EMAIL_FORMAT)) throw new DeserializerException();
+    private boolean validate(String[] splitFields) throws DeserializerException {
+        if (!splitFields[EMAIL].matches(Regex.EMAIL_FORMAT)) return false;
+        return true;
     }
 }

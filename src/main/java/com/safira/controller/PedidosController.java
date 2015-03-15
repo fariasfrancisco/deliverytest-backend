@@ -69,8 +69,8 @@ public class PedidosController {
         }
     }
 
-    @RequestMapping(value = "/getPedidosByRestauranteId", method = RequestMethod.GET)
-    public ResponseEntity<Object> getPedidosByRestauranteId(@RequestParam(value = "id", required = true) String restauranteId) {
+    @RequestMapping(value = "/getPedidosByRestaurante", method = RequestMethod.GET)
+    public ResponseEntity<Object> getPedidosByRestaurante(@RequestParam(value = "id", required = true) String restauranteId) {
         QueryService queryService = QueryService.getQueryService();
         try {
             Pedidos pedidos;
@@ -90,8 +90,8 @@ public class PedidosController {
         }
     }
 
-    @RequestMapping(value = "/getPedidosByUsuarioId", method = RequestMethod.GET)
-    public ResponseEntity<Object> getPedidosByUsuarioId(@RequestParam(value = "id", required = true) String usuarioId) {
+    @RequestMapping(value = "/getPedidosByUsuario", method = RequestMethod.GET)
+    public ResponseEntity<Object> getPedidosByUsuario(@RequestParam(value = "id", required = true) String usuarioId) {
         QueryService queryService = QueryService.getQueryService();
         try {
             Pedidos pedidos;
@@ -112,8 +112,8 @@ public class PedidosController {
         }
     }
 
-    @RequestMapping(value = "/getPedidosByRestauranteIdAndUsuarioId", method = RequestMethod.GET)
-    public ResponseEntity<Object> getPedidosByRestauranteIdAndUsuarioId(
+    @RequestMapping(value = "/getPedidosByRestauranteAndUsuario", method = RequestMethod.GET)
+    public ResponseEntity<Object> getPedidosByRestauranteAndUsuario(
             @RequestParam(value = "resid", required = true) String restauranteId,
             @RequestParam(value = "usrid", required = true) String usuarioId) {
         QueryService queryService = QueryService.getQueryService();

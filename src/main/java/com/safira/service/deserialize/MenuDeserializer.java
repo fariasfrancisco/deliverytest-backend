@@ -33,7 +33,7 @@ public class MenuDeserializer {
         if (splitFields.length != 4) {
             throw new DeserializerException();
         }
-        validate(splitFields);
+        if (!validate(splitFields)) throw new DeserializerException();
         try {
             costo = new BigDecimal(splitFields[COSTO]);
             restaurante = queryService.getRestauranteById(Integer.valueOf(splitFields[RESTAURANTE_ID]));
@@ -52,8 +52,9 @@ public class MenuDeserializer {
         return menu;
     }
 
-    private void validate(String[] splitFields) throws DeserializerException {
-        if (!splitFields[COSTO].matches(Regex.MONEY_FORMAT)) throw new DeserializerException();
-        if (!splitFields[RESTAURANTE_ID].matches(Regex.ID_FORMAT)) throw new DeserializerException();
+    private boolean validate(String[] splitFields) throws DeserializerException {
+        if (!splitFields[COSTO].matches(Regex.MONEY_FORMAT)) return false;
+        if (!splitFields[RESTAURANTE_ID].matches(Regex.ID_FORMAT)) return false;
+        return true;
     }
 }

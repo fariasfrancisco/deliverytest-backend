@@ -144,5 +144,4 @@ public class Usuario implements Serializable {
                 ", apellido='" + apellido + '\'' +
                 '}';
     }
-
 }

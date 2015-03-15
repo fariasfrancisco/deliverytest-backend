@@ -32,7 +32,7 @@ public class RestauranteDeserializer {
         if (splitFields.length != 6) {
             throw new DeserializerException();
         }
-        validate(splitFields);
+        if (!validate(splitFields)) throw new DeserializerException();
         byte[] salt = PasswordService.getNextSalt();
         char[] password = splitFields[PASSWORD].toCharArray();
         this.restaurante = new Restaurante.Builder()
@@ -59,10 +59,11 @@ public class RestauranteDeserializer {
         return restauranteLogin;
     }
 
-    private void validate(String[] splitFields) throws DeserializerException {
-        if (!splitFields[TELEFONO].matches(Regex.PHONE_FORMAT)) throw new DeserializerException();
-        if (!splitFields[EMAIL].matches(Regex.EMAIL_FORMAT)) throw new DeserializerException();
-        if (!splitFields[PASSWORD].matches(Regex.PASSWORD_FORMAT)) throw new DeserializerException();
-        if (!splitFields[USUARIO].matches(Regex.USERNAME_FORMAT)) throw new DeserializerException();
+    private boolean validate(String[] splitFields) throws DeserializerException {
+        if (!splitFields[TELEFONO].matches(Regex.PHONE_FORMAT)) return false;
+        if (!splitFields[EMAIL].matches(Regex.EMAIL_FORMAT)) return false;
+        if (!splitFields[PASSWORD].matches(Regex.PASSWORD_FORMAT)) return false;
+        if (!splitFields[USUARIO].matches(Regex.USERNAME_FORMAT)) return false;
+        return true;
     }
 }
