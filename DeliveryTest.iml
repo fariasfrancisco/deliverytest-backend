@@ -74,5 +74,6 @@
     <orderEntry type="library" exported="" name="Gradle: org.apache.logging.log4j:log4j-api:2.2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.apache.logging.log4j:log4j-core:2.2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.mockito:mockito-all:1.10.19" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: xml-apis:xml-apis:2.0.2" level="project" />
   </component>
 </module>
