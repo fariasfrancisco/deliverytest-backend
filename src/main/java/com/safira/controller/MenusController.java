@@ -3,7 +3,7 @@ package com.safira.controller;
 import com.safira.common.exceptions.DeserializerException;
 import com.safira.domain.Menus;
 import com.safira.domain.SerializedObject;
-import com.safira.entities.Menu;
+import com.safira.domain.entities.Menu;
 import com.safira.service.deserialize.MenuDeserializer;
 import com.safira.service.hibernate.QueryService;
 import com.safira.service.log.MenusXMLWriter;
@@ -48,21 +48,15 @@ public class MenusController {
         }
     }
 
-    @RequestMapping(value = "/getMenuById", method = RequestMethod.GET)
-    public ResponseEntity<Object> getMenuById(@RequestParam(value = "id", required = true, defaultValue = "0") String id) {
+    @RequestMapping(value = "/getMenuByUuid", method = RequestMethod.GET)
+    public ResponseEntity<Object> getMenuById(@RequestParam(value = "uuid", required = true) String uuid) {
         QueryService queryService = QueryService.getQueryService();
         try {
-            int menuid;
-            try {
-                menuid = Integer.valueOf(id);
-            } catch (NumberFormatException e) {
-                menuid = 0;
-            }
             Menu menu;
             try {
-                menu = queryService.getMenuById(menuid);
+                menu = queryService.getMenuByUuid(uuid);
             } catch (Exception e) {
-                menuErrorLogger.error("An error occured when retrieving Menus with id = " + id, e);
+                menuErrorLogger.error("An error occured when retrieving Menus with uuid = " + uuid, e);
                 return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return new ResponseEntity<>(menu, HttpStatus.OK);
@@ -72,24 +66,18 @@ public class MenusController {
     }
 
     @RequestMapping(value = "/getMenusByRestaurante", method = RequestMethod.GET)
-    public ResponseEntity<Object> getMenusByRestaurante(@RequestParam(value = "id", required = true, defaultValue = "0") String id) {
+    public ResponseEntity<Object> getMenusByRestaurante(@RequestParam(value = "uuid", required = true) String uuid) {
         QueryService queryService = QueryService.getQueryService();
         try {
-            int restauranteId;
-            try {
-                restauranteId = Integer.valueOf(id);
-            } catch (NumberFormatException e) {
-                restauranteId = 0;
-            }
             Menus menus;
             try {
-                menus = new Menus(queryService.getMenusByRestauranteId(restauranteId));
+                menus = new Menus(queryService.getMenusByRestauranteUuid(uuid));
                 if (menus.getMenus().isEmpty()) {
-                    menuWarnLogger.warn("No Menus found with restauranteId = " + id);
+                    menuWarnLogger.warn("No Menus found with restauranteUUID = " + uuid);
                     return new ResponseEntity<>(menus, HttpStatus.NOT_FOUND);
                 }
             } catch (Exception e) {
-                menuErrorLogger.error("An error occured when retrieving Menus with restauranteId = " + id, e);
+                menuErrorLogger.error("An error occured when retrieving Menus with restauranteUUID = " + uuid, e);
                 return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return new ResponseEntity<>(menus, HttpStatus.OK);
@@ -99,25 +87,19 @@ public class MenusController {
     }
 
     @RequestMapping(value = "/getMenusByPedido", method = RequestMethod.GET)
-    public ResponseEntity<Object> getMenusByPedido(@RequestParam(value = "id", required = true, defaultValue = "0") String id) {
+    public ResponseEntity<Object> getMenusByPedido(@RequestParam(value = "uuid", required = true) String uuid) {
         QueryService queryService = QueryService.getQueryService();
         try {
-            int pedidoId;
-            try {
-                pedidoId = Integer.valueOf(id);
-            } catch (NumberFormatException e) {
-                pedidoId = 0;
-            }
             Menus menus;
             try {
 
-                menus = new Menus(queryService.getMenusByPedidoId(pedidoId));
+                menus = new Menus(queryService.getMenusByPedidoUuid(uuid));
                 if (menus.getMenus().isEmpty()) {
-                    menuWarnLogger.warn("No Menus found with pedidoId = " + id);
+                    menuWarnLogger.warn("No Menus found with pedidoUUID = " + uuid);
                     return new ResponseEntity<>(menus, HttpStatus.NOT_FOUND);
                 }
             } catch (Exception e) {
-                menuErrorLogger.error("An error occured when retrieving Menus with pedidoId = " + id, e);
+                menuErrorLogger.error("An error occured when retrieving Menus with pedidoUUID = " + uuid, e);
                 return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return new ResponseEntity<>(menus, HttpStatus.OK);

@@ -1,6 +1,6 @@
 package com.safira.service.log;
 
-import com.safira.entities.Usuario;
+import com.safira.domain.entities.Usuario;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;

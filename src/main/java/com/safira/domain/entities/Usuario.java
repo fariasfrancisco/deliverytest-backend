@@ -1,28 +1,37 @@
-package com.safira.entities;
+package com.safira.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.safira.domain.entity.ModelEntity;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
-
-import static javax.persistence.GenerationType.IDENTITY;
+import java.util.UUID;
 
 @Entity
 @Table(name = "usuarios")
-public class Usuario implements Serializable {
-    private int id;
+public class Usuario extends ModelEntity {
+
     private String facebookId;
     private String email;
     private String nombre;
     private String apellido;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
     private Set<Pedido> pedidos = new HashSet<>(0);
 
     public Usuario() {
+        this(UUID.randomUUID());
+    }
+
+    public Usuario(UUID uuid) {
+        super(uuid);
     }
 
     public Usuario(Builder builder) {
+        super(UUID.randomUUID());
         this.facebookId = builder.facebookId;
         this.email = builder.email;
         this.nombre = builder.nombre;
@@ -35,18 +44,6 @@ public class Usuario implements Serializable {
         }
     }
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "usuario_id", unique = true, nullable = false)
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @Column(name = "facebook_id", nullable = false, unique = true)
     public String getFacebookId() {
         return facebookId;
     }
@@ -55,7 +52,6 @@ public class Usuario implements Serializable {
         this.facebookId = facebookId;
     }
 
-    @Column(name = "email", nullable = false, length = 50, unique = true)
     public String getEmail() {
         return email;
     }
@@ -64,7 +60,6 @@ public class Usuario implements Serializable {
         this.email = email;
     }
 
-    @Column(name = "nombre", nullable = false, length = 50)
     public String getNombre() {
         return nombre;
     }
@@ -73,7 +68,6 @@ public class Usuario implements Serializable {
         this.nombre = nombre;
     }
 
-    @Column(name = "apellido", nullable = false, length = 50)
     public String getApellido() {
         return apellido;
     }
@@ -82,8 +76,6 @@ public class Usuario implements Serializable {
         this.apellido = apellido;
     }
 
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
     public Set<Pedido> getPedidos() {
         return pedidos;
     }
@@ -132,16 +124,5 @@ public class Usuario implements Serializable {
         public Usuario build() {
             return new Usuario(this);
         }
-    }
-
-    @Override
-    public String toString() {
-        return "Usuario{" +
-                "id=" + id +
-                ", facebookId='" + facebookId + '\'' +
-                ", email='" + email + '\'' +
-                ", nombre='" + nombre + '\'' +
-                ", apellido='" + apellido + '\'' +
-                '}';
     }
 }

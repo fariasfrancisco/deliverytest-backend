@@ -1,8 +1,8 @@
 package com.safira.controller;
 
 import com.safira.domain.SerializedObject;
-import com.safira.entities.Menu;
-import com.safira.entities.Restaurante;
+import com.safira.domain.entities.Menu;
+import com.safira.domain.entities.Restaurante;
 import com.safira.service.hibernate.QueryService;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by Francisco on 10/03/2015.
@@ -44,7 +43,7 @@ public class MenusControllerTest {
 
     @Test
     public void shouldGenerateMenuObject() {
-        /*when(queryServiceMock.getRestauranteById(0)).thenReturn(restauranteMock);
+        /*when(queryServiceMock.getRestauranteByUuid(0)).thenReturn(restauranteMock);
         ResponseEntity<Object> result = menusController.registerMenu(serializedObjectStub);
         assertEquals(responseEntityStub,result);*/
     }

@@ -1,11 +1,11 @@
 package com.safira.service.deserialize;
 
-import com.safira.common.Regex;
 import com.safira.common.exceptions.DeserializerException;
-import com.safira.entities.Menu;
-import com.safira.entities.Pedido;
-import com.safira.entities.Restaurante;
-import com.safira.entities.Usuario;
+import com.safira.domain.entities.Menu;
+import com.safira.domain.entities.Pedido;
+import com.safira.domain.entities.Restaurante;
+import com.safira.domain.entities.Usuario;
+import com.safira.service.Validator;
 import com.safira.service.hibernate.QueryService;
 
 import java.time.LocalDateTime;
@@ -19,7 +19,7 @@ public class PedidoDeserializer {
 
     /**
      * Desired jSon format:
-     * {"serializedObject":"CALLE;NUMERO;PISO;DEPARTARMENTO;TELEFONO;FACEBOOK_ID;RESTAURANTE_ID;MENU_ID&...&MENU_ID"}
+     * {"serializedObject":"CALLE;NUMERO;PISO;DEPARTARMENTO;TELEFONO;USUARIO_UUID;RESTAURANTE_ID;MENU_UUID&...&MENU_UUID"}
      */
 
     private static final String FIELD_SEPARATOR = ";";
@@ -29,8 +29,8 @@ public class PedidoDeserializer {
     private static final int PISO = 2;
     private static final int DEPARTARMENTO = 3;
     private static final int TELEFONO = 4;
-    private static final int FACEBOOK_ID = 5;
-    private static final int RESTAURANTE_ID = 6;
+    private static final int USUARIO_UUID = 5;
+    private static final int RESTAURANTE_UUID = 6;
     private static final int MENUS = 7;
 
     private Pedido pedido;
@@ -44,14 +44,18 @@ public class PedidoDeserializer {
             throw new DeserializerException();
         }
         String[] splitMenus = splitFields[MENUS].split(MENU_SEPARATOR);
-        if (!validate(splitFields, splitMenus)) throw new DeserializerException();
+        if (!Validator.validatePedido(splitFields[NUMERO],
+                splitFields[TELEFONO],
+                splitFields[USUARIO_UUID],
+                splitFields[RESTAURANTE_UUID],
+                splitMenus)) throw new DeserializerException();
         try {
-            restaurante = queryService.getRestauranteById(Integer.valueOf(splitFields[RESTAURANTE_ID]));
-            usuario = queryService.getUsuario(splitFields[FACEBOOK_ID]);
+            restaurante = queryService.getRestauranteByUuid(splitFields[RESTAURANTE_UUID]);
+            usuario = queryService.getUsuarioByUuid(splitFields[USUARIO_UUID]);
             Menu menu;
-            for (String menuId : splitMenus) {
-                menu = queryService.getMenuById(Integer.valueOf(menuId));
-                if (restaurante.getId() != menu.getRestaurante().getId()) {
+            for (String menuUUID : splitMenus) {
+                menu = queryService.getMenuByUuid(menuUUID);
+                if (restaurante.getUuid() != menu.getRestaurante().getUuid()) {
                     throw new DeserializerException();
                 }
                 menus.add(menu);
@@ -74,15 +78,5 @@ public class PedidoDeserializer {
 
     public Pedido getPedido() {
         return pedido;
-    }
-
-    private boolean validate(String[] splitFields, String[] splitMenus) {
-        if (!splitFields[NUMERO].matches(Regex.NUMBER_FORMAT)) return false;
-        if (!splitFields[TELEFONO].matches(Regex.PHONE_FORMAT)) return false;
-        if (!splitFields[RESTAURANTE_ID].matches(Regex.ID_FORMAT)) return false;
-        for (String menuId : splitMenus) {
-            if (!menuId.matches(Regex.ID_FORMAT)) return false;
-        }
-        return true;
     }
 }

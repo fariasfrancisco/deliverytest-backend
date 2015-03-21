@@ -3,7 +3,7 @@ package com.safira.controller;
 import com.safira.common.exceptions.DeserializerException;
 import com.safira.common.exceptions.LoginException;
 import com.safira.domain.SerializedObject;
-import com.safira.entities.Usuario;
+import com.safira.domain.entities.Usuario;
 import com.safira.service.deserialize.UsuarioDeserializer;
 import com.safira.service.hibernate.QueryService;
 import com.safira.service.log.UsuarioXMLWriter;
@@ -49,17 +49,17 @@ public class UsuariosController {
     }
 
     @RequestMapping(value = "/loginUsuario", method = RequestMethod.GET)
-    public ResponseEntity<Object> loginUsuario(@RequestParam(value = "fbid", required = true) String facebookId) {
+    public ResponseEntity<Object> loginUsuario(@RequestParam(value = "uuid", required = true) String uuid) {
         QueryService queryService = QueryService.getQueryService();
         try {
             Usuario usuario;
             try {
-                usuario = queryService.getUsuario(facebookId);
+                usuario = queryService.getUsuarioByUuid(uuid);
             } catch (IndexOutOfBoundsException e) {
-                usuarioWarnLogger.warn("Failed attempt to login with facebookId = " + facebookId);
+                usuarioWarnLogger.warn("Failed attempt to login with uuid = " + uuid);
                 return new ResponseEntity<>(new LoginException(e), HttpStatus.NOT_FOUND);
             } catch (Exception e) {
-                usuarioErrorLogger.error("An error ocurred when loging in Usuario with facebookId = " + facebookId, e);
+                usuarioErrorLogger.error("An error ocurred when loging in Usuario with uuid = " + uuid, e);
                 return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             usuarioLogger.info("Successful login with id = " + usuario.getId());

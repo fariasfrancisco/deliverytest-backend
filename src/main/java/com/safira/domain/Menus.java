@@ -1,6 +1,6 @@
 package com.safira.domain;
 
-import com.safira.entities.Menu;
+import com.safira.domain.entities.Menu;
 
 import java.util.List;
 

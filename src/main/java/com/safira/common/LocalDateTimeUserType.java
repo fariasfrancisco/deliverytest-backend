@@ -1,4 +1,4 @@
-package com.safira.service.hibernate;
+package com.safira.common;
 
 /**
  * Class aquired externally in order to add LocalDateTime support for Hibernate 4/JPA

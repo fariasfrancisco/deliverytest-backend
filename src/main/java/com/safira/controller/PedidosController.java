@@ -3,7 +3,7 @@ package com.safira.controller;
 import com.safira.common.exceptions.DeserializerException;
 import com.safira.domain.Pedidos;
 import com.safira.domain.SerializedObject;
-import com.safira.entities.Pedido;
+import com.safira.domain.entities.Pedido;
 import com.safira.service.deserialize.PedidoDeserializer;
 import com.safira.service.hibernate.QueryService;
 import com.safira.service.log.PedidosXMLWriter;
@@ -49,18 +49,18 @@ public class PedidosController {
         }
     }
 
-    @RequestMapping(value = "/getPedidoById", method = RequestMethod.GET)
-    public ResponseEntity<Object> getPedidoById(@RequestParam(value = "id", required = true) String id) {
+    @RequestMapping(value = "/getPedidoByUuid", method = RequestMethod.GET)
+    public ResponseEntity<Object> getPedidoById(@RequestParam(value = "uuid", required = true) String uuid) {
         QueryService queryService = QueryService.getQueryService();
         try {
             Pedido pedido;
             try {
-                pedido = queryService.getPedidoById(Integer.valueOf(id));
+                pedido = queryService.getPedidoByUuid(uuid);
             } catch (HibernateException e) {
-                pedidoErrorLogger.error("An error occured when retrieving Pedido with id = " + id, e);
+                pedidoErrorLogger.error("An error occured when retrieving Pedido with uuid = " + uuid, e);
                 return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
             } catch (IndexOutOfBoundsException e) {
-                pedidoWarnLogger.warn("No Pedido was found with id = " + id);
+                pedidoWarnLogger.warn("No Pedido was found with uuid = " + uuid);
                 return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return new ResponseEntity<>(pedido, HttpStatus.OK);
@@ -70,18 +70,18 @@ public class PedidosController {
     }
 
     @RequestMapping(value = "/getPedidosByRestaurante", method = RequestMethod.GET)
-    public ResponseEntity<Object> getPedidosByRestaurante(@RequestParam(value = "id", required = true) String restauranteId) {
+    public ResponseEntity<Object> getPedidosByRestaurante(@RequestParam(value = "uuid", required = true) String uuid) {
         QueryService queryService = QueryService.getQueryService();
         try {
             Pedidos pedidos;
             try {
-                pedidos = new Pedidos(queryService.getPedidosByRestauranteId(Integer.valueOf(restauranteId)));
+                pedidos = new Pedidos(queryService.getPedidosByRestaurante(uuid));
                 if (pedidos.getPedidos().isEmpty()) {
-                    pedidoWarnLogger.warn("No Pedido was found with restauranteId = " + restauranteId);
+                    pedidoWarnLogger.warn("No Pedido was found with restauranteUUID = " + uuid);
                     return new ResponseEntity<>(pedidos, HttpStatus.NOT_FOUND);
                 }
             } catch (HibernateException e) {
-                pedidoErrorLogger.error("An error occured when retrieving Pedido with restauranteId = " + restauranteId, e);
+                pedidoErrorLogger.error("An error occured when retrieving Pedido with restauranteUUID = " + uuid, e);
                 return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return new ResponseEntity<>(pedidos, HttpStatus.OK);
@@ -91,19 +91,18 @@ public class PedidosController {
     }
 
     @RequestMapping(value = "/getPedidosByUsuario", method = RequestMethod.GET)
-    public ResponseEntity<Object> getPedidosByUsuario(@RequestParam(value = "id", required = true) String usuarioId) {
+    public ResponseEntity<Object> getPedidosByUsuario(@RequestParam(value = "uuid", required = true) String uuid) {
         QueryService queryService = QueryService.getQueryService();
         try {
             Pedidos pedidos;
             try {
-                pedidos = new Pedidos(queryService.getPedidosByUsuarioId(Integer.valueOf(usuarioId)));
+                pedidos = new Pedidos(queryService.getPedidosByUsuario(uuid));
                 if (pedidos.getPedidos().isEmpty()) {
-                    pedidoWarnLogger.warn("No Pedido was found with usuarioId = " + usuarioId);
+                    pedidoWarnLogger.warn("No Pedido was found with usuarioUUID = " + uuid);
                     return new ResponseEntity<>(pedidos, HttpStatus.NOT_FOUND);
                 }
             } catch (HibernateException e) {
-                pedidoErrorLogger.error("An error occured when retrieving Pedido with" +
-                        " usuarioId = " + usuarioId, e);
+                pedidoErrorLogger.error("An error occured when retrieving Pedido with usuarioUUID = " + uuid, e);
                 return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return new ResponseEntity<>(pedidos, HttpStatus.OK);
@@ -114,23 +113,21 @@ public class PedidosController {
 
     @RequestMapping(value = "/getPedidosByRestauranteAndUsuario", method = RequestMethod.GET)
     public ResponseEntity<Object> getPedidosByRestauranteAndUsuario(
-            @RequestParam(value = "resid", required = true) String restauranteId,
-            @RequestParam(value = "usrid", required = true) String usuarioId) {
+            @RequestParam(value = "resuuid", required = true) String resuuid,
+            @RequestParam(value = "usruuid", required = true) String usruuid) {
         QueryService queryService = QueryService.getQueryService();
         try {
             Pedidos pedidos;
             try {
-                int rId = Integer.valueOf(restauranteId);
-                int uId = Integer.valueOf(usuarioId);
-                pedidos = new Pedidos(queryService.getPedidosByRestauranteIdAndUsuarioId(rId, uId));
+                pedidos = new Pedidos(queryService.getPedidosByRestauranteAndUsuario(resuuid, usruuid));
                 if (pedidos.getPedidos().isEmpty()) {
-                    pedidoWarnLogger.warn("No Pedido was found with usuarioId = " + usuarioId +
-                            " and  restauranteId = " + restauranteId);
+                    pedidoWarnLogger.warn("No Pedido was found with usuarioUUID = " + usruuid +
+                            " and  restauranteUUID = " + resuuid);
                     return new ResponseEntity<>(pedidos, HttpStatus.NOT_FOUND);
                 }
             } catch (HibernateException e) {
                 pedidoErrorLogger.error("An error occured when retrieving Pedido with" +
-                        " usuarioId = " + usuarioId + " and  restauranteId = " + restauranteId);
+                        " usuarioUUID = " + usruuid + " and  restauranteUUID = " + resuuid);
                 return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return new ResponseEntity<>(pedidos, HttpStatus.OK);

@@ -1,8 +1,8 @@
 package com.safira.service.deserialize;
 
-import com.safira.common.Regex;
 import com.safira.common.exceptions.DeserializerException;
-import com.safira.entities.Usuario;
+import com.safira.domain.entities.Usuario;
+import com.safira.service.Validator;
 
 /**
  * Class in charge of deserilizing recieved String and create an Usuario object out of it.
@@ -27,7 +27,7 @@ public class UsuarioDeserializer {
         if (splitFields.length != 4) {
             throw new DeserializerException();
         }
-        if (!validate(splitFields)) throw new DeserializerException();
+        if (!Validator.validateUsuario(splitFields[EMAIL])) throw new DeserializerException();
         this.usuario = new Usuario.Builder()
                 .withFacebookId(splitFields[FACEBOOK_ID])
                 .withNombre(splitFields[NOMBRE])
@@ -38,10 +38,5 @@ public class UsuarioDeserializer {
 
     public Usuario getUsuario() {
         return usuario;
-    }
-
-    private boolean validate(String[] splitFields) throws DeserializerException {
-        if (!splitFields[EMAIL].matches(Regex.EMAIL_FORMAT)) return false;
-        return true;
     }
 }

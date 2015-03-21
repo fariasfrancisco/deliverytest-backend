@@ -1,29 +1,37 @@
-package com.safira.entities;
+package com.safira.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-
-import static javax.persistence.GenerationType.IDENTITY;
+import java.util.UUID;
 
 @Entity
 @Table(name = "menus")
-public class Menu implements Serializable {
-    private int id;
+public class Menu extends ModelEntity {
     private String nombre;
     private String descripcion;
     private BigDecimal costo;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "restaurante_id", nullable = false)
     private Restaurante restaurante;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "menus")
     private Set<Pedido> pedidos = new HashSet<>();
 
     public Menu() {
+        this(UUID.randomUUID());
+    }
+
+    public Menu(UUID uuid) {
+        super(UUID.randomUUID());
     }
 
     public Menu(Builder builder) {
+        super(UUID.randomUUID());
         this.nombre = builder.nombre;
         this.descripcion = builder.descripcion;
         this.costo = builder.costo;
@@ -39,18 +47,6 @@ public class Menu implements Serializable {
         }
     }
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "menu_id", unique = true, nullable = false)
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @Column(name = "nombre", nullable = false, length = 50)
     public String getNombre() {
         return nombre;
     }
@@ -59,7 +55,6 @@ public class Menu implements Serializable {
         this.nombre = nombre;
     }
 
-    @Column(name = "descripcion", nullable = false, length = 255)
     public String getDescripcion() {
         return descripcion;
     }
@@ -68,7 +63,6 @@ public class Menu implements Serializable {
         this.descripcion = descripcion;
     }
 
-    @Column(name = "costo", nullable = false)
     public BigDecimal getCosto() {
         return costo;
     }
@@ -77,8 +71,6 @@ public class Menu implements Serializable {
         this.costo = costo;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "restaurante_id", nullable = false)
     public Restaurante getRestaurante() {
         return restaurante;
     }
@@ -90,8 +82,6 @@ public class Menu implements Serializable {
         }
     }
 
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "menus")
     public Set<Pedido> getPedidos() {
         return pedidos;
     }
@@ -135,16 +125,5 @@ public class Menu implements Serializable {
         public Menu build() {
             return new Menu(this);
         }
-    }
-
-    @Override
-    public String toString() {
-        return "Menu{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", descripcion='" + descripcion + '\'' +
-                ", costo=" + costo +
-                ", restauranteId =" + restaurante.getId() +
-                '}';
     }
 }

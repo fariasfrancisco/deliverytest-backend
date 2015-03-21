@@ -1,36 +1,54 @@
-package com.safira.entities;
+package com.safira.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.safira.domain.entity.ModelEntity;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-
-import static javax.persistence.GenerationType.IDENTITY;
+import java.util.UUID;
 
 @Entity
 @Table(name = "pedidos")
-public class Pedido implements Serializable {
+public class Pedido extends ModelEntity {
 
-    private int id;
     private String calle;
     private String numero;
     private String piso;
     private String departamento;
     private String telefono;
+
+    @Type(type = "com.safira.common.LocalDateTimeUserType")
     private LocalDateTime fecha;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "restaurante_id", nullable = false)
     private Restaurante restaurante;
-    private Set<Menu> menus = new HashSet<>(0);
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "menu_pedido", joinColumns = {
+            @JoinColumn(name = "pedido_id", nullable = false, updatable = false)
+    }, inverseJoinColumns = {
+            @JoinColumn(name = "menu_id", nullable = false, updatable = false)
+    })
+    private Set<Menu> menus = new HashSet<>();
 
     public Pedido() {
+        this(UUID.randomUUID());
+    }
+
+    public Pedido(UUID uuid) {
+        super(UUID.randomUUID());
     }
 
     public Pedido(Builder builder) {
+        super(UUID.randomUUID());
         this.calle = builder.calle;
         this.numero = builder.numero;
         this.piso = builder.piso;
@@ -53,18 +71,6 @@ public class Pedido implements Serializable {
         }
     }
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "pedido_id", unique = true, nullable = false)
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @Column(name = "calle", nullable = false, length = 50)
     public String getCalle() {
         return calle;
     }
@@ -73,7 +79,6 @@ public class Pedido implements Serializable {
         this.calle = calle;
     }
 
-    @Column(name = "numero", nullable = false, length = 5)
     public String getNumero() {
         return numero;
     }
@@ -82,7 +87,6 @@ public class Pedido implements Serializable {
         this.numero = numero;
     }
 
-    @Column(name = "piso", nullable = true, length = 3)
     public String getPiso() {
         return piso;
     }
@@ -91,7 +95,6 @@ public class Pedido implements Serializable {
         this.piso = piso;
     }
 
-    @Column(name = "departamento", nullable = true, length = 3)
     public String getDepartamento() {
         return departamento;
     }
@@ -100,7 +103,6 @@ public class Pedido implements Serializable {
         this.departamento = departamento;
     }
 
-    @Column(name = "telefono", nullable = false, length = 16)
     public String getTelefono() {
         return telefono;
     }
@@ -109,8 +111,6 @@ public class Pedido implements Serializable {
         this.telefono = telefono;
     }
 
-    @Type(type = "com.safira.service.hibernate.LocalDateTimeUserType")
-    @Column(name = "fecha", nullable = false)
     public LocalDateTime getFecha() {
         return fecha;
     }
@@ -119,8 +119,6 @@ public class Pedido implements Serializable {
         this.fecha = fecha;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "usuario_id", nullable = false)
     public Usuario getUsuario() {
         return usuario;
     }
@@ -132,8 +130,6 @@ public class Pedido implements Serializable {
         }
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "restaurante_id", nullable = false)
     public Restaurante getRestaurante() {
         return restaurante;
     }
@@ -145,13 +141,6 @@ public class Pedido implements Serializable {
         }
     }
 
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "menu_pedido", joinColumns = {
-            @JoinColumn(name = "pedido_id", nullable = false, updatable = false)
-    }, inverseJoinColumns = {
-            @JoinColumn(name = "menu_id", nullable = false, updatable = false)
-    })
     public Set<Menu> getMenus() {
         return menus;
     }
@@ -219,21 +208,6 @@ public class Pedido implements Serializable {
         public Pedido build() {
             return new Pedido(this);
         }
-    }
-
-    @Override
-    public String toString() {
-        return "Pedido{" +
-                "id=" + id +
-                ", calle='" + calle + '\'' +
-                ", numero='" + numero + '\'' +
-                ", piso='" + piso + '\'' +
-                ", departamento='" + departamento + '\'' +
-                ", telefono='" + telefono + '\'' +
-                ", fecha=" + fecha.toString() +
-                ", restauranteId=" + restaurante.getId() + '\'' +
-                ", usuarioId=" + usuario.getId() + '\'' +
-                '}';
     }
 
     public String costoTotalAsString() {

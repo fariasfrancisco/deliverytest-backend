@@ -1,48 +1,42 @@
-package com.safira.entities;
+package com.safira.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
+import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.*;
-import java.io.Serializable;
+import java.util.UUID;
 
 @Entity
 @Table(name = "restaurantes_login")
-public class RestauranteLogin implements Serializable {
+public class RestauranteLogin extends ModelEntity {
 
-    private int id;
     private String usuario;
     private byte[] hash;
     private byte[] salt;
+    private boolean verificado;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @PrimaryKeyJoinColumn
     private Restaurante restaurante;
 
-    public RestauranteLogin() {
+    public RestauranteLogin() {this(UUID.randomUUID());
+    }
+
+    public RestauranteLogin(UUID uuid) {
+        super(UUID.randomUUID());
     }
 
     public RestauranteLogin(Builder builder) {
+        super(UUID.randomUUID());
         this.usuario = builder.usuario;
         this.hash = builder.hash;
         this.salt = builder.salt;
+        this.verificado = builder.verificado;
         this.restaurante = builder.restaurante;
         if (restaurante != null && restaurante.getRestauranteLogin() != this) {
             restaurante.setRestauranteLogin(this);
         }
     }
 
-    @Id
-    @Column(name = "restaurante_id", unique = true, nullable = false)
-    @GeneratedValue(generator = "gen")
-    @GenericGenerator(name = "gen", strategy = "foreign", parameters = @Parameter(name = "property", value = "restaurante"))
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @Column(name = "usuario", nullable = false, length = 50, unique = true)
     public String getUsuario() {
         return usuario;
     }
@@ -51,8 +45,6 @@ public class RestauranteLogin implements Serializable {
         this.usuario = usuario;
     }
 
-    @JsonIgnore
-    @Column(name = "hash", nullable = false)
     public byte[] getHash() {
         return hash;
     }
@@ -61,8 +53,6 @@ public class RestauranteLogin implements Serializable {
         this.hash = hash;
     }
 
-    @JsonIgnore
-    @Column(name = "salt", nullable = false)
     public byte[] getSalt() {
         return salt;
     }
@@ -71,9 +61,14 @@ public class RestauranteLogin implements Serializable {
         this.salt = salt;
     }
 
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.EAGER)
-    @PrimaryKeyJoinColumn
+    public boolean getVerificado() {
+        return verificado;
+    }
+
+    public void setVerificado(boolean verificado) {
+        this.verificado = verificado;
+    }
+
     public Restaurante getRestaurante() {
         return restaurante;
     }
@@ -90,6 +85,7 @@ public class RestauranteLogin implements Serializable {
         private String usuario;
         private byte[] hash;
         private byte[] salt;
+        private boolean verificado;
         private Restaurante restaurante;
 
         public Builder withUsuario(String usuario) {
@@ -107,6 +103,11 @@ public class RestauranteLogin implements Serializable {
             return this;
         }
 
+        public Builder withVerificado(boolean verificado) {
+            this.verificado = verificado;
+            return this;
+        }
+
         public Builder withRestaurante(Restaurante restaurante) {
             this.restaurante = restaurante;
             return this;
@@ -116,15 +117,5 @@ public class RestauranteLogin implements Serializable {
             return new RestauranteLogin(this);
         }
 
-    }
-
-    @Override
-    public String toString() {
-        return "RestauranteLogin{" +
-                "id=" + id +
-                ", usuario='" + usuario + '\'' +
-                ", hash='" + hash + '\'' +
-                ", salt='" + salt + '\'' +
-                '}';
     }
 }

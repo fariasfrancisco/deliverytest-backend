@@ -4,7 +4,7 @@ package com.safira.service.hibernate;
  * Class intended to manage all Hibernate logic and perform all required queries.
  */
 
-import com.safira.entities.*;
+import com.safira.domain.entities.*;
 import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -35,7 +35,7 @@ public class QueryService {
         return queryService;
     }
 
-    public static void initialize(){
+    public static void initialize() {
         HibernateSessionService.createSessionFactory();
         HibernateSessionService.getSessionFactory().openSession();
     }
@@ -49,9 +49,9 @@ public class QueryService {
         return criteria.list();
     }
 
-    public Restaurante getRestauranteById(Integer id) throws HibernateException, IndexOutOfBoundsException {
+    public Restaurante getRestauranteByUuid(String uuid) throws HibernateException, IndexOutOfBoundsException {
         criteria = session.createCriteria(Restaurante.class)
-                .add(Restrictions.eq("id", id))
+                .add(Restrictions.eq("uuid", uuid))
                 .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return (Restaurante) criteria.list().get(0);
     }
@@ -63,60 +63,60 @@ public class QueryService {
         return (RestauranteLogin) criteria.list().get(0);
     }
 
-    public List getMenusByRestauranteId(Integer id) throws HibernateException {
+    public List getMenusByRestauranteUuid(String uuid) throws HibernateException {
         criteria = session.createCriteria(Menu.class)
-                .add(Restrictions.eq("restaurante.id", id))
+                .add(Restrictions.eq("restaurante.uuid", uuid))
                 .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }
 
-    public List getMenusByPedidoId(Integer id) throws HibernateException {
+    public List getMenusByPedidoUuid(String uuid) throws HibernateException {
         criteria = session.createCriteria(Menu.class)
                 .createAlias("pedidos", "p")
-                .add(Restrictions.eq("p.id", id))
+                .add(Restrictions.eq("p.uuid", uuid))
                 .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }
 
-    public Menu getMenuById(Integer id) throws HibernateException, IndexOutOfBoundsException {
+    public Menu getMenuByUuid(String uuid) throws HibernateException, IndexOutOfBoundsException {
         criteria = session.createCriteria(Menu.class)
-                .add(Restrictions.eq("id", id))
+                .add(Restrictions.eq("uuid", uuid))
                 .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return (Menu) criteria.list().get(0);
     }
 
-    public Usuario getUsuario(String facebookId) throws HibernateException, IndexOutOfBoundsException {
+    public Usuario getUsuarioByUuid(String uuid) throws HibernateException, IndexOutOfBoundsException {
         criteria = session.createCriteria(Usuario.class)
-                .add(Restrictions.eq("facebookId", facebookId))
+                .add(Restrictions.eq("uuid", uuid))
                 .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return (Usuario) criteria.list().get(0);
     }
 
-    public Pedido getPedidoById(Integer id) throws HibernateException, IndexOutOfBoundsException {
+    public Pedido getPedidoByUuid(String uuid) throws HibernateException, IndexOutOfBoundsException {
         criteria = session.createCriteria(Pedido.class)
-                .add(Restrictions.eq("id", id))
+                .add(Restrictions.eq("uuid", uuid))
                 .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return (Pedido) criteria.list().get(0);
     }
 
-    public List getPedidosByRestauranteIdAndUsuarioId(Integer restauranteid, Integer usuarioId) throws HibernateException {
+    public List getPedidosByRestauranteAndUsuario(String restauranteUUID, String usuarioUUID) throws HibernateException {
         criteria = session.createCriteria(Pedido.class)
-                .add(Restrictions.eq("restaurante.id", restauranteid))
-                .add(Restrictions.eq("usuario.id", usuarioId))
+                .add(Restrictions.eq("restaurante.uuid", restauranteUUID))
+                .add(Restrictions.eq("usuario.uuid", usuarioUUID))
                 .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }
 
-    public List getPedidosByRestauranteId(Integer id) throws HibernateException {
+    public List getPedidosByRestaurante(String uuid) throws HibernateException {
         criteria = session.createCriteria(Pedido.class)
-                .add(Restrictions.eq("restaurante.id", id))
+                .add(Restrictions.eq("restaurante.uuid", uuid))
                 .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }
 
-    public List getPedidosByUsuarioId(Integer id) throws HibernateException {
+    public List getPedidosByUsuario(String uuid) throws HibernateException {
         criteria = session.createCriteria(Pedido.class)
-                .add(Restrictions.eq("usuario.id", id))
+                .add(Restrictions.eq("usuario.uuid", uuid))
                 .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }

@@ -1,33 +1,44 @@
-package com.safira.entities;
+package com.safira.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
-import static javax.persistence.GenerationType.IDENTITY;
+import java.util.UUID;
 
 @Entity
 @Table(name = "restaurantes")
-public class Restaurante implements Serializable {
+public class Restaurante extends ModelEntity {
 
-    private int id;
     private String nombre;
-    private String direccion;
+    private String calle;
+    private String numero;
     private String telefono;
     private String email;
+
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "restaurante", cascade = CascadeType.ALL)
     private RestauranteLogin restauranteLogin;
-    private Set<Menu> menus = new HashSet<>(0);
-    private Set<Pedido> pedidos = new HashSet<>(0);
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
+    private Set<Menu> menus = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
+    private Set<Pedido> pedidos = new HashSet<>();
 
     public Restaurante() {
+        this(UUID.randomUUID());
+    }
+
+    public Restaurante(UUID uuid) {
+        super(UUID.randomUUID());
     }
 
     public Restaurante(Builder builder) {
+        super(UUID.randomUUID());
         this.nombre = builder.nombre;
-        this.direccion = builder.direccion;
+        this.calle = builder.calle;
+        this.numero = builder.numero;
         this.telefono = builder.telefono;
         this.email = builder.email;
         this.restauranteLogin = builder.restauranteLogin;
@@ -48,18 +59,6 @@ public class Restaurante implements Serializable {
         }
     }
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "restaurante_id", unique = true, nullable = false)
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @Column(name = "nombre", nullable = false, length = 50)
     public String getNombre() {
         return nombre;
     }
@@ -68,16 +67,22 @@ public class Restaurante implements Serializable {
         this.nombre = nombre;
     }
 
-    @Column(name = "direccion", nullable = false, length = 50, unique = true)
-    public String getDireccion() {
-        return direccion;
+    public String getCalle() {
+        return calle;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setCalle(String calle) {
+        this.calle = calle;
     }
 
-    @Column(name = "telefono", nullable = false, length = 16, unique = true)
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
     public String getTelefono() {
         return telefono;
     }
@@ -86,7 +91,6 @@ public class Restaurante implements Serializable {
         this.telefono = telefono;
     }
 
-    @Column(name = "email", nullable = false, length = 50)
     public String getEmail() {
         return email;
     }
@@ -95,7 +99,6 @@ public class Restaurante implements Serializable {
         this.email = email;
     }
 
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "restaurante", cascade = CascadeType.ALL)
     public RestauranteLogin getRestauranteLogin() {
         return restauranteLogin;
     }
@@ -107,8 +110,6 @@ public class Restaurante implements Serializable {
         }
     }
 
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
     public Set<Menu> getMenus() {
         return menus;
     }
@@ -122,8 +123,6 @@ public class Restaurante implements Serializable {
         }
     }
 
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
     public Set<Pedido> getPedidos() {
         return pedidos;
     }
@@ -138,9 +137,9 @@ public class Restaurante implements Serializable {
     }
 
     public static class Builder {
-
         private String nombre;
-        private String direccion;
+        private String calle;
+        private String numero;
         private String telefono;
         private String email;
         private RestauranteLogin restauranteLogin;
@@ -152,8 +151,13 @@ public class Restaurante implements Serializable {
             return this;
         }
 
-        public Builder withDireccion(String direccion) {
-            this.direccion = direccion;
+        public Builder withCalle(String calle) {
+            this.calle = calle;
+            return this;
+        }
+
+        public Builder withNumero(String numero) {
+            this.numero = numero;
             return this;
         }
 
@@ -186,17 +190,5 @@ public class Restaurante implements Serializable {
             return new Restaurante(this);
         }
 
-    }
-
-    @Override
-    public String toString() {
-        return "Restaurante{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", direccion='" + direccion + '\'' +
-                ", telefono='" + telefono + '\'' +
-                ", email='" + email + '\'' +
-                ", usuario='" + restauranteLogin.getUsuario() + '\'' +
-                '}';
     }
 }

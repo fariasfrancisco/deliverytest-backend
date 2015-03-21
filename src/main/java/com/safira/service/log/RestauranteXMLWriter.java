@@ -1,7 +1,7 @@
 package com.safira.service.log;
 
-import com.safira.entities.Restaurante;
-import com.safira.entities.RestauranteLogin;
+import com.safira.domain.entities.Restaurante;
+import com.safira.domain.entities.RestauranteLogin;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -18,7 +18,7 @@ public class RestauranteXMLWriter {
         Element nombre = root.addElement("Nombre")
                 .addText(restaurante.getNombre());
         Element direccion = root.addElement("Direccion")
-                .addText(restaurante.getDireccion());
+                .addText(restaurante.getCalle() + " " + restaurante.getNumero());
         Element telefono = root.addElement("Telefono")
                 .addText(restaurante.getTelefono());
         Element email = root.addElement("Email")

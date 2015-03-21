@@ -4,8 +4,8 @@ import com.safira.common.exceptions.DeserializerException;
 import com.safira.common.exceptions.LoginException;
 import com.safira.domain.Restaurantes;
 import com.safira.domain.SerializedObject;
-import com.safira.entities.Restaurante;
-import com.safira.entities.RestauranteLogin;
+import com.safira.domain.entities.Restaurante;
+import com.safira.domain.entities.RestauranteLogin;
 import com.safira.service.PasswordService;
 import com.safira.service.deserialize.RestauranteDeserializer;
 import com.safira.service.hibernate.QueryService;
@@ -74,7 +74,7 @@ public class RestaurantesController {
                     restauranteLogger.info("Failed attemp to log in with Usuario = " + username);
                     return new ResponseEntity<>(new LoginException(), HttpStatus.NOT_FOUND);
                 }
-                restaurante = queryService.getRestauranteById(restauranteLogin.getId());
+                restaurante = queryService.getRestauranteByUuid(restauranteLogin.getIdentifier());
             } catch (Exception e) {
                 restauranteErrorLogger.error("An error occured when retrieving Restaurante" +
                         " with usuario = " + username, e);
@@ -109,24 +109,18 @@ public class RestaurantesController {
         }
     }
 
-    @RequestMapping(value = "/getRestauranteById", method = RequestMethod.GET)
-    public ResponseEntity<Object> getRestauranteById(@RequestParam(value = "id", required = true, defaultValue = "0") String id) {
+    @RequestMapping(value = "/getRestauranteByUuid", method = RequestMethod.GET)
+    public ResponseEntity<Object> getRestauranteById(@RequestParam(value = "uuid", required = true, defaultValue = "0") String uuid) {
         QueryService queryService = QueryService.getQueryService();
         try {
-            int restauranteId;
-            try {
-                restauranteId = Integer.valueOf(id);
-            } catch (NumberFormatException e) {
-                restauranteId = 0;
-            }
             Restaurante restaurante;
             try {
-                restaurante = queryService.getRestauranteById(restauranteId);
+                restaurante = queryService.getRestauranteByUuid(uuid);
             } catch (IndexOutOfBoundsException e) {
-                restauranteWarnLogger.warn("No Restaurante found with id = " + id);
+                restauranteWarnLogger.warn("No Restaurante found with uuid = " + uuid);
                 return new ResponseEntity<>(e, HttpStatus.NOT_FOUND);
             } catch (Exception e) {
-                restauranteErrorLogger.error("An error occured when retrieving Restaurante with id = " + id, e);
+                restauranteErrorLogger.error("An error occured when retrieving Restaurante with uuid = " + uuid, e);
                 return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return new ResponseEntity<>(restaurante, HttpStatus.OK);
