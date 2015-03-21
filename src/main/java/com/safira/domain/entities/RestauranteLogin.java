@@ -18,7 +18,8 @@ public class RestauranteLogin extends ModelEntity {
     @PrimaryKeyJoinColumn
     private Restaurante restaurante;
 
-    public RestauranteLogin() {this(UUID.randomUUID());
+    public RestauranteLogin() {
+        this(UUID.randomUUID());
     }
 
     public RestauranteLogin(UUID uuid) {

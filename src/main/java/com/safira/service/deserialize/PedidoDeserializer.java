@@ -5,8 +5,11 @@ import com.safira.domain.entities.Menu;
 import com.safira.domain.entities.Pedido;
 import com.safira.domain.entities.Restaurante;
 import com.safira.domain.entities.Usuario;
+import com.safira.domain.repositories.MenuRepository;
+import com.safira.domain.repositories.RestauranteRepository;
+import com.safira.domain.repositories.UsuarioRepository;
 import com.safira.service.Validator;
-import com.safira.service.hibernate.QueryService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -33,9 +36,18 @@ public class PedidoDeserializer {
     private static final int RESTAURANTE_UUID = 6;
     private static final int MENUS = 7;
 
+    @Autowired
+    RestauranteRepository restauranteRepository;
+
+    @Autowired
+    UsuarioRepository usuarioRepository;
+
+    @Autowired
+    MenuRepository menuRepository;
+
     private Pedido pedido;
 
-    public PedidoDeserializer(String serializedPedido, QueryService queryService) throws DeserializerException {
+    public PedidoDeserializer(String serializedPedido) throws DeserializerException {
         Restaurante restaurante;
         Usuario usuario;
         Set<Menu> menus = new HashSet<>();
@@ -50,11 +62,11 @@ public class PedidoDeserializer {
                 splitFields[RESTAURANTE_UUID],
                 splitMenus)) throw new DeserializerException();
         try {
-            restaurante = queryService.getRestauranteByUuid(splitFields[RESTAURANTE_UUID]);
-            usuario = queryService.getUsuarioByUuid(splitFields[USUARIO_UUID]);
+            restaurante = restauranteRepository.findByUuid(splitFields[RESTAURANTE_UUID]);
+            usuario = usuarioRepository.findByUuid(splitFields[USUARIO_UUID]);
             Menu menu;
             for (String menuUUID : splitMenus) {
-                menu = queryService.getMenuByUuid(menuUUID);
+                menu = menuRepository.findByUuid(menuUUID);
                 if (restaurante.getUuid() != menu.getRestaurante().getUuid()) {
                     throw new DeserializerException();
                 }

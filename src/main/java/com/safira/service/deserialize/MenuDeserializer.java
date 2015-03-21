@@ -3,8 +3,9 @@ package com.safira.service.deserialize;
 import com.safira.common.exceptions.DeserializerException;
 import com.safira.domain.entities.Menu;
 import com.safira.domain.entities.Restaurante;
+import com.safira.domain.repositories.RestauranteRepository;
 import com.safira.service.Validator;
-import com.safira.service.hibernate.QueryService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 
@@ -24,9 +25,12 @@ public class MenuDeserializer {
     private static final int COSTO = 2;
     private static final int RESTAURANTE_UUID = 3;
 
+    @Autowired
+    RestauranteRepository repository;
+
     private Menu menu;
 
-    public MenuDeserializer(String serializedMenu, QueryService queryService) throws DeserializerException {
+    public MenuDeserializer(String serializedMenu) throws DeserializerException {
         Restaurante restaurante;
         BigDecimal costo;
         String[] splitFields = serializedMenu.split(FIELD_SEPARATOR);
@@ -37,7 +41,7 @@ public class MenuDeserializer {
             throw new DeserializerException();
         try {
             costo = new BigDecimal(splitFields[COSTO]);
-            restaurante = queryService.getRestauranteByUuid(splitFields[RESTAURANTE_UUID]);
+            restaurante = repository.findByUuid(splitFields[RESTAURANTE_UUID]);
         } catch (Exception e) {
             throw new DeserializerException();
         }
