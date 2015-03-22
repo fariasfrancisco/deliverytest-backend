@@ -1,5 +1,6 @@
 package com.safira.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.*;
@@ -11,18 +12,22 @@ import java.util.UUID;
 @Table(name = "restaurantes")
 public class Restaurante extends ModelEntity {
 
+    @Column(nullable = false, unique = true)
     private String nombre;
     private String calle;
     private String numero;
+    @Column(nullable = false, unique = true)
     private String telefono;
     private String email;
 
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "restaurante", cascade = CascadeType.ALL)
     private RestauranteLogin restauranteLogin;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
     private Set<Menu> menus = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
     private Set<Pedido> pedidos = new HashSet<>();
 

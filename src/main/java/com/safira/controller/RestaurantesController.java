@@ -55,7 +55,6 @@ public class RestaurantesController {
         restauranteLogger.info("Successfully registered Restaurante: \n"
                 + RestauranteXMLWriter.createDocument(restaurante, restauranteLogin).asXML());
         return new ResponseEntity<>(restaurante, HttpStatus.OK);
-
     }
 
     @RequestMapping(value = "/loginRestaurante", method = RequestMethod.POST)

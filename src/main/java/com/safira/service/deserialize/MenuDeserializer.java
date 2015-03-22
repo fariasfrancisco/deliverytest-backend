@@ -37,8 +37,7 @@ public class MenuDeserializer {
         if (splitFields.length != 4) {
             throw new DeserializerException();
         }
-        if (!Validator.validateMenu(splitFields[COSTO], splitFields[RESTAURANTE_UUID]))
-            throw new DeserializerException();
+        Validator.validateMenu(splitFields[COSTO], splitFields[RESTAURANTE_UUID]);
         try {
             costo = new BigDecimal(splitFields[COSTO]);
             restaurante = repository.findByUuid(splitFields[RESTAURANTE_UUID]);

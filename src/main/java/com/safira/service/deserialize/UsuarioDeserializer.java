@@ -27,7 +27,7 @@ public class UsuarioDeserializer {
         if (splitFields.length != 4) {
             throw new DeserializerException();
         }
-        if (!Validator.validateUsuario(splitFields[EMAIL])) throw new DeserializerException();
+        Validator.validateUsuario(splitFields[EMAIL]);
         this.usuario = new Usuario.Builder()
                 .withFacebookId(splitFields[FACEBOOK_ID])
                 .withNombre(splitFields[NOMBRE])

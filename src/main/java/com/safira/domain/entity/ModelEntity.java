@@ -15,7 +15,7 @@ import java.util.UUID;
 @MappedSuperclass
 public abstract class ModelEntity extends AbstractPersistable<Long> {
 
-    @Column(length = 36)
+    @Column(length = 36, nullable = false, unique = true)
     private String uuid;
 
     @Type(type = "com.safira.common.LocalDateTimeUserType")

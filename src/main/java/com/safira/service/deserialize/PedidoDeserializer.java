@@ -56,11 +56,11 @@ public class PedidoDeserializer {
             throw new DeserializerException();
         }
         String[] splitMenus = splitFields[MENUS].split(MENU_SEPARATOR);
-        if (!Validator.validatePedido(splitFields[NUMERO],
+        Validator.validatePedido(splitFields[NUMERO],
                 splitFields[TELEFONO],
                 splitFields[USUARIO_UUID],
                 splitFields[RESTAURANTE_UUID],
-                splitMenus)) throw new DeserializerException();
+                splitMenus);
         try {
             restaurante = restauranteRepository.findByUuid(splitFields[RESTAURANTE_UUID]);
             usuario = usuarioRepository.findByUuid(splitFields[USUARIO_UUID]);

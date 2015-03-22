@@ -1,5 +1,6 @@
 package com.safira.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.*;
@@ -19,6 +20,7 @@ public class Menu extends ModelEntity {
     @JoinColumn(name = "restaurante_id", nullable = false)
     private Restaurante restaurante;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "menus")
     private Set<Pedido> pedidos = new HashSet<>();
 

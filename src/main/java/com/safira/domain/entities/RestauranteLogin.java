@@ -1,5 +1,6 @@
 package com.safira.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.*;
@@ -9,11 +10,13 @@ import java.util.UUID;
 @Table(name = "restaurantes_login")
 public class RestauranteLogin extends ModelEntity {
 
+    @Column(nullable = false, unique = true)
     private String usuario;
     private byte[] hash;
     private byte[] salt;
     private boolean verificado;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.EAGER)
     @PrimaryKeyJoinColumn
     private Restaurante restaurante;

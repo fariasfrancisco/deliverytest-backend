@@ -19,7 +19,7 @@ public class RestauranteDeserializer {
     private static final String FIELD_SEPARATOR = ";";
     private static final int NOMBRE = 0;
     private static final int CALLE = 1;
-    private static final int NUMERO = 1;
+    private static final int NUMERO = 2;
     private static final int TELEFONO = 3;
     private static final int EMAIL = 4;
     private static final int USUARIO = 5;
@@ -30,15 +30,14 @@ public class RestauranteDeserializer {
 
     public RestauranteDeserializer(String serializedRestaurante) throws DeserializerException {
         String[] splitFields = serializedRestaurante.split(FIELD_SEPARATOR);
-        if (splitFields.length != 6) {
+        if (splitFields.length != 7) {
             throw new DeserializerException();
         }
-        if (!Validator.validateRestaurante(splitFields[USUARIO],
+        Validator.validateRestaurante(splitFields[USUARIO],
                 splitFields[PASSWORD],
                 splitFields[NUMERO],
                 splitFields[TELEFONO],
-                splitFields[EMAIL]))
-            throw new DeserializerException();
+                splitFields[EMAIL]);
         byte[] salt = PasswordService.getNextSalt();
         char[] password = splitFields[PASSWORD].toCharArray();
         this.restaurante = new Restaurante.Builder()

@@ -1,11 +1,9 @@
 package com.safira.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.safira.domain.entity.ModelEntity;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -14,11 +12,14 @@ import java.util.UUID;
 @Table(name = "usuarios")
 public class Usuario extends ModelEntity {
 
+    @Column(nullable = false, unique = true)
     private String facebookId;
+    @Column(nullable = false, unique = true)
     private String email;
     private String nombre;
     private String apellido;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
     private Set<Pedido> pedidos = new HashSet<>(0);
 
