@@ -1,5 +1,6 @@
 package com.safira.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Type;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 import org.springframework.util.Assert;
@@ -18,6 +19,7 @@ public abstract class ModelEntity extends AbstractPersistable<Long> {
     @Column(length = 36, nullable = false, unique = true)
     private String uuid;
 
+    @JsonIgnore
     @Type(type = "com.safira.common.LocalDateTimeUserType")
     private LocalDateTime timeCreated;
 

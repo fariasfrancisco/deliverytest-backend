@@ -1,8 +1,5 @@
 package com.safira.controller;
 
-import com.safira.common.exceptions.DeserializerException;
-import com.safira.common.exceptions.JPAQueryException;
-import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.Menus;
 import com.safira.domain.SerializedObject;
 import com.safira.domain.entities.Menu;
@@ -12,7 +9,6 @@ import com.safira.domain.repositories.MenuRepository;
 import com.safira.domain.repositories.PedidoRepository;
 import com.safira.domain.repositories.RestauranteRepository;
 import com.safira.service.deserialize.MenuDeserializer;
-import com.safira.service.log.MenusXMLWriter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,10 +19,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Controller dedicated to serving json RESTful webservice for Menus
+ * Created by francisco on 22/03/15.
  */
 @RestController
-public class MenusController {
+public class MenuController {
 
     @Autowired
     MenuRepository menuRepository;
@@ -48,17 +44,14 @@ public class MenusController {
         try {
             MenuDeserializer menuDeserializer = new MenuDeserializer(serializedMenu, restauranteRepository);
             menu = menuDeserializer.getMenu();
-        } catch (DeserializerException | ValidatorException | JPAQueryException e) {
-            menuErrorLogger.error("An error occured when deserializing recieved String", e);
+        } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
         }
         try {
             menuRepository.save(menu);
         } catch (Exception e) {
-            menuErrorLogger.error("An error occured wehen registering Menu", e);
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        menuLogger.info("Successfully registered Menu: \n" + MenusXMLWriter.createDocument(menu).asXML());
         return new ResponseEntity<>(menu, HttpStatus.OK);
     }
 
@@ -68,7 +61,6 @@ public class MenusController {
         try {
             menu = menuRepository.findByUuid(uuid);
         } catch (Exception e) {
-            menuErrorLogger.error("An error occured when retrieving Menus with uuid = " + uuid, e);
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(menu, HttpStatus.OK);
@@ -81,11 +73,9 @@ public class MenusController {
             Restaurante restaurante = restauranteRepository.findByUuid(uuid);
             menus = new Menus(menuRepository.findByRestaurante(restaurante));
             if (menus.getMenus().isEmpty()) {
-                menuWarnLogger.warn("No Menus found with restauranteUUID = " + uuid);
                 return new ResponseEntity<>(menus, HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            menuErrorLogger.error("An error occured when retrieving Menus with restauranteUUID = " + uuid, e);
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(menus, HttpStatus.OK);
@@ -100,11 +90,9 @@ public class MenusController {
             pedidos.add(pedido);
             menus = new Menus(menuRepository.findByPedidos(pedidos));
             if (menus.getMenus().isEmpty()) {
-                menuWarnLogger.warn("No Menus found with pedidoUUID = " + uuid);
                 return new ResponseEntity<>(menus, HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            menuErrorLogger.error("An error occured when retrieving Menus with pedidoUUID = " + uuid, e);
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(menus, HttpStatus.OK);

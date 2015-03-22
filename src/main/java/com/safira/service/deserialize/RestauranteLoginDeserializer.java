@@ -34,7 +34,7 @@ public class RestauranteLoginDeserializer {
         if (!PasswordService.isExpectedPassword(password, restauranteLogin.getSalt(), restauranteLogin.getHash()))
             throw new LoginException("The password recieved does not match sored password.");
         restaurante = restauranteRepository.findByUuid(restauranteLogin.getIdentifier());
-        if (restaurante != null) throw new JPAQueryException("Desearilization Failed. " +
+        if (restaurante == null) throw new JPAQueryException("Desearilization Failed. " +
                 "No restaurante found with uuid = " + restauranteLogin.getIdentifier());
     }
 

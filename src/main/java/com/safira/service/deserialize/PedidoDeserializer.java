@@ -68,11 +68,13 @@ public class PedidoDeserializer {
             menu = menuRepository.findByUuid(menuUuid);
             if (menu == null) throw new JPAQueryException("Desearilization Failed. " +
                     "No menu found with uuid = " + menuUuid);
-            if (restaurante.getUuid() != menu.getRestaurante().getUuid())
+            if (!restaurante.getIdentifier().equals(menu.getRestaurante().getIdentifier())) {
+                System.out.println(restaurante.getIdentifier());
+                System.out.println(menu.getRestaurante().getIdentifier());
                 throw new InconsistencyException("Deserialization Failed. " +
                         "menu.restaurante uuid recieved was " + menuUuid +
                         ". Expected " + splitFields[RESTAURANTE_UUID]);
-
+            }
             menus.add(menu);
         }
         this.pedido = new Pedido.Builder()

@@ -1,9 +1,5 @@
 package com.safira.controller;
 
-import com.safira.common.exceptions.DeserializerException;
-import com.safira.common.exceptions.JPAQueryException;
-import com.safira.common.exceptions.LoginException;
-import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.Restaurantes;
 import com.safira.domain.SerializedObject;
 import com.safira.domain.entities.Restaurante;
@@ -19,10 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Controller dedicated to serving json RESTful webservice for Restaurantes
+ * Created by francisco on 22/03/15.
  */
 @RestController
-public class RestaurantesController {
+public class RestauranteController {
 
     @Autowired
     RestauranteRepository restauranteRepository;
@@ -42,10 +38,11 @@ public class RestaurantesController {
             RestauranteDeserializer restauranteDeserializer = new RestauranteDeserializer(serializedRestaurante);
             restaurante = restauranteDeserializer.getRestaurante();
             restauranteLogin = restauranteDeserializer.getRestauranteLogin();
-        } catch (DeserializerException | ValidatorException e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
         }
         try {
+            restauranteRepository.save(restaurante);
             restauranteLoginRepository.save(restauranteLogin);
         } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -61,7 +58,7 @@ public class RestaurantesController {
             RestauranteLoginDeserializer restauranteLoginDeserializer =
                     new RestauranteLoginDeserializer(serializedRestauranteLogin, restauranteLoginRepository, restauranteRepository);
             restaurante = restauranteLoginDeserializer.getRestaurante();
-        } catch (DeserializerException | JPAQueryException | LoginException e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(restaurante, HttpStatus.OK);
