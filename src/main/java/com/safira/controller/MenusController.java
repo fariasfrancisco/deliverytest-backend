@@ -1,6 +1,8 @@
 package com.safira.controller;
 
 import com.safira.common.exceptions.DeserializerException;
+import com.safira.common.exceptions.JPAQueryException;
+import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.Menus;
 import com.safira.domain.SerializedObject;
 import com.safira.domain.entities.Menu;
@@ -42,11 +44,11 @@ public class MenusController {
     @RequestMapping(value = "/registerMenu", method = RequestMethod.POST)
     public ResponseEntity<Object> registerMenu(@RequestBody SerializedObject serializedObject) {
         Menu menu;
+        String serializedMenu = serializedObject.getSerializedObject();
         try {
-            String serializedMenu = serializedObject.getSerializedObject();
-            MenuDeserializer menuDeserializer = new MenuDeserializer(serializedMenu);
+            MenuDeserializer menuDeserializer = new MenuDeserializer(serializedMenu, restauranteRepository);
             menu = menuDeserializer.getMenu();
-        } catch (DeserializerException e) {
+        } catch (DeserializerException | ValidatorException | JPAQueryException e) {
             menuErrorLogger.error("An error occured when deserializing recieved String", e);
             return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
         }

@@ -1,6 +1,7 @@
 package com.safira.service.deserialize;
 
 import com.safira.common.exceptions.DeserializerException;
+import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.entities.Restaurante;
 import com.safira.domain.entities.RestauranteLogin;
 import com.safira.service.PasswordService;
@@ -28,10 +29,10 @@ public class RestauranteDeserializer {
     private final Restaurante restaurante;
     private final RestauranteLogin restauranteLogin;
 
-    public RestauranteDeserializer(String serializedRestaurante) throws DeserializerException {
+    public RestauranteDeserializer(String serializedRestaurante) throws DeserializerException, ValidatorException {
         String[] splitFields = serializedRestaurante.split(FIELD_SEPARATOR);
         if (splitFields.length != 7) {
-            throw new DeserializerException();
+            throw new DeserializerException("The serializedObject recieved does not meet the length requirements.");
         }
         Validator.validateRestaurante(splitFields[USUARIO],
                 splitFields[PASSWORD],

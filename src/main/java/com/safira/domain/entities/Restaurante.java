@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "restaurantes")
 public class Restaurante extends ModelEntity {
 
     @Column(nullable = false, unique = true)
@@ -20,6 +19,7 @@ public class Restaurante extends ModelEntity {
     private String telefono;
     private String email;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "restaurante", cascade = CascadeType.ALL)
     private RestauranteLogin restauranteLogin;
 
@@ -194,6 +194,17 @@ public class Restaurante extends ModelEntity {
         public Restaurante build() {
             return new Restaurante(this);
         }
+    }
 
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("Restaurante{");
+        sb.append("nombre='").append(nombre).append('\'');
+        sb.append(", calle='").append(calle).append('\'');
+        sb.append(", numero='").append(numero).append('\'');
+        sb.append(", telefono='").append(telefono).append('\'');
+        sb.append(", email='").append(email).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

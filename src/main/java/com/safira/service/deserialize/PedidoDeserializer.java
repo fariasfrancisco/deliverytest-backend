@@ -1,6 +1,9 @@
 package com.safira.service.deserialize;
 
 import com.safira.common.exceptions.DeserializerException;
+import com.safira.common.exceptions.InconsistencyException;
+import com.safira.common.exceptions.JPAQueryException;
+import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.entities.Menu;
 import com.safira.domain.entities.Pedido;
 import com.safira.domain.entities.Restaurante;
@@ -9,7 +12,6 @@ import com.safira.domain.repositories.MenuRepository;
 import com.safira.domain.repositories.RestauranteRepository;
 import com.safira.domain.repositories.UsuarioRepository;
 import com.safira.service.Validator;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -36,44 +38,42 @@ public class PedidoDeserializer {
     private static final int RESTAURANTE_UUID = 6;
     private static final int MENUS = 7;
 
-    @Autowired
-    RestauranteRepository restauranteRepository;
-
-    @Autowired
-    UsuarioRepository usuarioRepository;
-
-    @Autowired
-    MenuRepository menuRepository;
-
     private Pedido pedido;
 
-    public PedidoDeserializer(String serializedPedido) throws DeserializerException {
+    public PedidoDeserializer(String serializedPedido,
+                              RestauranteRepository restauranteRepository,
+                              UsuarioRepository usuarioRepository,
+                              MenuRepository menuRepository)
+            throws DeserializerException, ValidatorException, JPAQueryException, InconsistencyException {
         Restaurante restaurante;
         Usuario usuario;
         Set<Menu> menus = new HashSet<>();
         String[] splitFields = serializedPedido.split(FIELD_SEPARATOR);
-        if (splitFields.length < 8) {
-            throw new DeserializerException();
-        }
+        if (splitFields.length < 8)
+            throw new DeserializerException("The serializedObject recieved does not meet the length requirements.");
         String[] splitMenus = splitFields[MENUS].split(MENU_SEPARATOR);
         Validator.validatePedido(splitFields[NUMERO],
                 splitFields[TELEFONO],
                 splitFields[USUARIO_UUID],
                 splitFields[RESTAURANTE_UUID],
                 splitMenus);
-        try {
-            restaurante = restauranteRepository.findByUuid(splitFields[RESTAURANTE_UUID]);
-            usuario = usuarioRepository.findByUuid(splitFields[USUARIO_UUID]);
-            Menu menu;
-            for (String menuUUID : splitMenus) {
-                menu = menuRepository.findByUuid(menuUUID);
-                if (restaurante.getUuid() != menu.getRestaurante().getUuid()) {
-                    throw new DeserializerException();
-                }
-                menus.add(menu);
-            }
-        } catch (Exception e) {
-            throw new DeserializerException();
+        restaurante = restauranteRepository.findByUuid(splitFields[RESTAURANTE_UUID]);
+        if (restaurante == null) throw new JPAQueryException("Desearilization Failed. " +
+                "No restaurante found with uuid = " + splitFields[RESTAURANTE_UUID]);
+        usuario = usuarioRepository.findByUuid(splitFields[USUARIO_UUID]);
+        if (usuario == null) throw new JPAQueryException("Desearilization Failed. " +
+                "No usuario found with uuid = " + splitFields[USUARIO_UUID]);
+        Menu menu;
+        for (String menuUuid : splitMenus) {
+            menu = menuRepository.findByUuid(menuUuid);
+            if (menu == null) throw new JPAQueryException("Desearilization Failed. " +
+                    "No menu found with uuid = " + menuUuid);
+            if (restaurante.getUuid() != menu.getRestaurante().getUuid())
+                throw new InconsistencyException("Deserialization Failed. " +
+                        "menu.restaurante uuid recieved was " + menuUuid +
+                        ". Expected " + splitFields[RESTAURANTE_UUID]);
+
+            menus.add(menu);
         }
         this.pedido = new Pedido.Builder()
                 .withCalle(splitFields[CALLE])

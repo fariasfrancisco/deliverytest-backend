@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "pedidos")
 public class Pedido extends ModelEntity {
 
     private String calle;
@@ -32,7 +31,7 @@ public class Pedido extends ModelEntity {
     private Restaurante restaurante;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "menu_pedido", joinColumns = {
+    @JoinTable(name = "Menu_Pedido", joinColumns = {
             @JoinColumn(name = "pedido_id", nullable = false, updatable = false)
     }, inverseJoinColumns = {
             @JoinColumn(name = "menu_id", nullable = false, updatable = false)
@@ -216,5 +215,19 @@ public class Pedido extends ModelEntity {
             total = total.add(menu.getCosto());
         }
         return total.toString();
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("Pedido{");
+        sb.append("calle='").append(calle).append('\'');
+        sb.append(", numero='").append(numero).append('\'');
+        sb.append(", piso='").append(piso).append('\'');
+        sb.append(", departamento='").append(departamento).append('\'');
+        sb.append(", telefono='").append(telefono).append('\'');
+        sb.append(", fecha=").append(fecha);
+        sb.append(", menus=").append(menus);
+        sb.append('}');
+        return sb.toString();
     }
 }

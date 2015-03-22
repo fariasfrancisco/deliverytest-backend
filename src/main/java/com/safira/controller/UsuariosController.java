@@ -2,6 +2,7 @@ package com.safira.controller;
 
 import com.safira.common.exceptions.DeserializerException;
 import com.safira.common.exceptions.LoginException;
+import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.SerializedObject;
 import com.safira.domain.entities.Usuario;
 import com.safira.domain.repositories.UsuarioRepository;
@@ -33,7 +34,7 @@ public class UsuariosController {
         try {
             UsuarioDeserializer usuarioDeserializer = new UsuarioDeserializer(serializedUsuario);
             usuario = usuarioDeserializer.getUsuario();
-        } catch (DeserializerException e) {
+        } catch (DeserializerException | ValidatorException e) {
             usuarioErrorLogger.error("An error occured when deserializing recieved String", e);
             return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
         }

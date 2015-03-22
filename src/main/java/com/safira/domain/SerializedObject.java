@@ -16,8 +16,4 @@ public class SerializedObject {
     public String getSerializedObject() {
         return serializedObject;
     }
-
-    public void setSerializedObject(String serializedObject) {
-        this.serializedObject = serializedObject;
-    }
 }

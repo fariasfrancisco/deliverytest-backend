@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "usuarios")
 public class Usuario extends ModelEntity {
 
     @Column(nullable = false, unique = true)
@@ -125,5 +124,16 @@ public class Usuario extends ModelEntity {
         public Usuario build() {
             return new Usuario(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("Usuario{");
+        sb.append("facebookId='").append(facebookId).append('\'');
+        sb.append(", email='").append(email).append('\'');
+        sb.append(", nombre='").append(nombre).append('\'');
+        sb.append(", apellido='").append(apellido).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

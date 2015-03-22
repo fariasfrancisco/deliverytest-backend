@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "menus")
 public class Menu extends ModelEntity {
     private String nombre;
     private String descripcion;
@@ -127,5 +126,15 @@ public class Menu extends ModelEntity {
         public Menu build() {
             return new Menu(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("Menu{");
+        sb.append("nombre='").append(nombre).append('\'');
+        sb.append(", descripcion='").append(descripcion).append('\'');
+        sb.append(", costo=").append(costo);
+        sb.append('}');
+        return sb.toString();
     }
 }

@@ -1,11 +1,15 @@
 package com.safira.controller;
 
 import com.safira.common.exceptions.DeserializerException;
+import com.safira.common.exceptions.InconsistencyException;
+import com.safira.common.exceptions.JPAQueryException;
+import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.Pedidos;
 import com.safira.domain.SerializedObject;
 import com.safira.domain.entities.Pedido;
 import com.safira.domain.entities.Restaurante;
 import com.safira.domain.entities.Usuario;
+import com.safira.domain.repositories.MenuRepository;
 import com.safira.domain.repositories.PedidoRepository;
 import com.safira.domain.repositories.RestauranteRepository;
 import com.safira.domain.repositories.UsuarioRepository;
@@ -33,6 +37,9 @@ public class PedidosController {
     @Autowired
     UsuarioRepository usuarioRepository;
 
+    @Autowired
+    MenuRepository menuRepository;
+
     final static Logger pedidoLogger = Logger.getLogger("pedidoLogger");
     final static Logger pedidoWarnLogger = Logger.getLogger("pedidoWarnLogger");
     final static Logger pedidoErrorLogger = Logger.getLogger("pedidoExceptionLogger");
@@ -40,11 +47,12 @@ public class PedidosController {
     @RequestMapping(value = "/registerPedido", method = RequestMethod.POST)
     public ResponseEntity<Object> registerPedido(@RequestBody SerializedObject serializedObject) {
         Pedido pedido;
+        String serializedPedido = serializedObject.getSerializedObject();
         try {
-            String serializedPedido = serializedObject.getSerializedObject();
-            PedidoDeserializer pedidoDeserializer = new PedidoDeserializer(serializedPedido);
+            PedidoDeserializer pedidoDeserializer =
+                    new PedidoDeserializer(serializedPedido, restauranteRepository, usuarioRepository, menuRepository);
             pedido = pedidoDeserializer.getPedido();
-        } catch (DeserializerException e) {
+        } catch (DeserializerException | ValidatorException | JPAQueryException | InconsistencyException e) {
             pedidoErrorLogger.error("An error occured when deserializing recieved String", e);
             return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
         }

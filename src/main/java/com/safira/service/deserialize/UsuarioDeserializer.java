@@ -1,6 +1,7 @@
 package com.safira.service.deserialize;
 
 import com.safira.common.exceptions.DeserializerException;
+import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.entities.Usuario;
 import com.safira.service.Validator;
 
@@ -22,11 +23,10 @@ public class UsuarioDeserializer {
 
     private final Usuario usuario;
 
-    public UsuarioDeserializer(String serializedUsuario) throws DeserializerException {
+    public UsuarioDeserializer(String serializedUsuario) throws DeserializerException, ValidatorException {
         String[] splitFields = serializedUsuario.split(FIELD_SEPARATOR);
-        if (splitFields.length != 4) {
-            throw new DeserializerException();
-        }
+        if (splitFields.length != 4)
+            throw new DeserializerException("The serializedObject recieved does not meet the length requirements.");
         Validator.validateUsuario(splitFields[EMAIL]);
         this.usuario = new Usuario.Builder()
                 .withFacebookId(splitFields[FACEBOOK_ID])

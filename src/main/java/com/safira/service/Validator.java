@@ -1,6 +1,6 @@
 package com.safira.service;
 
-import com.safira.common.exceptions.DeserializerException;
+import com.safira.common.exceptions.ValidatorException;
 import org.apache.commons.validator.routines.EmailValidator;
 
 /**
@@ -15,17 +15,17 @@ public class Validator {
     public static final String PASSWORD_FORMAT = "^([0-9]*[a-z]*[A-Z]*[@#$%^&+=]*)(?!.*\")(?=\\S+$).{6,50}$";
     public static final String NUMBER_FORMAT = "^\\d{1,5}$";
 
-    public static void validateUsuario(String email) throws DeserializerException {
+    public static void validateUsuario(String email) throws ValidatorException {
         if (!validateEmail(email))
-            throw new DeserializerException("The format in the field email(" + email + ") is invalid");
+            throw new ValidatorException("The format in the field email(" + email + ") is invalid");
 
     }
 
-    public static void validateMenu(String costo, String restauranteUuid) throws DeserializerException {
+    public static void validateMenu(String costo, String restauranteUuid) throws ValidatorException {
         if (!validateUuid(restauranteUuid))
-            throw new DeserializerException("The format in the field restauranteUuid(" + restauranteUuid + ") is invalid");
+            throw new ValidatorException("The format in the field restauranteUuid(" + restauranteUuid + ") is invalid");
         if (!validateMoney(costo))
-            throw new DeserializerException("The format in the field restauranteUUid(" + costo + ") is invalid");
+            throw new ValidatorException("The format in the field restauranteUUid(" + costo + ") is invalid");
 
     }
 
@@ -33,34 +33,34 @@ public class Validator {
                                            String password,
                                            String numero,
                                            String telefono,
-                                           String email) throws DeserializerException {
+                                           String email) throws ValidatorException {
         if (!validateUsername(usuario))
-            throw new DeserializerException("The format in the field usuario(" + usuario + ") is invalid");
+            throw new ValidatorException("The format in the field usuario(" + usuario + ") is invalid");
         if (!validateNumber(numero))
-            throw new DeserializerException("The format in the field numero(" + numero + ") is invalid");
+            throw new ValidatorException("The format in the field numero(" + numero + ") is invalid");
         if (!validatePhone(telefono))
-            throw new DeserializerException("The format in the field telefono(" + telefono + ") is invalid");
+            throw new ValidatorException("The format in the field telefono(" + telefono + ") is invalid");
         if (!validateEmail(email))
-            throw new DeserializerException("The format in the field email(" + email + ") is invalid");
+            throw new ValidatorException("The format in the field email(" + email + ") is invalid");
         if (!validatePassword(password))
-            throw new DeserializerException("The format in the field password(" + password + ") is invalid");
+            throw new ValidatorException("The format in the field password(" + password + ") is invalid");
     }
 
     public static void validatePedido(String numero,
                                       String telefono,
                                       String usuarioUuid,
                                       String restauranteUuid,
-                                      String[] menuUuids) throws DeserializerException {
+                                      String[] menuUuids) throws ValidatorException {
         if (!validateNumber(numero))
-            throw new DeserializerException("The format in the field numero(" + numero + ") is invalid");
+            throw new ValidatorException("The format in the field numero(" + numero + ") is invalid");
         if (!validatePhone(telefono))
-            throw new DeserializerException("The format in the field telefono(" + telefono + ") is invalid");
+            throw new ValidatorException("The format in the field telefono(" + telefono + ") is invalid");
         if (!validateUuid(usuarioUuid))
-            throw new DeserializerException("The format in the field usuarioUuid(" + usuarioUuid + ") is invalid");
+            throw new ValidatorException("The format in the field usuarioUuid(" + usuarioUuid + ") is invalid");
         if (!validateUuid(restauranteUuid))
-            throw new DeserializerException("The format in the field restauranteUuid(" + restauranteUuid + ") is invalid");
+            throw new ValidatorException("The format in the field restauranteUuid(" + restauranteUuid + ") is invalid");
         if (!validateMenuArray(menuUuids))
-            throw new DeserializerException("The format in the field menuUuids(" + menuUuids + ") is invalid");
+            throw new ValidatorException("The format in the field menuUuids is invalid");
     }
 
     private static boolean validateMenuArray(String[] menuUuids) {
