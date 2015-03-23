@@ -5,10 +5,11 @@ package com.safira.common.exceptions;
  */
 public class DeserializerException extends Exception {
     public DeserializerException() {
+        super("Unexpected exception found when trying to deserialize recieved String");
     }
 
     public DeserializerException(String message) {
-        super("Unexpected exception found when trying to deserialize recieved String");
+        super(message);
     }
 
     public DeserializerException(Throwable cause) {

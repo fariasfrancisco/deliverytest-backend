@@ -1,6 +1,7 @@
 package com.safira.domain;
 
-import com.safira.entities.Restaurante;
+import com.safira.domain.entities.Restaurante;
+import com.safira.common.SafiraUtils;
 
 import java.util.List;
 
@@ -10,8 +11,8 @@ import java.util.List;
 public class Restaurantes {
     private List<Restaurante> restaurantes;
 
-    public Restaurantes(List<Restaurante> restaurantes) {
-        this.restaurantes = restaurantes;
+    public Restaurantes(Iterable<Restaurante> restaurantes) {
+        this.restaurantes = SafiraUtils.toList(restaurantes);
     }
 
     public Restaurante get(int i) {

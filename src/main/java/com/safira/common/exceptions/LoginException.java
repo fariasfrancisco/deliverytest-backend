@@ -5,10 +5,11 @@ package com.safira.common.exceptions;
  */
 public class LoginException extends Exception {
     public LoginException() {
+        super("Unexpected exception found when trying to login");
     }
 
     public LoginException(String message) {
-        super("Unexpected exception found when trying to login");
+        super(message);
     }
 
     public LoginException(Throwable cause) {

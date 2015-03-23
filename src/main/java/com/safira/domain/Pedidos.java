@@ -1,6 +1,6 @@
 package com.safira.domain;
 
-import com.safira.entities.Pedido;
+import com.safira.domain.entities.Pedido;
 
 import java.util.List;
 
