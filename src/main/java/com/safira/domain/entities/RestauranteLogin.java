@@ -1,5 +1,6 @@
 package com.safira.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.safira.domain.entity.ModelEntity;
 
@@ -11,13 +12,11 @@ public class RestauranteLogin extends ModelEntity {
 
     @Column(nullable = false, unique = true)
     private String usuario;
-    @JsonIgnore
     private byte[] hash;
-    @JsonIgnore
     private byte[] salt;
     private boolean verificado;
 
-    @JsonIgnore
+    @JsonBackReference
     @OneToOne(fetch = FetchType.EAGER)
     @PrimaryKeyJoinColumn
     private Restaurante restaurante;
@@ -27,7 +26,7 @@ public class RestauranteLogin extends ModelEntity {
     }
 
     public RestauranteLogin(UUID uuid) {
-        super(UUID.randomUUID());
+        super(uuid);
     }
 
     public RestauranteLogin(Builder builder) {
@@ -121,30 +120,5 @@ public class RestauranteLogin extends ModelEntity {
         public RestauranteLogin build() {
             return new RestauranteLogin(this);
         }
-    }
-
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("RestauranteLogin{");
-        sb.append("usuario='").append(usuario).append('\'');
-        sb.append(", hash=");
-        if (hash == null) sb.append("null");
-        else {
-            sb.append('[');
-            for (int i = 0; i < hash.length; ++i)
-                sb.append(i == 0 ? "" : ", ").append(hash[i]);
-            sb.append(']');
-        }
-        sb.append(", salt=");
-        if (salt == null) sb.append("null");
-        else {
-            sb.append('[');
-            for (int i = 0; i < salt.length; ++i)
-                sb.append(i == 0 ? "" : ", ").append(salt[i]);
-            sb.append(']');
-        }
-        sb.append(", verificado=").append(verificado);
-        sb.append('}');
-        return sb.toString();
     }
 }

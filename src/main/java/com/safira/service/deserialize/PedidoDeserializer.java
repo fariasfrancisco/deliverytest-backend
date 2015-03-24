@@ -4,10 +4,8 @@ import com.safira.common.exceptions.DeserializerException;
 import com.safira.common.exceptions.InconsistencyException;
 import com.safira.common.exceptions.JPAQueryException;
 import com.safira.common.exceptions.ValidatorException;
-import com.safira.domain.entities.Menu;
-import com.safira.domain.entities.Pedido;
-import com.safira.domain.entities.Restaurante;
-import com.safira.domain.entities.Usuario;
+import com.safira.domain.entities.*;
+import com.safira.domain.repositories.DireccionRepository;
 import com.safira.domain.repositories.MenuRepository;
 import com.safira.domain.repositories.RestauranteRepository;
 import com.safira.domain.repositories.UsuarioRepository;
@@ -24,43 +22,42 @@ public class PedidoDeserializer {
 
     /**
      * Desired jSon format:
-     * {"serializedObject":"CALLE;NUMERO;PISO;DEPARTARMENTO;TELEFONO;USUARIO_UUID;RESTAURANTE_ID;MENU_UUID&...&MENU_UUID"}
+     * {"serializedObject":"DIRECCION_UUID;TELEFONO;USUARIO_UUID;RESTAURANTE_ID;MENU_UUID&...&MENU_UUID"}
      */
 
     private static final String FIELD_SEPARATOR = ";";
     private static final String MENU_SEPARATOR = "&";
-    private static final int CALLE = 0;
-    private static final int NUMERO = 1;
-    private static final int PISO = 2;
-    private static final int DEPARTARMENTO = 3;
-    private static final int TELEFONO = 4;
-    private static final int USUARIO_UUID = 5;
-    private static final int RESTAURANTE_UUID = 6;
-    private static final int MENUS = 7;
+    private static final int DIRECCION_UUID = 0;
+    private static final int TELEFONO = 1;
+    private static final int USUARIO_UUID = 2;
+    private static final int RESTAURANTE_UUID = 3;
+    private static final int MENUS = 4;
 
     private Pedido pedido;
 
     public PedidoDeserializer(String serializedPedido,
                               RestauranteRepository restauranteRepository,
                               UsuarioRepository usuarioRepository,
-                              MenuRepository menuRepository)
+                              MenuRepository menuRepository,
+                              DireccionRepository direccionRepository)
             throws DeserializerException, ValidatorException, JPAQueryException, InconsistencyException {
-        Restaurante restaurante;
-        Usuario usuario;
         Set<Menu> menus = new HashSet<>();
         String[] splitFields = serializedPedido.split(FIELD_SEPARATOR);
-        if (splitFields.length < 8)
+        if (splitFields.length < 5)
             throw new DeserializerException("The serializedObject recieved does not meet the length requirements.");
         String[] splitMenus = splitFields[MENUS].split(MENU_SEPARATOR);
-        Validator.validatePedido(splitFields[NUMERO],
+        Validator.validatePedido(splitFields[DIRECCION_UUID],
                 splitFields[TELEFONO],
                 splitFields[USUARIO_UUID],
                 splitFields[RESTAURANTE_UUID],
                 splitMenus);
-        restaurante = restauranteRepository.findByUuid(splitFields[RESTAURANTE_UUID]);
+        Direccion direccion = direccionRepository.findByUuid(splitFields[DIRECCION_UUID]);
+        if (direccion == null) throw new JPAQueryException("Desearilization Failed. " +
+                "No direccion found with uuid = " + splitFields[DIRECCION_UUID]);
+        Restaurante restaurante = restauranteRepository.findByUuid(splitFields[RESTAURANTE_UUID]);
         if (restaurante == null) throw new JPAQueryException("Desearilization Failed. " +
                 "No restaurante found with uuid = " + splitFields[RESTAURANTE_UUID]);
-        usuario = usuarioRepository.findByUuid(splitFields[USUARIO_UUID]);
+        Usuario usuario = usuarioRepository.findByUuid(splitFields[USUARIO_UUID]);
         if (usuario == null) throw new JPAQueryException("Desearilization Failed. " +
                 "No usuario found with uuid = " + splitFields[USUARIO_UUID]);
         Menu menu;
@@ -78,10 +75,7 @@ public class PedidoDeserializer {
             menus.add(menu);
         }
         this.pedido = new Pedido.Builder()
-                .withCalle(splitFields[CALLE])
-                .withNumero(splitFields[NUMERO])
-                .withPiso(splitFields[PISO])
-                .withDepartamento(splitFields[DEPARTARMENTO])
+                .withDireccion(direccion)
                 .withTelefono(splitFields[TELEFONO])
                 .withFecha(LocalDateTime.now())
                 .withRestaurante(restaurante)

@@ -1,6 +1,8 @@
 package com.safira.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.*;
@@ -19,15 +21,15 @@ public class Restaurante extends ModelEntity {
     private String telefono;
     private String email;
 
-    @JsonIgnore
+    @JsonManagedReference
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "restaurante", cascade = CascadeType.ALL)
     private RestauranteLogin restauranteLogin;
 
-    @JsonIgnore
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
     private Set<Menu> menus = new HashSet<>();
 
-    @JsonIgnore
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
     private Set<Pedido> pedidos = new HashSet<>();
 
@@ -36,7 +38,7 @@ public class Restaurante extends ModelEntity {
     }
 
     public Restaurante(UUID uuid) {
-        super(UUID.randomUUID());
+        super(uuid);
     }
 
     public Restaurante(Builder builder) {
@@ -47,20 +49,15 @@ public class Restaurante extends ModelEntity {
         this.telefono = builder.telefono;
         this.email = builder.email;
         this.restauranteLogin = builder.restauranteLogin;
-        if (restauranteLogin != null && restauranteLogin.getRestaurante() != this) {
+        if (restauranteLogin != null && restauranteLogin.getRestaurante() != this)
             restauranteLogin.setRestaurante(this);
-        }
         this.menus = builder.menus;
         for (Menu menu : menus) {
-            if (menu.getRestaurante() != this) {
-                menu.setRestaurante(this);
-            }
+            if (menu.getRestaurante() != this) menu.setRestaurante(this);
         }
         this.pedidos = builder.pedidos;
         for (Pedido pedido : pedidos) {
-            if (pedido.getRestaurante() != this) {
-                pedido.setRestaurante(this);
-            }
+            if (pedido.getRestaurante() != this) pedido.setRestaurante(this);
         }
     }
 
@@ -110,9 +107,7 @@ public class Restaurante extends ModelEntity {
 
     public void setRestauranteLogin(RestauranteLogin restauranteLogin) {
         this.restauranteLogin = restauranteLogin;
-        if (restauranteLogin.getRestaurante() != this) {
-            restauranteLogin.setRestaurante(this);
-        }
+        if (restauranteLogin.getRestaurante() != this) restauranteLogin.setRestaurante(this);
     }
 
     public Set<Menu> getMenus() {
@@ -122,9 +117,7 @@ public class Restaurante extends ModelEntity {
     public void setMenus(Set<Menu> menus) {
         this.menus = menus;
         for (Menu menu : menus) {
-            if (menu.getRestaurante() != this) {
-                menu.setRestaurante(this);
-            }
+            if (menu.getRestaurante() != this) menu.setRestaurante(this);
         }
     }
 
@@ -135,9 +128,7 @@ public class Restaurante extends ModelEntity {
     public void setPedidos(Set<Pedido> pedidos) {
         this.pedidos = pedidos;
         for (Pedido pedido : pedidos) {
-            if (pedido.getRestaurante() != this) {
-                pedido.setRestaurante(this);
-            }
+            if (pedido.getRestaurante() != this) pedido.setRestaurante(this);
         }
     }
 
@@ -194,17 +185,5 @@ public class Restaurante extends ModelEntity {
         public Restaurante build() {
             return new Restaurante(this);
         }
-    }
-
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("Restaurante{");
-        sb.append("nombre='").append(nombre).append('\'');
-        sb.append(", calle='").append(calle).append('\'');
-        sb.append(", numero='").append(numero).append('\'');
-        sb.append(", telefono='").append(telefono).append('\'');
-        sb.append(", email='").append(email).append('\'');
-        sb.append('}');
-        return sb.toString();
     }
 }

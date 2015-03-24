@@ -1,6 +1,6 @@
 package com.safira.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.*;
@@ -18,9 +18,17 @@ public class Usuario extends ModelEntity {
     private String nombre;
     private String apellido;
 
-    @JsonIgnore
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
-    private Set<Pedido> pedidos = new HashSet<>(0);
+    private Set<Pedido> pedidos = new HashSet<>();
+
+    @JsonBackReference
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
+    private Set<Direccion> direcciones = new HashSet<>();
+
+    @JsonBackReference
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "usuario", cascade = CascadeType.ALL)
+    private Favoritos favoritos;
 
     public Usuario() {
         this(UUID.randomUUID());
@@ -40,6 +48,12 @@ public class Usuario extends ModelEntity {
         for (Pedido pedido : pedidos) {
             if (pedido.getUsuario() != this) {
                 pedido.setUsuario(this);
+            }
+        }
+        this.direcciones = builder.direcciones;
+        for (Direccion direccion : direcciones) {
+            if (direccion.getUsuario() != this) {
+                direccion.setUsuario(this);
             }
         }
     }
@@ -80,6 +94,14 @@ public class Usuario extends ModelEntity {
         return pedidos;
     }
 
+    public Favoritos getFavoritos() {
+        return favoritos;
+    }
+
+    public void setFavoritos(Favoritos favoritos) {
+        this.favoritos = favoritos;
+    }
+
     public void setPedidos(Set<Pedido> pedidos) {
         this.pedidos = pedidos;
         for (Pedido pedido : pedidos) {
@@ -89,12 +111,27 @@ public class Usuario extends ModelEntity {
         }
     }
 
+    public Set<Direccion> getDirecciones() {
+        return direcciones;
+    }
+
+    public void setDirecciones(Set<Direccion> direcciones) {
+        this.direcciones = direcciones;
+        for (Direccion direccion : direcciones) {
+            if (direccion.getUsuario() != this) {
+                direccion.setUsuario(this);
+            }
+        }
+    }
+
     public static class Builder {
         private String facebookId;
         private String email;
         private String nombre;
         private String apellido;
-        private Set<Pedido> pedidos = new HashSet<>(0);
+        private Set<Pedido> pedidos = new HashSet<>();
+        private Set<Direccion> direcciones = new HashSet<>();
+        private Favoritos favoritos;
 
         public Builder withFacebookId(String facebookId) {
             this.facebookId = facebookId;
@@ -121,19 +158,18 @@ public class Usuario extends ModelEntity {
             return this;
         }
 
+        public Builder withDirecciones(Set<Direccion> direcciones) {
+            this.direcciones = direcciones;
+            return this;
+        }
+
+        public Builder withFavoritos(Favoritos favoritos) {
+            this.favoritos = favoritos;
+            return this;
+        }
+
         public Usuario build() {
             return new Usuario(this);
         }
-    }
-
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("Usuario{");
-        sb.append("facebookId='").append(facebookId).append('\'');
-        sb.append(", email='").append(email).append('\'');
-        sb.append(", nombre='").append(nombre).append('\'');
-        sb.append(", apellido='").append(apellido).append('\'');
-        sb.append('}');
-        return sb.toString();
     }
 }

@@ -21,14 +21,4 @@ public class Pedidos {
     public List<Pedido> getPedidos() {
         return pedidos;
     }
-
-    @Override
-    public String toString() {
-        String s = "Pedidos{";
-        for (Pedido p : pedidos) {
-            s += p.toString();
-        }
-        s += '}';
-        return s;
-    }
 }

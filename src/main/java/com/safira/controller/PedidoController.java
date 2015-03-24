@@ -5,10 +5,7 @@ import com.safira.domain.SerializedObject;
 import com.safira.domain.entities.Pedido;
 import com.safira.domain.entities.Restaurante;
 import com.safira.domain.entities.Usuario;
-import com.safira.domain.repositories.MenuRepository;
-import com.safira.domain.repositories.PedidoRepository;
-import com.safira.domain.repositories.RestauranteRepository;
-import com.safira.domain.repositories.UsuarioRepository;
+import com.safira.domain.repositories.*;
 import com.safira.service.deserialize.PedidoDeserializer;
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -35,6 +32,9 @@ public class PedidoController {
     @Autowired
     MenuRepository menuRepository;
 
+    @Autowired
+    DireccionRepository direccionRepository;
+
     final static Logger pedidoLogger = Logger.getLogger("pedidoLogger");
     final static Logger pedidoWarnLogger = Logger.getLogger("pedidoWarnLogger");
     final static Logger pedidoErrorLogger = Logger.getLogger("pedidoExceptionLogger");
@@ -44,8 +44,12 @@ public class PedidoController {
         Pedido pedido;
         String serializedPedido = serializedObject.getSerializedObject();
         try {
-            PedidoDeserializer pedidoDeserializer =
-                    new PedidoDeserializer(serializedPedido, restauranteRepository, usuarioRepository, menuRepository);
+            PedidoDeserializer pedidoDeserializer = new PedidoDeserializer(
+                    serializedPedido,
+                    restauranteRepository,
+                    usuarioRepository,
+                    menuRepository,
+                    direccionRepository);
             pedido = pedidoDeserializer.getPedido();
         } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);

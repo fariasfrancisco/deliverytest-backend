@@ -1,6 +1,7 @@
 package com.safira.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.*;
@@ -15,20 +16,25 @@ public class Menu extends ModelEntity {
     private String descripcion;
     private BigDecimal costo;
 
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurante_id", nullable = false)
     private Restaurante restaurante;
 
-    @JsonIgnore
+    @JsonBackReference
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "menus")
     private Set<Pedido> pedidos = new HashSet<>();
+
+    @JsonBackReference
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "menus")
+    private Set<Favoritos> favoritos = new HashSet<>();
 
     public Menu() {
         this(UUID.randomUUID());
     }
 
     public Menu(UUID uuid) {
-        super(UUID.randomUUID());
+        super(uuid);
     }
 
     public Menu(Builder builder) {
@@ -37,14 +43,10 @@ public class Menu extends ModelEntity {
         this.descripcion = builder.descripcion;
         this.costo = builder.costo;
         this.restaurante = builder.restaurante;
-        if (!restaurante.getMenus().contains(this)) {
-            restaurante.getMenus().add(this);
-        }
+        if (!restaurante.getMenus().contains(this)) restaurante.getMenus().add(this);
         this.pedidos = builder.pedidos;
         for (Pedido pedido : pedidos) {
-            if (!pedido.getMenus().contains(this)) {
-                pedido.getMenus().add(this);
-            }
+            if (!pedido.getMenus().contains(this)) pedido.getMenus().add(this);
         }
     }
 
@@ -78,9 +80,7 @@ public class Menu extends ModelEntity {
 
     public void setRestaurante(Restaurante restaurante) {
         this.restaurante = restaurante;
-        if (!restaurante.getMenus().contains(this)) {
-            restaurante.getMenus().add(this);
-        }
+        if (!restaurante.getMenus().contains(this)) restaurante.getMenus().add(this);
     }
 
     public Set<Pedido> getPedidos() {
@@ -91,12 +91,21 @@ public class Menu extends ModelEntity {
         this.pedidos = pedidos;
     }
 
+    public Set<Favoritos> getFavoritos() {
+        return favoritos;
+    }
+
+    public void setFavoritos(Set<Favoritos> favoritos) {
+        this.favoritos = favoritos;
+    }
+
     public static class Builder {
         private String nombre;
         private String descripcion;
         private BigDecimal costo;
         private Restaurante restaurante;
         private Set<Pedido> pedidos = new HashSet<>();
+        private Set<Favoritos> favoritos = new HashSet<>();
 
         public Builder withNombre(String nombre) {
             this.nombre = nombre;
@@ -123,18 +132,13 @@ public class Menu extends ModelEntity {
             return this;
         }
 
+        public Builder withFavoritos(Set<Favoritos> favoritos) {
+            this.favoritos = favoritos;
+            return this;
+        }
+
         public Menu build() {
             return new Menu(this);
         }
-    }
-
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("Menu{");
-        sb.append("nombre='").append(nombre).append('\'');
-        sb.append(", descripcion='").append(descripcion).append('\'');
-        sb.append(", costo=").append(costo);
-        sb.append('}');
-        return sb.toString();
     }
 }

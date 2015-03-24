@@ -1,7 +1,7 @@
 package com.safira.domain;
 
-import com.safira.domain.entities.Restaurante;
 import com.safira.common.SafiraUtils;
+import com.safira.domain.entities.Restaurante;
 
 import java.util.List;
 
@@ -21,15 +21,5 @@ public class Restaurantes {
 
     public List<Restaurante> getRestaurantes() {
         return restaurantes;
-    }
-
-    @Override
-    public String toString() {
-        String s = "Restaurantes{";
-        for (Restaurante r : restaurantes) {
-            s += r.toString();
-        }
-        s += '}';
-        return s;
     }
 }

@@ -46,13 +46,13 @@ public class Validator {
             throw new ValidatorException("The format in the field password(" + password + ") is invalid");
     }
 
-    public static void validatePedido(String numero,
+    public static void validatePedido(String direccionUuid,
                                       String telefono,
                                       String usuarioUuid,
                                       String restauranteUuid,
                                       String[] menuUuids) throws ValidatorException {
-        if (!validateNumber(numero))
-            throw new ValidatorException("The format in the field numero(" + numero + ") is invalid");
+        if (!validateUuid(direccionUuid))
+            throw new ValidatorException("The format in the field direccionUuid(" + direccionUuid + ") is invalid");
         if (!validatePhone(telefono))
             throw new ValidatorException("The format in the field telefono(" + telefono + ") is invalid");
         if (!validateUuid(usuarioUuid))
