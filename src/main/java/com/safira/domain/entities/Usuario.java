@@ -18,17 +18,11 @@ public class Usuario extends ModelEntity {
     private String nombre;
     private String apellido;
 
-    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
     private Set<Pedido> pedidos = new HashSet<>();
 
-    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
     private Set<Direccion> direcciones = new HashSet<>();
-
-    @JsonBackReference
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "usuario", cascade = CascadeType.ALL)
-    private Favoritos favoritos;
 
     public Usuario() {
         this(UUID.randomUUID());
@@ -56,6 +50,7 @@ public class Usuario extends ModelEntity {
                 direccion.setUsuario(this);
             }
         }
+        //TODO Add favoritos logic
     }
 
     public String getFacebookId() {
@@ -94,14 +89,6 @@ public class Usuario extends ModelEntity {
         return pedidos;
     }
 
-    public Favoritos getFavoritos() {
-        return favoritos;
-    }
-
-    public void setFavoritos(Favoritos favoritos) {
-        this.favoritos = favoritos;
-    }
-
     public void setPedidos(Set<Pedido> pedidos) {
         this.pedidos = pedidos;
         for (Pedido pedido : pedidos) {
@@ -131,7 +118,6 @@ public class Usuario extends ModelEntity {
         private String apellido;
         private Set<Pedido> pedidos = new HashSet<>();
         private Set<Direccion> direcciones = new HashSet<>();
-        private Favoritos favoritos;
 
         public Builder withFacebookId(String facebookId) {
             this.facebookId = facebookId;
@@ -160,11 +146,6 @@ public class Usuario extends ModelEntity {
 
         public Builder withDirecciones(Set<Direccion> direcciones) {
             this.direcciones = direcciones;
-            return this;
-        }
-
-        public Builder withFavoritos(Favoritos favoritos) {
-            this.favoritos = favoritos;
             return this;
         }
 

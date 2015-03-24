@@ -16,7 +16,6 @@ public class RestauranteLogin extends ModelEntity {
     private byte[] salt;
     private boolean verificado;
 
-    @JsonBackReference
     @OneToOne(fetch = FetchType.EAGER)
     @PrimaryKeyJoinColumn
     private Restaurante restaurante;

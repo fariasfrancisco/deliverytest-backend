@@ -1,7 +1,5 @@
 package com.safira.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.*;
@@ -16,18 +14,12 @@ public class Menu extends ModelEntity {
     private String descripcion;
     private BigDecimal costo;
 
-    @JsonManagedReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurante_id", nullable = false)
     private Restaurante restaurante;
 
-    @JsonBackReference
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "menus")
     private Set<Pedido> pedidos = new HashSet<>();
-
-    @JsonBackReference
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "menus")
-    private Set<Favoritos> favoritos = new HashSet<>();
 
     public Menu() {
         this(UUID.randomUUID());
@@ -91,21 +83,12 @@ public class Menu extends ModelEntity {
         this.pedidos = pedidos;
     }
 
-    public Set<Favoritos> getFavoritos() {
-        return favoritos;
-    }
-
-    public void setFavoritos(Set<Favoritos> favoritos) {
-        this.favoritos = favoritos;
-    }
-
     public static class Builder {
         private String nombre;
         private String descripcion;
         private BigDecimal costo;
         private Restaurante restaurante;
         private Set<Pedido> pedidos = new HashSet<>();
-        private Set<Favoritos> favoritos = new HashSet<>();
 
         public Builder withNombre(String nombre) {
             this.nombre = nombre;
@@ -129,11 +112,6 @@ public class Menu extends ModelEntity {
 
         public Builder withPedidos(Set<Pedido> pedidos) {
             this.pedidos = pedidos;
-            return this;
-        }
-
-        public Builder withFavoritos(Set<Favoritos> favoritos) {
-            this.favoritos = favoritos;
             return this;
         }
 

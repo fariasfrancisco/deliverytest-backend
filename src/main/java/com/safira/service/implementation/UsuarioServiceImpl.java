@@ -1,11 +1,9 @@
 package com.safira.service.implementation;
 
-import com.safira.api.CreateFavoritoRequest;
 import com.safira.api.CreateUsuarioRequest;
 import com.safira.api.LoginUsuarioRequest;
 import com.safira.common.exceptions.JPAQueryException;
 import com.safira.common.exceptions.ValidatorException;
-import com.safira.domain.entities.Favoritos;
 import com.safira.domain.entities.Usuario;
 import com.safira.domain.repositories.UsuarioRepository;
 import com.safira.service.Validator;

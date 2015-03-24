@@ -1,13 +1,9 @@
 package com.safira.service.interfaces;
 
-import com.safira.api.CreateDireccionRequest;
-import com.safira.api.CreateFavoritoRequest;
 import com.safira.api.CreateUsuarioRequest;
 import com.safira.api.LoginUsuarioRequest;
 import com.safira.common.exceptions.JPAQueryException;
 import com.safira.common.exceptions.ValidatorException;
-import com.safira.domain.entities.Direccion;
-import com.safira.domain.entities.Favoritos;
 import com.safira.domain.entities.Usuario;
 
 /**

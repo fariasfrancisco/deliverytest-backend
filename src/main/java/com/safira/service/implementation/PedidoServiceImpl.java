@@ -79,11 +79,6 @@ public class PedidoServiceImpl implements PedidoService {
         return pedido;
     }
 
-    @Transactional
-    public Favoritos addPedidoToFavoritos(CreateFavoritoRequest createFavoritoRequest) {
-        return null;
-    }
-
     @Override
     public Pedido getPedidoByUuid(String uuid) throws JPAQueryException {
         Pedido pedido = pedidoRepository.findByUuid(uuid);

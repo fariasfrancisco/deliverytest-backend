@@ -23,22 +23,18 @@ public class Pedido extends ModelEntity {
     @Type(type = "com.safira.common.LocalDateTimeUserType")
     private LocalDateTime fecha;
 
-    @JsonManagedReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "direccion_id", nullable = false)
     private Direccion direccion;
 
-    @JsonManagedReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    @JsonManagedReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurante_id", nullable = false)
     private Restaurante restaurante;
 
-    @JsonManagedReference
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "Menu_Pedido", joinColumns = {
             @JoinColumn(name = "pedido_id", nullable = false, updatable = false)
