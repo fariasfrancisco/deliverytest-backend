@@ -1,15 +1,11 @@
 package com.safira.controller;
 
+import com.safira.api.CreatePedidoRequest;
 import com.safira.domain.Pedidos;
-import com.safira.domain.SerializedObject;
 import com.safira.domain.entities.Pedido;
-import com.safira.domain.entities.Restaurante;
-import com.safira.domain.entities.Usuario;
-import com.safira.domain.repositories.*;
-import com.safira.service.deserialize.PedidoDeserializer;
+import com.safira.service.implementation.PedidoServiceImpl;
+import com.safira.service.interfaces.PedidoService;
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,42 +16,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class PedidoController {
 
-    @Autowired
-    PedidoRepository pedidoRepository;
-
-    @Autowired
-    RestauranteRepository restauranteRepository;
-
-    @Autowired
-    UsuarioRepository usuarioRepository;
-
-    @Autowired
-    MenuRepository menuRepository;
-
-    @Autowired
-    DireccionRepository direccionRepository;
+    final PedidoService pedidoService = new PedidoServiceImpl();
 
     final static Logger pedidoLogger = Logger.getLogger("pedidoLogger");
     final static Logger pedidoWarnLogger = Logger.getLogger("pedidoWarnLogger");
     final static Logger pedidoErrorLogger = Logger.getLogger("pedidoExceptionLogger");
 
     @RequestMapping(value = "/registerPedido", method = RequestMethod.POST)
-    public ResponseEntity<Object> registerPedido(@RequestBody SerializedObject serializedObject) {
+    public ResponseEntity<Object> registerPedido(@RequestBody CreatePedidoRequest createPedidoRequest) {
         Pedido pedido;
-        String serializedPedido = serializedObject.getSerializedObject();
         try {
-            PedidoDeserializer pedidoDeserializer = new PedidoDeserializer(
-                    serializedPedido,
-                    restauranteRepository,
-                    usuarioRepository,
-                    menuRepository,
-                    direccionRepository);
-            pedido = pedidoDeserializer.getPedido();
-        } catch (Exception e) {
-            return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
-        }
-        try {
-            pedidoRepository.save(pedido);
+            pedido = pedidoService.createPedido(createPedidoRequest);
         } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -66,7 +37,7 @@ public class PedidoController {
     public ResponseEntity<Object> getPedidoById(@RequestParam(value = "uuid", required = true) String uuid) {
         Pedido pedido;
         try {
-            pedido = pedidoRepository.findByUuid(uuid);
+            pedido = pedidoService.getPedidoByUuid(uuid);
         } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -76,14 +47,9 @@ public class PedidoController {
     @RequestMapping(value = "/getPedidosByRestaurante", method = RequestMethod.GET)
     public ResponseEntity<Object> getPedidosByRestaurante(@RequestParam(value = "uuid", required = true) String uuid) {
         Pedidos pedidos;
-        //TODO check exceptions
         try {
-            Restaurante restaurante = restauranteRepository.findByUuid(uuid);
-            pedidos = new Pedidos(pedidoRepository.findByRestaurante(restaurante));
-            if (pedidos.getPedidos().isEmpty()) {
-                return new ResponseEntity<>(pedidos, HttpStatus.NOT_FOUND);
-            }
-        } catch (HibernateException e) {
+            pedidos = pedidoService.getPedidosByRestauranteUuid(uuid);
+        } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
@@ -92,14 +58,9 @@ public class PedidoController {
     @RequestMapping(value = "/getPedidosByUsuario", method = RequestMethod.GET)
     public ResponseEntity<Object> getPedidosByUsuario(@RequestParam(value = "uuid", required = true) String uuid) {
         Pedidos pedidos;
-        //TODO check exceptions
         try {
-            Usuario usuario = usuarioRepository.findByUuid(uuid);
-            pedidos = new Pedidos(pedidoRepository.findByUsuario(usuario));
-            if (pedidos.getPedidos().isEmpty()) {
-                return new ResponseEntity<>(pedidos, HttpStatus.NOT_FOUND);
-            }
-        } catch (HibernateException e) {
+            pedidos = pedidoService.getPedidosByUsuarioUuid(uuid);
+        } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
@@ -110,15 +71,9 @@ public class PedidoController {
             @RequestParam(value = "resuuid", required = true) String resuuid,
             @RequestParam(value = "usruuid", required = true) String usruuid) {
         Pedidos pedidos;
-        //TODO check exceptions
         try {
-            Usuario usuario = usuarioRepository.findByUuid(usruuid);
-            Restaurante restaurante = restauranteRepository.findByUuid(resuuid);
-            pedidos = new Pedidos(pedidoRepository.findByUsuarioAndRestaurante(usuario, restaurante));
-            if (pedidos.getPedidos().isEmpty()) {
-                return new ResponseEntity<>(pedidos, HttpStatus.NOT_FOUND);
-            }
-        } catch (HibernateException e) {
+            pedidos = pedidoService.getPedidosByUsuarioUuidAndByRestauranteUuid(usruuid, resuuid);
+        } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedidos, HttpStatus.OK);

@@ -1,0 +1,86 @@
+package com.safira.service.implementation;
+
+import com.safira.api.CreateRestauranteRequest;
+import com.safira.api.LoginRestauranteRequest;
+import com.safira.common.exceptions.JPAQueryException;
+import com.safira.common.exceptions.LoginException;
+import com.safira.common.exceptions.ValidatorException;
+import com.safira.domain.Restaurantes;
+import com.safira.domain.entities.Restaurante;
+import com.safira.domain.entities.RestauranteLogin;
+import com.safira.domain.repositories.RestauranteLoginRepository;
+import com.safira.domain.repositories.RestauranteRepository;
+import com.safira.service.PasswordService;
+import com.safira.service.Validator;
+import com.safira.service.interfaces.RestauranteService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Created by francisco on 24/03/15.
+ */
+@Service("restauranteService")
+public class RestauranteServiceImpl implements RestauranteService {
+    @Autowired
+    RestauranteRepository restauranteRepository;
+
+    @Autowired
+    RestauranteLoginRepository restauranteLoginRepository;
+
+    @Transactional
+    public Restaurante createRestaurante(CreateRestauranteRequest createRestauranteRequest) throws ValidatorException {
+        Validator.validateRestaurante(createRestauranteRequest);
+        byte[] salt = PasswordService.getNextSalt();
+        char[] password = createRestauranteRequest.getPassword().toCharArray();
+        Restaurante restaurante = new Restaurante.Builder()
+                .withNombre(createRestauranteRequest.getNombre())
+                .withCalle(createRestauranteRequest.getCalle())
+                .withNumero(createRestauranteRequest.getNumero())
+                .withTelefono(createRestauranteRequest.getTelefono())
+                .withEmail(createRestauranteRequest.getEmail())
+                .build();
+        RestauranteLogin restauranteLogin = new RestauranteLogin.Builder()
+                .withUsuario(createRestauranteRequest.getUsuario())
+                .withSalt(salt)
+                .withHashedAndSaltedPassword(PasswordService.hash(password, salt))
+                .withVerificado(false)
+                .build();
+        restaurante.setRestauranteLogin(restauranteLogin);
+        restauranteLogin.setRestaurante(restaurante);
+        restauranteRepository.save(restaurante);
+        restauranteLoginRepository.save(restauranteLogin);
+        return restaurante;
+    }
+
+    @Transactional
+    public Restaurante loginRestaurante(LoginRestauranteRequest loginRestauranteRequest)
+            throws ValidatorException, JPAQueryException, LoginException {
+        Validator.validateRestauranteLogin(loginRestauranteRequest);
+        RestauranteLogin restauranteLogin = restauranteLoginRepository.findByUsuario(loginRestauranteRequest.getUsuario());
+        if (restauranteLogin == null) throw new JPAQueryException("Desearilization Failed. " +
+                "No restaurante found with usuario = " + loginRestauranteRequest.getUsuario());
+        if (!PasswordService.isExpectedPassword(loginRestauranteRequest.getPassword().toCharArray()
+                , restauranteLogin.getSalt(), restauranteLogin.getHash()))
+            throw new LoginException("The password recieved does not match stored password.");
+        Restaurante restaurante = restauranteLogin.getRestaurante();
+        return restaurante;
+    }
+
+    @Transactional
+    public Restaurantes getAllRestaurantes() throws JPAQueryException {
+        Restaurantes restaurantes;
+        restaurantes = new Restaurantes(restauranteRepository.findAll());
+        if (restaurantes.getRestaurantes().isEmpty())
+            throw new JPAQueryException("No restaurantes were found by the given criteria");
+        return restaurantes;
+    }
+
+    @Transactional
+    public Restaurante getRestauranteByUuid(String uuid) throws JPAQueryException {
+        Restaurante restaurante = restauranteRepository.findByUuid(uuid);
+        if (restaurante == null) throw new JPAQueryException("Desearilization Failed. " +
+                "No restaurante found with uuid = " + uuid);
+        return restaurante;
+    }
+}

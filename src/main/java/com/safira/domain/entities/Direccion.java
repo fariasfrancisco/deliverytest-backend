@@ -102,7 +102,7 @@ public class Direccion extends ModelEntity {
         }
     }
 
-    private static class Builder {
+    public static class Builder {
         private String calle;
         private String numero;
         private String piso;
