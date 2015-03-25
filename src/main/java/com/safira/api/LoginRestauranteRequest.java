@@ -10,11 +10,6 @@ public class LoginRestauranteRequest {
     public LoginRestauranteRequest() {
     }
 
-    public LoginRestauranteRequest(String usuario, String password) {
-        this.usuario = usuario;
-        this.password = password;
-    }
-
     public String getUsuario() {
         return usuario;
     }

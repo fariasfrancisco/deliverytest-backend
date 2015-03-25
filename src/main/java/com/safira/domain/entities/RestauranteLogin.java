@@ -1,7 +1,5 @@
 package com.safira.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.*;
@@ -14,11 +12,17 @@ public class RestauranteLogin extends ModelEntity {
     private String usuario;
     private byte[] hash;
     private byte[] salt;
-    private boolean verificado;
+    private boolean isVerified;
 
     @OneToOne(fetch = FetchType.EAGER)
     @PrimaryKeyJoinColumn
     private Restaurante restaurante;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restauranteLogin")
+    private RestauranteVerificationToken restauranteVerificationToken;
+
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "restauranteLogin", cascade = CascadeType.ALL)
+    private RestauranteSessionToken restauranteSessionToken;
 
     public RestauranteLogin() {
         this(UUID.randomUUID());
@@ -29,14 +33,18 @@ public class RestauranteLogin extends ModelEntity {
     }
 
     public RestauranteLogin(Builder builder) {
-        super(UUID.randomUUID());
+        super(builder.uuid);
         this.usuario = builder.usuario;
         this.hash = builder.hash;
         this.salt = builder.salt;
-        this.verificado = builder.verificado;
+        this.isVerified = builder.isVerified;
         this.restaurante = builder.restaurante;
         if (restaurante != null && restaurante.getRestauranteLogin() != this) {
             restaurante.setRestauranteLogin(this);
+        }
+        this.restauranteSessionToken = builder.restauranteSessionToken;
+        if (restauranteSessionToken != null && restauranteSessionToken.getRestauranteLogin() != this) {
+            restauranteSessionToken.setRestauranteLogin(this);
         }
     }
 
@@ -64,12 +72,12 @@ public class RestauranteLogin extends ModelEntity {
         this.salt = salt;
     }
 
-    public boolean getVerificado() {
-        return verificado;
+    public boolean isVerified() {
+        return isVerified;
     }
 
-    public void setVerificado(boolean verificado) {
-        this.verificado = verificado;
+    public void setIsVerified(boolean isVerified) {
+        this.isVerified = isVerified;
     }
 
     public Restaurante getRestaurante() {
@@ -83,13 +91,31 @@ public class RestauranteLogin extends ModelEntity {
         }
     }
 
+    public RestauranteVerificationToken getRestauranteVerificationToken() {
+        return restauranteVerificationToken;
+    }
+
+    public void setRestauranteVerificationToken(RestauranteVerificationToken restauranteVerificationToken) {
+        this.restauranteVerificationToken = restauranteVerificationToken;
+    }
+
+    public RestauranteSessionToken getRestauranteSessionToken() {
+        return restauranteSessionToken;
+    }
+
+    public void setRestauranteSessionToken(RestauranteSessionToken restauranteSessionToken) {
+        this.restauranteSessionToken = restauranteSessionToken;
+    }
+
     public static class Builder {
 
         private String usuario;
         private byte[] hash;
         private byte[] salt;
-        private boolean verificado;
+        private boolean isVerified = false;
+        private UUID uuid;
         private Restaurante restaurante;
+        private RestauranteSessionToken restauranteSessionToken;
 
         public Builder withUsuario(String usuario) {
             this.usuario = usuario;
@@ -106,13 +132,23 @@ public class RestauranteLogin extends ModelEntity {
             return this;
         }
 
-        public Builder withVerificado(boolean verificado) {
-            this.verificado = verificado;
+        public Builder withIsVerified(boolean isVerified) {
+            this.isVerified = isVerified;
+            return this;
+        }
+
+        public Builder withUuid(UUID uuid) {
+            this.uuid = uuid;
             return this;
         }
 
         public Builder withRestaurante(Restaurante restaurante) {
             this.restaurante = restaurante;
+            return this;
+        }
+
+        public Builder withRestauranteSessionToken(RestauranteSessionToken restauranteSessionToken) {
+            this.restauranteSessionToken = restauranteSessionToken;
             return this;
         }
 

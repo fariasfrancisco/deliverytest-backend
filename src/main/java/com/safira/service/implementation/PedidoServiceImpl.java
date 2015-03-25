@@ -1,6 +1,5 @@
 package com.safira.service.implementation;
 
-import com.safira.api.CreateFavoritoRequest;
 import com.safira.api.CreatePedidoRequest;
 import com.safira.common.SafiraUtils;
 import com.safira.common.exceptions.InconsistencyException;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

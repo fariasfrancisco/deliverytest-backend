@@ -1,13 +1,16 @@
 package com.safira.service.implementation;
 
+import com.safira.api.AuthenticatedRestauranteToken;
 import com.safira.api.CreateRestauranteRequest;
 import com.safira.api.LoginRestauranteRequest;
 import com.safira.common.exceptions.JPAQueryException;
 import com.safira.common.exceptions.LoginException;
 import com.safira.common.exceptions.ValidatorException;
+import com.safira.configuration.ApplicationConfiguration;
 import com.safira.domain.Restaurantes;
 import com.safira.domain.entities.Restaurante;
 import com.safira.domain.entities.RestauranteLogin;
+import com.safira.domain.entities.RestauranteSessionToken;
 import com.safira.domain.repositories.RestauranteLoginRepository;
 import com.safira.domain.repositories.RestauranteRepository;
 import com.safira.service.PasswordService;
@@ -28,6 +31,8 @@ public class RestauranteServiceImpl implements RestauranteService {
     @Autowired
     RestauranteLoginRepository restauranteLoginRepository;
 
+    ApplicationConfiguration applicationConfiguration;
+
     @Transactional
     public Restaurante createRestaurante(CreateRestauranteRequest createRestauranteRequest) throws ValidatorException {
         Validator.validateRestaurante(createRestauranteRequest);
@@ -44,7 +49,7 @@ public class RestauranteServiceImpl implements RestauranteService {
                 .withUsuario(createRestauranteRequest.getUsuario())
                 .withSalt(salt)
                 .withHashedAndSaltedPassword(PasswordService.hash(password, salt))
-                .withVerificado(false)
+                .withUuid(restaurante.getUuid())
                 .build();
         restaurante.setRestauranteLogin(restauranteLogin);
         restauranteLogin.setRestaurante(restaurante);
@@ -54,7 +59,7 @@ public class RestauranteServiceImpl implements RestauranteService {
     }
 
     @Transactional
-    public Restaurante loginRestaurante(LoginRestauranteRequest loginRestauranteRequest)
+    public AuthenticatedRestauranteToken loginRestaurante(LoginRestauranteRequest loginRestauranteRequest)
             throws ValidatorException, JPAQueryException, LoginException {
         Validator.validateRestauranteLogin(loginRestauranteRequest);
         RestauranteLogin restauranteLogin = restauranteLoginRepository.findByUsuario(loginRestauranteRequest.getUsuario());
@@ -64,7 +69,7 @@ public class RestauranteServiceImpl implements RestauranteService {
                 , restauranteLogin.getSalt(), restauranteLogin.getHash()))
             throw new LoginException("The password recieved does not match stored password.");
         Restaurante restaurante = restauranteLogin.getRestaurante();
-        return restaurante;
+        return new AuthenticatedRestauranteToken(restaurante.getIdentifier(), null);
     }
 
     @Transactional
@@ -82,5 +87,16 @@ public class RestauranteServiceImpl implements RestauranteService {
         if (restaurante == null) throw new JPAQueryException("Desearilization Failed. " +
                 "No restaurante found with uuid = " + uuid);
         return restaurante;
+    }
+
+    @Override
+    public RestauranteSessionToken createToken(RestauranteLogin restauranteLogin) {
+        if (restauranteLogin.getRestauranteSessionToken() == null ||
+                restauranteLogin.getRestauranteSessionToken().hasExpired()) {
+            restauranteLogin.setRestauranteSessionToken(
+                    new RestauranteSessionToken(restauranteLogin, applicationConfiguration.getSessionExpirationTime()));
+            restauranteLoginRepository.save(restauranteLogin);
+        }
+        return restauranteLogin.getRestauranteSessionToken();
     }
 }
