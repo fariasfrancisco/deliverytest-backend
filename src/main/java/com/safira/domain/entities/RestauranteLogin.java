@@ -67,16 +67,8 @@ public class RestauranteLogin extends ModelEntity {
         return hash;
     }
 
-    public void setHash(byte[] hash) {
-        this.hash = hash;
-    }
-
     public byte[] getSalt() {
         return salt;
-    }
-
-    public void setSalt(byte[] salt) {
-        this.salt = salt;
     }
 
     public boolean isVerified() {

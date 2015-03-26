@@ -55,16 +55,8 @@ public class RestauranteVerificationToken extends ModelEntity {
         return expiryDate;
     }
 
-    public void setExpiryDate(LocalDateTime expiryDate) {
-        this.expiryDate = expiryDate;
-    }
-
     public TokenType getTokenType() {
         return tokenType;
-    }
-
-    public void setTokenType(TokenType tokenType) {
-        this.tokenType = tokenType;
     }
 
     public boolean isVerified() {

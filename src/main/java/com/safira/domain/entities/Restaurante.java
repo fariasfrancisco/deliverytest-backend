@@ -63,40 +63,20 @@ public class Restaurante extends ModelEntity {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public String getCalle() {
         return calle;
-    }
-
-    public void setCalle(String calle) {
-        this.calle = calle;
     }
 
     public String getNumero() {
         return numero;
     }
 
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
-
     public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public RestauranteLogin getRestauranteLogin() {
@@ -112,22 +92,8 @@ public class Restaurante extends ModelEntity {
         return menus;
     }
 
-    public void setMenus(Set<Menu> menus) {
-        this.menus = menus;
-        for (Menu menu : menus) {
-            if (menu.getRestaurante() != this) menu.setRestaurante(this);
-        }
-    }
-
     public Set<Pedido> getPedidos() {
         return pedidos;
-    }
-
-    public void setPedidos(Set<Pedido> pedidos) {
-        this.pedidos = pedidos;
-        for (Pedido pedido : pedidos) {
-            if (pedido.getRestaurante() != this) pedido.setRestaurante(this);
-        }
     }
 
     public static class Builder {

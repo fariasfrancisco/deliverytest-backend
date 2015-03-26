@@ -50,24 +50,12 @@ public class Menu extends ModelEntity {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public String getDescripcion() {
         return descripcion;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
     public BigDecimal getCosto() {
         return costo;
-    }
-
-    public void setCosto(BigDecimal costo) {
-        this.costo = costo;
     }
 
     public Restaurante getRestaurante() {
@@ -81,10 +69,6 @@ public class Menu extends ModelEntity {
 
     public Set<Pedido> getPedidos() {
         return pedidos;
-    }
-
-    public void setPedidos(Set<Pedido> pedidos) {
-        this.pedidos = pedidos;
     }
 
     public static class Builder {

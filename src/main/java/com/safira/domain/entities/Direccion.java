@@ -53,32 +53,16 @@ public class Direccion extends ModelEntity {
         return calle;
     }
 
-    public void setCalle(String calle) {
-        this.calle = calle;
-    }
-
     public String getNumero() {
         return numero;
-    }
-
-    public void setNumero(String numero) {
-        this.numero = numero;
     }
 
     public String getPiso() {
         return piso;
     }
 
-    public void setPiso(String piso) {
-        this.piso = piso;
-    }
-
     public String getDepartamento() {
         return departamento;
-    }
-
-    public void setDepartamento(String departamento) {
-        this.departamento = departamento;
     }
 
     public Usuario getUsuario() {
@@ -92,13 +76,6 @@ public class Direccion extends ModelEntity {
 
     public Set<Pedido> getPedidos() {
         return pedidos;
-    }
-
-    public void setPedidos(Set<Pedido> pedidos) {
-        this.pedidos = pedidos;
-        for (Pedido pedido : pedidos) {
-            if (pedido.getDireccion() != this) pedido.setDireccion(this);
-        }
     }
 
     public static class Builder {

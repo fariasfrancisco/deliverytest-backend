@@ -77,16 +77,8 @@ public class Pedido extends ModelEntity {
         return telefono;
     }
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
     public Estado getEstado() {
         return estado;
-    }
-
-    public void setEstado(Estado estado) {
-        this.estado = estado;
     }
 
     public Direccion getDireccion() {
@@ -99,10 +91,6 @@ public class Pedido extends ModelEntity {
 
     public LocalDateTime getFecha() {
         return fecha;
-    }
-
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
     }
 
     public Usuario getUsuario() {
@@ -129,10 +117,6 @@ public class Pedido extends ModelEntity {
 
     public Set<Menu> getMenus() {
         return menus;
-    }
-
-    public void setMenus(Set<Menu> menus) {
-        this.menus = menus;
     }
 
     public static class Builder {

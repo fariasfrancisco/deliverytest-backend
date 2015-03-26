@@ -1,10 +1,12 @@
 package com.safira.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.safira.domain.entity.ModelEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -59,58 +61,24 @@ public class Usuario extends ModelEntity {
         return facebookId;
     }
 
-    public void setFacebookId(String facebookId) {
-        this.facebookId = facebookId;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public String getApellido() {
         return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
     }
 
     public Set<Pedido> getPedidos() {
         return pedidos;
     }
 
-    public void setPedidos(Set<Pedido> pedidos) {
-        this.pedidos = pedidos;
-        for (Pedido pedido : pedidos) {
-            if (pedido.getUsuario() != this) {
-                pedido.setUsuario(this);
-            }
-        }
-    }
-
     public Set<Direccion> getDirecciones() {
         return direcciones;
-    }
-
-    public void setDirecciones(Set<Direccion> direcciones) {
-        this.direcciones = direcciones;
-        for (Direccion direccion : direcciones) {
-            if (direccion.getUsuario() != this) {
-                direccion.setUsuario(this);
-            }
-        }
     }
 
     public static class Builder {
