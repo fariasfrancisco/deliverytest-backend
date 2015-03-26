@@ -1,5 +1,6 @@
 package com.safira.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.safira.domain.Estado;
 import com.safira.domain.entity.ModelEntity;
@@ -23,18 +24,22 @@ public class Pedido extends ModelEntity {
     @Type(type = "com.safira.common.LocalDateTimeUserType")
     private LocalDateTime fecha;
 
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "direccion_id", nullable = false)
     private Direccion direccion;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurante_id", nullable = false)
     private Restaurante restaurante;
 
+    @JsonBackReference
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "Menu_Pedido", joinColumns = {
             @JoinColumn(name = "pedido_id", nullable = false, updatable = false)

@@ -50,6 +50,7 @@ public class RestauranteServiceImpl implements RestauranteService {
                 .withSalt(salt)
                 .withHashedAndSaltedPassword(PasswordService.hash(password, salt))
                 .withUuid(restaurante.getUuid())
+                .withIsVerified(false)
                 .build();
         restaurante.setRestauranteLogin(restauranteLogin);
         restauranteLogin.setRestaurante(restaurante);

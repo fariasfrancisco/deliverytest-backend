@@ -1,8 +1,12 @@
 package com.safira.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -14,13 +18,16 @@ public class RestauranteLogin extends ModelEntity {
     private byte[] salt;
     private boolean isVerified;
 
+    @JsonBackReference
     @OneToOne(fetch = FetchType.EAGER)
     @PrimaryKeyJoinColumn
     private Restaurante restaurante;
 
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restauranteLogin")
-    private RestauranteVerificationToken restauranteVerificationToken;
+    private Set<RestauranteVerificationToken> restauranteVerificationTokens = new HashSet<>();
 
+    @JsonManagedReference
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "restauranteLogin", cascade = CascadeType.ALL)
     private RestauranteSessionToken restauranteSessionToken;
 
@@ -91,12 +98,16 @@ public class RestauranteLogin extends ModelEntity {
         }
     }
 
-    public RestauranteVerificationToken getRestauranteVerificationToken() {
-        return restauranteVerificationToken;
+    public Set<RestauranteVerificationToken> getRestauranteVerificationTokens() {
+        return restauranteVerificationTokens;
     }
 
-    public void setRestauranteVerificationToken(RestauranteVerificationToken restauranteVerificationToken) {
-        this.restauranteVerificationToken = restauranteVerificationToken;
+    public void setRestauranteVerificationTokens(Set<RestauranteVerificationToken> restauranteVerificationTokens) {
+        this.restauranteVerificationTokens = restauranteVerificationTokens;
+        for (RestauranteVerificationToken restauranteVerificationToken : restauranteVerificationTokens) {
+            if (restauranteVerificationToken.getRestauranteLogin() != this)
+                restauranteVerificationToken.setRestauranteLogin(this);
+        }
     }
 
     public RestauranteSessionToken getRestauranteSessionToken() {
@@ -105,6 +116,7 @@ public class RestauranteLogin extends ModelEntity {
 
     public void setRestauranteSessionToken(RestauranteSessionToken restauranteSessionToken) {
         this.restauranteSessionToken = restauranteSessionToken;
+        if (restauranteSessionToken.getRestauranteLogin() != this) restauranteSessionToken.setRestauranteLogin(this);
     }
 
     public static class Builder {

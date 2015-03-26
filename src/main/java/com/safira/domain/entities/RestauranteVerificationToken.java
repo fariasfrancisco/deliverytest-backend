@@ -1,5 +1,6 @@
 package com.safira.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.safira.domain.TokenType;
 import com.safira.domain.entity.ModelEntity;
 import org.hibernate.annotations.Type;
@@ -26,8 +27,9 @@ public class RestauranteVerificationToken extends ModelEntity {
 
     private boolean verified;
 
-    @ManyToOne
-    @JoinColumn(name = "restauranteLogin_id")
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurantelogin_id", nullable = false)
     private RestauranteLogin restauranteLogin;
 
     public RestauranteVerificationToken() {
@@ -82,7 +84,6 @@ public class RestauranteVerificationToken extends ModelEntity {
     }
 
     private LocalDateTime calculateExpiryDate(int expirationTimeInHours) {
-
         return LocalDateTime.now().plusMinutes(expirationTimeInHours);
     }
 

@@ -1,5 +1,6 @@
 package com.safira.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.*;
@@ -17,10 +18,12 @@ public class Direccion extends ModelEntity {
     private String piso;
     private String departamento;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "direccion")
     private Set<Pedido> pedidos = new HashSet<>();
 

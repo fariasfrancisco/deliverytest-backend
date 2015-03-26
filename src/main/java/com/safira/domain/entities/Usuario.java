@@ -1,6 +1,7 @@
 package com.safira.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.*;
@@ -18,9 +19,11 @@ public class Usuario extends ModelEntity {
     private String nombre;
     private String apellido;
 
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
     private Set<Pedido> pedidos = new HashSet<>();
 
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
     private Set<Direccion> direcciones = new HashSet<>();
 
@@ -50,7 +53,6 @@ public class Usuario extends ModelEntity {
                 direccion.setUsuario(this);
             }
         }
-        //TODO Add favoritos logic
     }
 
     public String getFacebookId() {

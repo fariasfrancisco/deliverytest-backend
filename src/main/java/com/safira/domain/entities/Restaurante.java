@@ -1,5 +1,6 @@
 package com.safira.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.*;
@@ -18,12 +19,15 @@ public class Restaurante extends ModelEntity {
     private String telefono;
     private String email;
 
+    @JsonManagedReference
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "restaurante", cascade = CascadeType.ALL)
     private RestauranteLogin restauranteLogin;
 
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
     private Set<Menu> menus = new HashSet<>();
 
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
     private Set<Pedido> pedidos = new HashSet<>();
 
