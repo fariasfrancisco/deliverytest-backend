@@ -50,13 +50,13 @@ public class Restaurante extends ModelEntity {
         if (restauranteLogin != null && restauranteLogin.getRestaurante() != this)
             restauranteLogin.setRestaurante(this);
         this.menus = builder.menus;
-        for (Menu menu : menus) {
-            if (menu.getRestaurante() != this) menu.setRestaurante(this);
-        }
+        menus.stream()
+                .filter(menu -> menu.getRestaurante() != this)
+                .forEach(menu -> menu.setRestaurante(this));
         this.pedidos = builder.pedidos;
-        for (Pedido pedido : pedidos) {
-            if (pedido.getRestaurante() != this) pedido.setRestaurante(this);
-        }
+        pedidos.stream()
+                .filter(pedido -> pedido.getRestaurante() != this)
+                .forEach(pedido -> pedido.setRestaurante(this));
     }
 
     public String getNombre() {
@@ -104,7 +104,7 @@ public class Restaurante extends ModelEntity {
         private String email;
         private RestauranteLogin restauranteLogin;
         private Set<Menu> menus = new HashSet<>();
-        private Set<Pedido> pedidos = new HashSet<>(0);
+        private Set<Pedido> pedidos = new HashSet<>();
 
         public Builder withNombre(String nombre) {
             this.nombre = nombre;

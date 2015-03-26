@@ -44,17 +44,13 @@ public class Usuario extends ModelEntity {
         this.nombre = builder.nombre;
         this.apellido = builder.apellido;
         this.pedidos = builder.pedidos;
-        for (Pedido pedido : pedidos) {
-            if (pedido.getUsuario() != this) {
-                pedido.setUsuario(this);
-            }
-        }
+        pedidos.stream()
+                .filter(pedido -> pedido.getUsuario() != this)
+                .forEach(pedido -> pedido.setUsuario(this));
         this.direcciones = builder.direcciones;
-        for (Direccion direccion : direcciones) {
-            if (direccion.getUsuario() != this) {
-                direccion.setUsuario(this);
-            }
-        }
+        direcciones.stream()
+                .filter(direccion -> direccion.getUsuario() != this)
+                .forEach(direccion -> direccion.setUsuario(this));
     }
 
     public String getFacebookId() {

@@ -41,9 +41,9 @@ public class Menu extends ModelEntity {
         this.restaurante = builder.restaurante;
         if (!restaurante.getMenus().contains(this)) restaurante.getMenus().add(this);
         this.pedidos = builder.pedidos;
-        for (Pedido pedido : pedidos) {
-            if (!pedido.getMenus().contains(this)) pedido.getMenus().add(this);
-        }
+        pedidos.stream()
+                .filter(pedido -> !pedido.getMenus().contains(this))
+                .forEach(pedido -> pedido.getMenus().add(this));
     }
 
     public String getNombre() {

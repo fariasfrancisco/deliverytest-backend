@@ -46,13 +46,10 @@ public class RestauranteLogin extends ModelEntity {
         this.salt = builder.salt;
         this.isVerified = builder.isVerified;
         this.restaurante = builder.restaurante;
-        if (restaurante != null && restaurante.getRestauranteLogin() != this) {
-            restaurante.setRestauranteLogin(this);
-        }
+        if (restaurante.getRestauranteLogin() != this) restaurante.setRestauranteLogin(this);
         this.restauranteSessionToken = builder.restauranteSessionToken;
-        if (restauranteSessionToken != null && restauranteSessionToken.getRestauranteLogin() != this) {
+        if (restauranteSessionToken != null && restauranteSessionToken.getRestauranteLogin() != this)
             restauranteSessionToken.setRestauranteLogin(this);
-        }
     }
 
     public String getUsuario() {

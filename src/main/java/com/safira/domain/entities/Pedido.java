@@ -68,9 +68,9 @@ public class Pedido extends ModelEntity {
         this.restaurante = builder.restaurante;
         if (!restaurante.getPedidos().contains(this)) restaurante.getPedidos().add(this);
         this.menus = builder.menus;
-        for (Menu menu : menus) {
-            if (!menu.getPedidos().contains(this)) menu.getPedidos().add(this);
-        }
+        menus.stream()
+                .filter(menu -> !menu.getPedidos().contains(this))
+                .forEach(menu -> menu.getPedidos().add(this));
     }
 
     public String getTelefono() {
@@ -99,9 +99,7 @@ public class Pedido extends ModelEntity {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
-        if (!usuario.getPedidos().contains(this)) {
-            usuario.getPedidos().add(this);
-        }
+        if (!usuario.getPedidos().contains(this)) usuario.getPedidos().add(this);
     }
 
     public Restaurante getRestaurante() {
@@ -110,9 +108,7 @@ public class Pedido extends ModelEntity {
 
     public void setRestaurante(Restaurante restaurante) {
         this.restaurante = restaurante;
-        if (!restaurante.getPedidos().contains(this)) {
-            restaurante.getPedidos().add(this);
-        }
+        if (!restaurante.getPedidos().contains(this)) restaurante.getPedidos().add(this);
     }
 
     public Set<Menu> getMenus() {

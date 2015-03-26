@@ -44,9 +44,9 @@ public class Direccion extends ModelEntity {
         this.usuario = builder.usuario;
         if (!usuario.getDirecciones().contains(this)) usuario.getDirecciones().add(this);
         this.pedidos = builder.pedidos;
-        for (Pedido pedido : pedidos) {
-            if (pedido.getDireccion() != this) pedido.setDireccion(this);
-        }
+        pedidos.stream()
+                .filter(pedido -> pedido.getDireccion() != this)
+                .forEach(pedido -> pedido.setDireccion(this));
     }
 
     public String getCalle() {
