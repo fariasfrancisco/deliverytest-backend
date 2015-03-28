@@ -2,7 +2,6 @@ package com.safira.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

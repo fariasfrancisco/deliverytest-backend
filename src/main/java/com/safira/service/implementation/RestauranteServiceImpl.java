@@ -11,8 +11,8 @@ import com.safira.domain.Restaurantes;
 import com.safira.domain.entities.Restaurante;
 import com.safira.domain.entities.RestauranteLogin;
 import com.safira.domain.entities.RestauranteSessionToken;
-import com.safira.domain.repositories.RestauranteLoginRepository;
-import com.safira.domain.repositories.RestauranteRepository;
+import com.safira.service.repositories.RestauranteLoginRepository;
+import com.safira.service.repositories.RestauranteRepository;
 import com.safira.service.PasswordService;
 import com.safira.service.Validator;
 import com.safira.service.interfaces.RestauranteService;
@@ -99,5 +99,15 @@ public class RestauranteServiceImpl implements RestauranteService {
             restauranteLoginRepository.save(restauranteLogin);
         }
         return restauranteLogin.getRestauranteSessionToken();
+    }
+
+    @Override
+    public void sendEmailVerification(RestauranteLogin restauranteLogin) {
+
+    }
+
+    @Override
+    public void validateEmailAddress() {
+
     }
 }

@@ -16,7 +16,7 @@ public class Validator {
     public static final String PHONE_FORMAT = "^\\d{1,16}$";
     public static final String USERNAME_FORMAT = "^([0-9]*[a-z]*[A-Z]*)(?!.*\")(?=\\S+$).{6,50}$";
     public static final String PASSWORD_FORMAT = "^([0-9]*[a-z]*[A-Z]*[@#$%^&+=]*)(?!.*\")(?=\\S+$).{6,50}$";
-    public static final String NUMBER_FORMAT = "^\\d{1,5}$";
+    public static final String NUMBER_FORMAT = "^\\d+$";
 
     public static void validateUsuario(CreateUsuarioRequest createUsuarioRequest) throws ValidatorException {
         if (!validateEmail(createUsuarioRequest.getEmail()))

@@ -8,6 +8,5 @@ import com.safira.domain.entities.Direccion;
  * Created by francisco on 24/03/15.
  */
 public interface DireccionService {
-    public Direccion addDireccion(CreateDireccionRequest createDireccionRequest) throws ValidatorException;
-
+    public Direccion createDireccion(CreateDireccionRequest createDireccionRequest) throws ValidatorException;
 }

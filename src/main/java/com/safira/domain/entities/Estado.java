@@ -1,4 +1,4 @@
-package com.safira.domain;
+package com.safira.domain.entities;
 
 /**
  * Created by francisco on 24/03/15.

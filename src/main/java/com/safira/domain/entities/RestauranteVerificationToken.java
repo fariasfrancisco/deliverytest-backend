@@ -1,8 +1,6 @@
 package com.safira.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.safira.domain.TokenType;
-import com.safira.domain.entity.ModelEntity;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;

@@ -1,7 +1,6 @@
 package com.safira.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -149,5 +148,44 @@ public class Restaurante extends ModelEntity {
         public Restaurante build() {
             return new Restaurante(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Restaurante that = (Restaurante) o;
+
+        if (!nombre.equals(that.nombre)) return false;
+        if (!calle.equals(that.calle)) return false;
+        if (!numero.equals(that.numero)) return false;
+        if (!telefono.equals(that.telefono)) return false;
+        return email.equals(that.email);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + nombre.hashCode();
+        result = 31 * result + calle.hashCode();
+        result = 31 * result + numero.hashCode();
+        result = 31 * result + telefono.hashCode();
+        result = 31 * result + email.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Restaurante{");
+        sb.append("nombre='").append(nombre).append('\'');
+        sb.append(", calle='").append(calle).append('\'');
+        sb.append(", numero='").append(numero).append('\'');
+        sb.append(", telefono='").append(telefono).append('\'');
+        sb.append(", email='").append(email).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

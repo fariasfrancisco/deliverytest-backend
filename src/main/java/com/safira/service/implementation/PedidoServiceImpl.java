@@ -7,7 +7,7 @@ import com.safira.common.exceptions.JPAQueryException;
 import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.Pedidos;
 import com.safira.domain.entities.*;
-import com.safira.domain.repositories.*;
+import com.safira.service.repositories.*;
 import com.safira.service.Validator;
 import com.safira.service.interfaces.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.safira.domain.entity;
+package com.safira.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Type;

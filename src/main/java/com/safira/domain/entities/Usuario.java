@@ -1,7 +1,6 @@
 package com.safira.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -10,6 +10,7 @@ import com.safira.domain.Restaurantes;
 import com.safira.domain.entities.Restaurante;
 import com.safira.domain.entities.RestauranteLogin;
 import com.safira.domain.entities.RestauranteSessionToken;
+import com.safira.domain.entities.RestauranteVerificationToken;
 
 /**
  * Created by francisco on 24/03/15.
@@ -25,4 +26,8 @@ public interface RestauranteService {
     public Restaurante getRestauranteByUuid(String uuid) throws JPAQueryException;
 
     public RestauranteSessionToken createToken(RestauranteLogin restauranteLogin);
+
+    public void sendEmailVerification(RestauranteLogin restauranteLogin);
+
+    public void validateEmailAddress();
 }

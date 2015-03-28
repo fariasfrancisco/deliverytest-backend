@@ -5,7 +5,7 @@ import com.safira.api.LoginUsuarioRequest;
 import com.safira.common.exceptions.JPAQueryException;
 import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.entities.Usuario;
-import com.safira.domain.repositories.UsuarioRepository;
+import com.safira.service.repositories.UsuarioRepository;
 import com.safira.service.Validator;
 import com.safira.service.interfaces.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;

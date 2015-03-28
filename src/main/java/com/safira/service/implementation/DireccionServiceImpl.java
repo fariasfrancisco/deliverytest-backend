@@ -3,7 +3,7 @@ package com.safira.service.implementation;
 import com.safira.api.CreateDireccionRequest;
 import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.entities.Direccion;
-import com.safira.domain.repositories.DireccionRepository;
+import com.safira.service.repositories.DireccionRepository;
 import com.safira.service.Validator;
 import com.safira.service.interfaces.DireccionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class DireccionServiceImpl implements DireccionService {
     DireccionRepository direccionRepository;
 
     @Transactional
-    public Direccion addDireccion(CreateDireccionRequest createDireccionRequest) throws ValidatorException {
+    public Direccion createDireccion(CreateDireccionRequest createDireccionRequest) throws ValidatorException {
         Validator.validateDireccion(createDireccionRequest);
         Direccion direccion = new Direccion.Builder()
                 .withCalle(createDireccionRequest.getCalle())

@@ -1,7 +1,6 @@
 package com.safira.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.safira.domain.entity.ModelEntity;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -119,5 +118,42 @@ public class Direccion extends ModelEntity {
         public Direccion build() {
             return new Direccion(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Direccion direccion = (Direccion) o;
+
+        if (!calle.equals(direccion.calle)) return false;
+        if (!numero.equals(direccion.numero)) return false;
+        if (piso != null ? !piso.equals(direccion.piso) : direccion.piso != null) return false;
+        return !(departamento != null ? !departamento.equals(direccion.departamento) : direccion.departamento != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + calle.hashCode();
+        result = 31 * result + numero.hashCode();
+        result = 31 * result + (piso != null ? piso.hashCode() : 0);
+        result = 31 * result + (departamento != null ? departamento.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Direccion{");
+        sb.append("usuario=").append(usuario);
+        sb.append(", departamento='").append(departamento).append('\'');
+        sb.append(", piso='").append(piso).append('\'');
+        sb.append(", numero='").append(numero).append('\'');
+        sb.append(", calle='").append(calle).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

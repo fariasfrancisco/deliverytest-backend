@@ -1,4 +1,4 @@
-package com.safira.domain.repositories;
+package com.safira.service.repositories;
 
 import com.safira.domain.entities.Menu;
 import com.safira.domain.entities.Pedido;

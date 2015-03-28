@@ -34,4 +34,24 @@ public class CreateDireccionRequest {
     public String getDepartamento() {
         return departamento;
     }
+
+    public CreateDireccionRequest setCalle(String calle) {
+        this.calle = calle;
+        return this;
+    }
+
+    public CreateDireccionRequest setNumero(String numero) {
+        this.numero = numero;
+        return this;
+    }
+
+    public CreateDireccionRequest setPiso(String piso) {
+        this.piso = piso;
+        return this;
+    }
+
+    public CreateDireccionRequest setDepartamento(String departamento) {
+        this.departamento = departamento;
+        return this;
+    }
 }
