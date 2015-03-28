@@ -36,4 +36,24 @@ public class CreateMenuRequest {
     public String getRestauranteUuid() {
         return restauranteUuid;
     }
+
+    public CreateMenuRequest setNombre(String nombre) {
+        this.nombre = nombre;
+        return this;
+    }
+
+    public CreateMenuRequest setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+        return this;
+    }
+
+    public CreateMenuRequest setCosto(BigDecimal costo) {
+        this.costo = costo;
+        return this;
+    }
+
+    public CreateMenuRequest setRestauranteUuid(String restauranteUuid) {
+        this.restauranteUuid = restauranteUuid;
+        return this;
+    }
 }

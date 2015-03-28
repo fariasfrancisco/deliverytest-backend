@@ -80,6 +80,9 @@ public class Validator {
     }
 
     public static void validateDireccion(CreateDireccionRequest createDireccionRequest) throws ValidatorException {
+        if (!validateUuid(createDireccionRequest.getUsuarioUuid()))
+            throw new ValidatorException("The format in the field usuarioUuid(" +
+                    createDireccionRequest.getUsuarioUuid() + ") is invalid");
         if (!validateNumber(createDireccionRequest.getNumero()))
             throw new ValidatorException("The format in the field numero(" +
                     createDireccionRequest.getNumero() + ") is invalid");
@@ -123,5 +126,7 @@ public class Validator {
         return EmailValidator.getInstance().isValid(email);
     }
 
-    private static boolean validateDate(LocalDateTime date){return date.isBefore(LocalDateTime.now());}
+    private static boolean validateDate(LocalDateTime date) {
+        return date.isBefore(LocalDateTime.now());
+    }
 }

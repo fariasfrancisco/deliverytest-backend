@@ -106,4 +106,38 @@ public class Menu extends ModelEntity {
             return new Menu(this);
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Menu menu = (Menu) o;
+
+        if (!nombre.equals(menu.nombre)) return false;
+        if (!descripcion.equals(menu.descripcion)) return false;
+        return costo.equals(menu.costo);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + nombre.hashCode();
+        result = 31 * result + descripcion.hashCode();
+        result = 31 * result + costo.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Menu{");
+        sb.append("restaurante=").append(restaurante);
+        sb.append(", costo=").append(costo);
+        sb.append(", descripcion='").append(descripcion).append('\'');
+        sb.append(", nombre='").append(nombre).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 }
