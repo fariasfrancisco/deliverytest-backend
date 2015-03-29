@@ -1,7 +1,7 @@
 package com.safira.service.implementation;
 
 import com.safira.api.CreateDireccionRequest;
-import com.safira.common.exceptions.JPAQueryException;
+import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.entities.Direccion;
 import com.safira.domain.entities.Usuario;
@@ -26,11 +26,11 @@ public class DireccionServiceImpl implements DireccionService {
     DireccionRepository direccionRepository;
 
     @Transactional
-    public Direccion createDireccion(CreateDireccionRequest createDireccionRequest) throws ValidatorException, JPAQueryException {
+    public Direccion createDireccion(CreateDireccionRequest createDireccionRequest) throws ValidatorException, EmptyQueryResultException {
         Validator.validateDireccion(createDireccionRequest);
         Usuario usuario = usuarioRepository.findByUuid(createDireccionRequest.getUsuarioUuid());
         if (usuario == null)
-            throw new JPAQueryException("No usuario found with uuid = " + createDireccionRequest.getUsuarioUuid());
+            throw new EmptyQueryResultException("No usuario found with uuid = " + createDireccionRequest.getUsuarioUuid());
         Direccion direccion = new Direccion.Builder()
                 .withUsuario(usuario)
                 .withCalle(createDireccionRequest.getCalle())

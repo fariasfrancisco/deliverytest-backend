@@ -3,7 +3,7 @@ package com.safira.service.implementation;
 import com.safira.api.CreatePedidoRequest;
 import com.safira.common.SafiraUtils;
 import com.safira.common.exceptions.InconsistencyException;
-import com.safira.common.exceptions.JPAQueryException;
+import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.Pedidos;
 import com.safira.domain.entities.*;
@@ -39,22 +39,22 @@ public class PedidoServiceImpl implements PedidoService {
     PedidoRepository pedidoRepository;
 
     @Transactional
-    public Pedido createPedido(CreatePedidoRequest createPedidoRequest) throws ValidatorException, JPAQueryException, InconsistencyException {
+    public Pedido createPedido(CreatePedidoRequest createPedidoRequest) throws ValidatorException, EmptyQueryResultException, InconsistencyException {
         Validator.validatePedido(createPedidoRequest);
         Direccion direccion = direccionRepository.findByUuid(createPedidoRequest.getDireccionUuid());
-        if (direccion == null) throw new JPAQueryException("Desearilization Failed. " +
+        if (direccion == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No direccion found with uuid = " + createPedidoRequest.getDireccionUuid());
         Restaurante restaurante = restauranteRepository.findByUuid(createPedidoRequest.getRestauranteUuid());
-        if (restaurante == null) throw new JPAQueryException("Desearilization Failed. " +
+        if (restaurante == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No restaurante found with uuid = " + createPedidoRequest.getRestauranteUuid());
         Usuario usuario = usuarioRepository.findByUuid(createPedidoRequest.getUsuarioUuid());
-        if (usuario == null) throw new JPAQueryException("Desearilization Failed. " +
+        if (usuario == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No usuario found with uuid = " + createPedidoRequest.getUsuarioUuid());
         Set<Menu> menus = new HashSet<>();
         Menu menu;
         for (String menuUuid : createPedidoRequest.getMenuUuids()) {
             menu = menuRepository.findByUuid(menuUuid);
-            if (menu == null) throw new JPAQueryException("Desearilization Failed. " +
+            if (menu == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                     "No menu found with uuid = " + menuUuid);
             if (!restaurante.getIdentifier().equals(menu.getRestaurante().getIdentifier())) {
                 System.out.println(restaurante.getIdentifier());
@@ -78,50 +78,50 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
-    public Pedido getPedidoByUuid(String uuid) throws JPAQueryException {
+    public Pedido getPedidoByUuid(String uuid) throws EmptyQueryResultException {
         Pedido pedido = pedidoRepository.findByUuid(uuid);
-        if (pedido == null) throw new JPAQueryException("Desearilization Failed. " +
+        if (pedido == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No pedido found with uuid = " + uuid);
         return pedido;
     }
 
     @Override
-    public Pedidos getPedidosByRestauranteUuid(String uuid) throws JPAQueryException {
+    public Pedidos getPedidosByRestauranteUuid(String uuid) throws EmptyQueryResultException {
         Restaurante restaurante = restauranteRepository.findByUuid(uuid);
-        if (restaurante == null) throw new JPAQueryException("Desearilization Failed. " +
+        if (restaurante == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No restaurante found with uuid = " + uuid);
         Pedidos pedidos = new Pedidos(SafiraUtils.toList(restaurante.getPedidos()));
         if (pedidos.getPedidos().isEmpty())
-            throw new JPAQueryException("No pedidos were found by the given criteria");
+            throw new EmptyQueryResultException("No pedidos were found by the given criteria");
         return pedidos;
     }
 
     @Override
-    public Pedidos getPedidosByUsuarioUuid(String uuid) throws JPAQueryException {
+    public Pedidos getPedidosByUsuarioUuid(String uuid) throws EmptyQueryResultException {
         Usuario usuario = usuarioRepository.findByUuid(uuid);
-        if (usuario == null) throw new JPAQueryException("Desearilization Failed. " +
+        if (usuario == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No usuario found with uuid = " + uuid);
         Pedidos pedidos = new Pedidos(SafiraUtils.toList(usuario.getPedidos()));
         if (pedidos.getPedidos().isEmpty())
-            throw new JPAQueryException("No pedidos were found by the given criteria");
+            throw new EmptyQueryResultException("No pedidos were found by the given criteria");
         return pedidos;
     }
 
     @Override
     public Pedidos getPedidosByUsuarioUuidAndByRestauranteUuid(String usruuid, String resuuid)
-            throws JPAQueryException {
+            throws EmptyQueryResultException {
         Usuario usuario = usuarioRepository.findByUuid(resuuid);
-        if (usuario == null) throw new JPAQueryException("Desearilization Failed. " +
+        if (usuario == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No usuario found with uuid = " + resuuid);
         Restaurante restaurante = restauranteRepository.findByUuid(resuuid);
-        if (restaurante == null) throw new JPAQueryException("Desearilization Failed. " +
+        if (restaurante == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No restaurante found with uuid = " + resuuid);
         List<Pedido> pedidosByRestaurante = SafiraUtils.toList(restaurante.getPedidos());
         List<Pedido> pedidosByUsuario = SafiraUtils.toList(usuario.getPedidos());
         List<Pedido> intersection = SafiraUtils.intersection(pedidosByRestaurante, pedidosByUsuario);
         Pedidos pedidos = new Pedidos(intersection);
         if (pedidos.getPedidos().isEmpty())
-            throw new JPAQueryException("No pedidos were found by the given criteria");
+            throw new EmptyQueryResultException("No pedidos were found by the given criteria");
         return pedidos;
     }
 }

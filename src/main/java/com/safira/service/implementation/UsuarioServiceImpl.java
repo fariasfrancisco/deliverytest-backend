@@ -2,7 +2,7 @@ package com.safira.service.implementation;
 
 import com.safira.api.CreateUsuarioRequest;
 import com.safira.api.LoginUsuarioRequest;
-import com.safira.common.exceptions.JPAQueryException;
+import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.entities.Usuario;
 import com.safira.service.repositories.UsuarioRepository;
@@ -41,9 +41,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 
     @Transactional
-    public Usuario getUsuarioByUuid(String uuid) throws JPAQueryException {
+    public Usuario getUsuarioByUuid(String uuid) throws EmptyQueryResultException {
         Usuario usuario = usuarioRepository.findByUuid(uuid);
-        if (usuario == null) throw new JPAQueryException("Desearilization Failed. " +
+        if (usuario == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No usuario found with uuid = " + uuid);
         return usuario;
     }

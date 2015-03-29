@@ -53,4 +53,34 @@ public class CreatePedidoRequest {
     public LocalDateTime getFecha() {
         return fecha;
     }
+
+    public CreatePedidoRequest setTelefono(String telefono) {
+        this.telefono = telefono;
+        return this;
+    }
+
+    public CreatePedidoRequest setDireccionUuid(String direccionUuid) {
+        this.direccionUuid = direccionUuid;
+        return this;
+    }
+
+    public CreatePedidoRequest setUsuarioUuid(String usuarioUuid) {
+        this.usuarioUuid = usuarioUuid;
+        return this;
+    }
+
+    public CreatePedidoRequest setRestauranteUuid(String restauranteUuid) {
+        this.restauranteUuid = restauranteUuid;
+        return this;
+    }
+
+    public CreatePedidoRequest setMenuUuids(String[] menuUuids) {
+        this.menuUuids = menuUuids;
+        return this;
+    }
+
+    public CreatePedidoRequest setFecha(LocalDateTime fecha) {
+        this.fecha = fecha;
+        return this;
+    }
 }

@@ -3,7 +3,7 @@ package com.safira.service.implementation;
 import com.safira.api.AuthenticatedRestauranteToken;
 import com.safira.api.CreateRestauranteRequest;
 import com.safira.api.LoginRestauranteRequest;
-import com.safira.common.exceptions.JPAQueryException;
+import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.LoginException;
 import com.safira.common.exceptions.ValidatorException;
 import com.safira.configuration.ApplicationConfiguration;
@@ -61,10 +61,10 @@ public class RestauranteServiceImpl implements RestauranteService {
 
     @Transactional
     public AuthenticatedRestauranteToken loginRestaurante(LoginRestauranteRequest loginRestauranteRequest)
-            throws ValidatorException, JPAQueryException, LoginException {
+            throws ValidatorException, EmptyQueryResultException, LoginException {
         Validator.validateRestauranteLogin(loginRestauranteRequest);
         RestauranteLogin restauranteLogin = restauranteLoginRepository.findByUsuario(loginRestauranteRequest.getUsuario());
-        if (restauranteLogin == null) throw new JPAQueryException("Desearilization Failed. " +
+        if (restauranteLogin == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No restaurante found with usuario = " + loginRestauranteRequest.getUsuario());
         if (!PasswordService.isExpectedPassword(loginRestauranteRequest.getPassword().toCharArray()
                 , restauranteLogin.getSalt(), restauranteLogin.getHash()))
@@ -74,18 +74,18 @@ public class RestauranteServiceImpl implements RestauranteService {
     }
 
     @Transactional
-    public Restaurantes getAllRestaurantes() throws JPAQueryException {
+    public Restaurantes getAllRestaurantes() throws EmptyQueryResultException {
         Restaurantes restaurantes;
         restaurantes = new Restaurantes(restauranteRepository.findAll());
         if (restaurantes.getRestaurantes().isEmpty())
-            throw new JPAQueryException("No restaurantes were found by the given criteria");
+            throw new EmptyQueryResultException("No restaurantes were found by the given criteria");
         return restaurantes;
     }
 
     @Transactional
-    public Restaurante getRestauranteByUuid(String uuid) throws JPAQueryException {
+    public Restaurante getRestauranteByUuid(String uuid) throws EmptyQueryResultException {
         Restaurante restaurante = restauranteRepository.findByUuid(uuid);
-        if (restaurante == null) throw new JPAQueryException("Desearilization Failed. " +
+        if (restaurante == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No restaurante found with uuid = " + uuid);
         return restaurante;
     }

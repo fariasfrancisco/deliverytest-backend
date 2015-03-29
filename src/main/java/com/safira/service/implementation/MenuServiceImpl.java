@@ -2,7 +2,7 @@ package com.safira.service.implementation;
 
 import com.safira.api.CreateMenuRequest;
 import com.safira.common.SafiraUtils;
-import com.safira.common.exceptions.JPAQueryException;
+import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.Menus;
 import com.safira.domain.entities.Menu;
@@ -33,10 +33,10 @@ public class MenuServiceImpl implements MenuService {
     MenuRepository menuRepository;
 
     @Transactional
-    public Menu createMenu(CreateMenuRequest createMenuRequest) throws ValidatorException, JPAQueryException {
+    public Menu createMenu(CreateMenuRequest createMenuRequest) throws ValidatorException, EmptyQueryResultException {
         Validator.validateMenu(createMenuRequest);
         Restaurante restaurante = restauranteRepository.findByUuid(createMenuRequest.getRestauranteUuid());
-        if (restaurante == null) throw new JPAQueryException("Desearilization Failed. " +
+        if (restaurante == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No restaurante found with uuid = " + createMenuRequest.getRestauranteUuid());
         Menu menu = new Menu.Builder()
                 .withNombre(createMenuRequest.getNombre())
@@ -49,32 +49,32 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Transactional
-    public Menu getMenuByUuid(String uuid) throws JPAQueryException {
+    public Menu getMenuByUuid(String uuid) throws EmptyQueryResultException {
         Menu menu = menuRepository.findByUuid(uuid);
-        if (menu == null) throw new JPAQueryException("Desearilization Failed. " +
+        if (menu == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No menu found with uuid = " + uuid);
         return menu;
     }
 
     @Transactional
-    public Menus getMenusByRestauranteUuid(String uuid) throws JPAQueryException {
+    public Menus getMenusByRestauranteUuid(String uuid) throws EmptyQueryResultException {
         Restaurante restaurante = restauranteRepository.findByUuid(uuid);
-        if (restaurante == null) throw new JPAQueryException("Desearilization Failed. " +
+        if (restaurante == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No restaurante found with uuid = " + uuid);
         Menus menus = new Menus(SafiraUtils.toList(restaurante.getMenus()));
         if (menus.getMenus().isEmpty())
-            throw new JPAQueryException("No menus were found by the given criteria");
+            throw new EmptyQueryResultException("No menus were found by the given criteria");
         return menus;
     }
 
     @Transactional
-    public Menus getMenusByPedidoUuid(String uuid) throws JPAQueryException {
+    public Menus getMenusByPedidoUuid(String uuid) throws EmptyQueryResultException {
         Pedido pedido = pedidoRepository.findByUuid(uuid);
-        if (pedido == null) throw new JPAQueryException("Desearilization Failed. " +
+        if (pedido == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No restaurante found with uuid = " + uuid);
         Menus menus = new Menus(SafiraUtils.toList(pedido.getMenus()));
         if (menus.getMenus().isEmpty())
-            throw new JPAQueryException("No menus were found by the given criteria");
+            throw new EmptyQueryResultException("No menus were found by the given criteria");
         return menus;
     }
 }

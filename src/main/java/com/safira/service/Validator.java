@@ -1,7 +1,7 @@
 package com.safira.service;
 
 import com.safira.api.*;
-import com.safira.common.exceptions.ValidatorException;
+import com.safira.common.exceptions.*;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import java.math.BigDecimal;
@@ -20,71 +20,71 @@ public class Validator {
 
     public static void validateUsuario(CreateUsuarioRequest createUsuarioRequest) throws ValidatorException {
         if (!validateEmail(createUsuarioRequest.getEmail()))
-            throw new ValidatorException("The format in the field email("
+            throw new EmailException("The format in the field email("
                     + createUsuarioRequest.getEmail() + ") is invalid");
     }
 
     public static void validateMenu(CreateMenuRequest createMenuRequest) throws ValidatorException {
         if (!validateUuid(createMenuRequest.getRestauranteUuid()))
-            throw new ValidatorException("The format in the field restauranteUuid(" +
+            throw new UUIDException("The format in the field restauranteUuid(" +
                     createMenuRequest.getRestauranteUuid() + ") is invalid");
         if (!validateMoney(createMenuRequest.getCosto()))
-            throw new ValidatorException("The format in the field restauranteUUid(" +
+            throw new MoneyException("The format in the field restauranteUUid(" +
                     createMenuRequest.getCosto() + ") is invalid");
     }
 
     public static void validateRestaurante(CreateRestauranteRequest createRestauranteRequest) throws ValidatorException {
         if (!validateUsername(createRestauranteRequest.getUsuario()))
-            throw new ValidatorException("The format in the field usuario(" +
+            throw new UsernameException("The format in the field usuario(" +
                     createRestauranteRequest.getUsuario() + ") is invalid");
         if (!validateNumber(createRestauranteRequest.getNumero()))
-            throw new ValidatorException("The format in the field numero(" +
+            throw new NumberException("The format in the field numero(" +
                     createRestauranteRequest.getNumero() + ") is invalid");
         if (!validatePhone(createRestauranteRequest.getTelefono()))
-            throw new ValidatorException("The format in the field telefono(" +
+            throw new PhoneException("The format in the field telefono(" +
                     createRestauranteRequest.getTelefono() + ") is invalid");
         if (!validateEmail(createRestauranteRequest.getEmail()))
-            throw new ValidatorException("The format in the field email(" +
+            throw new EmailException("The format in the field email(" +
                     createRestauranteRequest.getEmail() + ") is invalid");
         if (!validatePassword(createRestauranteRequest.getPassword()))
-            throw new ValidatorException("The format in the field password(" +
+            throw new PasswordException("The format in the field password(" +
                     createRestauranteRequest.getPassword() + ") is invalid");
     }
 
     public static void validatePedido(CreatePedidoRequest createPedidoRequest) throws ValidatorException {
         if (!validateUuid(createPedidoRequest.getDireccionUuid()))
-            throw new ValidatorException("The format in the field direccionUuid(" +
+            throw new UUIDException("The format in the field direccionUuid(" +
                     createPedidoRequest.getDireccionUuid() + ") is invalid");
         if (!validatePhone(createPedidoRequest.getTelefono()))
-            throw new ValidatorException("The format in the field telefono(" +
+            throw new PhoneException("The format in the field telefono(" +
                     createPedidoRequest.getTelefono() + ") is invalid");
         if (!validateUuid(createPedidoRequest.getUsuarioUuid()))
-            throw new ValidatorException("The format in the field usuarioUuid(" +
+            throw new UUIDException("The format in the field usuarioUuid(" +
                     createPedidoRequest.getUsuarioUuid() + ") is invalid");
         if (!validateUuid(createPedidoRequest.getRestauranteUuid()))
-            throw new ValidatorException("The format in the field restauranteUuid(" +
+            throw new UUIDException("The format in the field restauranteUuid(" +
                     createPedidoRequest.getRestauranteUuid() + ") is invalid");
         if (!validateMenuArray(createPedidoRequest.getMenuUuids()))
-            throw new ValidatorException("The format in the field menuUuids is invalid");
+            throw new UUIDException("The format in the field menuUuids is invalid");
         if (!validateDate(createPedidoRequest.getFecha()))
-            throw new ValidatorException("The date in the field fecha is invalid");
+            throw new DateException("The date in the field fecha is invalid");
     }
 
     public static void validateRestauranteLogin(LoginRestauranteRequest loginRestauranteRequest) throws ValidatorException {
         if (!validateUsername(loginRestauranteRequest.getUsuario()))
-            throw new ValidatorException("The format in the field usuario(" +
+            throw new UsernameException("The format in the field usuario(" +
                     loginRestauranteRequest.getUsuario() + ") is invalid");
         if (!validatePassword(loginRestauranteRequest.getPassword()))
-            throw new ValidatorException("The format in the field password(" +
+            throw new PasswordException("The format in the field password(" +
                     loginRestauranteRequest.getPassword() + ") is invalid");
     }
 
     public static void validateDireccion(CreateDireccionRequest createDireccionRequest) throws ValidatorException {
         if (!validateUuid(createDireccionRequest.getUsuarioUuid()))
-            throw new ValidatorException("The format in the field usuarioUuid(" +
+            throw new UUIDException("The format in the field usuarioUuid(" +
                     createDireccionRequest.getUsuarioUuid() + ") is invalid");
         if (!validateNumber(createDireccionRequest.getNumero()))
-            throw new ValidatorException("The format in the field numero(" +
+            throw new NumberException("The format in the field numero(" +
                     createDireccionRequest.getNumero() + ") is invalid");
         if (createDireccionRequest.getPiso() == null)
             if (createDireccionRequest.getDepartamento() != null)
@@ -92,14 +92,12 @@ public class Validator {
     }
 
     private static boolean validateMenuArray(String[] menuUuids) {
-        for (String uuid : menuUuids) {
-            if (!validateUuid(uuid)) return false;
-        }
+        for (String uuid : menuUuids) if (!validateUuid(uuid)) return false;
         return true;
     }
 
     private static boolean validateMoney(BigDecimal money) {
-        return (money.scale() > 2) && (money.signum() == 1);
+        return (money.scale() < 3) && (money.signum() == 1);
     }
 
     private static boolean validateUuid(String uuid) {
