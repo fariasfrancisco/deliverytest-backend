@@ -1,9 +1,11 @@
 package com.safira.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.safira.domain.entity.ModelEntity;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -18,9 +20,13 @@ public class Usuario extends ModelEntity {
     private String nombre;
     private String apellido;
 
-    @JsonIgnore
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
-    private Set<Pedido> pedidos = new HashSet<>(0);
+    private Set<Pedido> pedidos = new HashSet<>();
+
+    @JsonManagedReference
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
+    private Set<Direccion> direcciones = new HashSet<>();
 
     public Usuario() {
         this(UUID.randomUUID());
@@ -37,56 +43,37 @@ public class Usuario extends ModelEntity {
         this.nombre = builder.nombre;
         this.apellido = builder.apellido;
         this.pedidos = builder.pedidos;
-        for (Pedido pedido : pedidos) {
-            if (pedido.getUsuario() != this) {
-                pedido.setUsuario(this);
-            }
-        }
+        pedidos.stream()
+                .filter(pedido -> pedido.getUsuario() != this)
+                .forEach(pedido -> pedido.setUsuario(this));
+        this.direcciones = builder.direcciones;
+        direcciones.stream()
+                .filter(direccion -> direccion.getUsuario() != this)
+                .forEach(direccion -> direccion.setUsuario(this));
     }
 
     public String getFacebookId() {
         return facebookId;
     }
 
-    public void setFacebookId(String facebookId) {
-        this.facebookId = facebookId;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public String getApellido() {
         return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
     }
 
     public Set<Pedido> getPedidos() {
         return pedidos;
     }
 
-    public void setPedidos(Set<Pedido> pedidos) {
-        this.pedidos = pedidos;
-        for (Pedido pedido : pedidos) {
-            if (pedido.getUsuario() != this) {
-                pedido.setUsuario(this);
-            }
-        }
+    public Set<Direccion> getDirecciones() {
+        return direcciones;
     }
 
     public static class Builder {
@@ -94,7 +81,8 @@ public class Usuario extends ModelEntity {
         private String email;
         private String nombre;
         private String apellido;
-        private Set<Pedido> pedidos = new HashSet<>(0);
+        private Set<Pedido> pedidos = new HashSet<>();
+        private Set<Direccion> direcciones = new HashSet<>();
 
         public Builder withFacebookId(String facebookId) {
             this.facebookId = facebookId;
@@ -121,19 +109,13 @@ public class Usuario extends ModelEntity {
             return this;
         }
 
+        public Builder withDirecciones(Set<Direccion> direcciones) {
+            this.direcciones = direcciones;
+            return this;
+        }
+
         public Usuario build() {
             return new Usuario(this);
         }
-    }
-
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("Usuario{");
-        sb.append("facebookId='").append(facebookId).append('\'');
-        sb.append(", email='").append(email).append('\'');
-        sb.append(", nombre='").append(nombre).append('\'');
-        sb.append(", apellido='").append(apellido).append('\'');
-        sb.append('}');
-        return sb.toString();
     }
 }

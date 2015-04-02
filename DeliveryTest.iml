@@ -9,6 +9,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/main/java" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
     </content>
@@ -94,5 +95,9 @@
     <orderEntry type="library" exported="" name="Gradle: commons-digester:commons-digester:1.8.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-logging:commons-logging:1.2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-collections:commons-collections:3.2.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.springframework.boot:spring-boot-starter-security:1.2.2.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.springframework.security:spring-security-config:3.2.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.springframework.security:spring-security-web:3.2.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.springframework.security:spring-security-core:3.2.6.RELEASE" level="project" />
   </component>
 </module>

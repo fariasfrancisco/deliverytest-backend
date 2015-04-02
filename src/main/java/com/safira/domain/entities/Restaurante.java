@@ -1,7 +1,6 @@
 package com.safira.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.safira.domain.entity.ModelEntity;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -19,15 +18,15 @@ public class Restaurante extends ModelEntity {
     private String telefono;
     private String email;
 
-    @JsonIgnore
+    @JsonManagedReference
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "restaurante", cascade = CascadeType.ALL)
     private RestauranteLogin restauranteLogin;
 
-    @JsonIgnore
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
     private Set<Menu> menus = new HashSet<>();
 
-    @JsonIgnore
+    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
     private Set<Pedido> pedidos = new HashSet<>();
 
@@ -36,7 +35,7 @@ public class Restaurante extends ModelEntity {
     }
 
     public Restaurante(UUID uuid) {
-        super(UUID.randomUUID());
+        super(uuid);
     }
 
     public Restaurante(Builder builder) {
@@ -47,61 +46,36 @@ public class Restaurante extends ModelEntity {
         this.telefono = builder.telefono;
         this.email = builder.email;
         this.restauranteLogin = builder.restauranteLogin;
-        if (restauranteLogin != null && restauranteLogin.getRestaurante() != this) {
+        if (restauranteLogin != null && restauranteLogin.getRestaurante() != this)
             restauranteLogin.setRestaurante(this);
-        }
         this.menus = builder.menus;
-        for (Menu menu : menus) {
-            if (menu.getRestaurante() != this) {
-                menu.setRestaurante(this);
-            }
-        }
+        menus.stream()
+                .filter(menu -> menu.getRestaurante() != this)
+                .forEach(menu -> menu.setRestaurante(this));
         this.pedidos = builder.pedidos;
-        for (Pedido pedido : pedidos) {
-            if (pedido.getRestaurante() != this) {
-                pedido.setRestaurante(this);
-            }
-        }
+        pedidos.stream()
+                .filter(pedido -> pedido.getRestaurante() != this)
+                .forEach(pedido -> pedido.setRestaurante(this));
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public String getCalle() {
         return calle;
-    }
-
-    public void setCalle(String calle) {
-        this.calle = calle;
     }
 
     public String getNumero() {
         return numero;
     }
 
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
-
     public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public RestauranteLogin getRestauranteLogin() {
@@ -110,35 +84,15 @@ public class Restaurante extends ModelEntity {
 
     public void setRestauranteLogin(RestauranteLogin restauranteLogin) {
         this.restauranteLogin = restauranteLogin;
-        if (restauranteLogin.getRestaurante() != this) {
-            restauranteLogin.setRestaurante(this);
-        }
+        if (restauranteLogin.getRestaurante() != this) restauranteLogin.setRestaurante(this);
     }
 
     public Set<Menu> getMenus() {
         return menus;
     }
 
-    public void setMenus(Set<Menu> menus) {
-        this.menus = menus;
-        for (Menu menu : menus) {
-            if (menu.getRestaurante() != this) {
-                menu.setRestaurante(this);
-            }
-        }
-    }
-
     public Set<Pedido> getPedidos() {
         return pedidos;
-    }
-
-    public void setPedidos(Set<Pedido> pedidos) {
-        this.pedidos = pedidos;
-        for (Pedido pedido : pedidos) {
-            if (pedido.getRestaurante() != this) {
-                pedido.setRestaurante(this);
-            }
-        }
     }
 
     public static class Builder {
@@ -149,7 +103,7 @@ public class Restaurante extends ModelEntity {
         private String email;
         private RestauranteLogin restauranteLogin;
         private Set<Menu> menus = new HashSet<>();
-        private Set<Pedido> pedidos = new HashSet<>(0);
+        private Set<Pedido> pedidos = new HashSet<>();
 
         public Builder withNombre(String nombre) {
             this.nombre = nombre;
@@ -197,8 +151,35 @@ public class Restaurante extends ModelEntity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Restaurante that = (Restaurante) o;
+
+        if (!nombre.equals(that.nombre)) return false;
+        if (!calle.equals(that.calle)) return false;
+        if (!numero.equals(that.numero)) return false;
+        if (!telefono.equals(that.telefono)) return false;
+        return email.equals(that.email);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + nombre.hashCode();
+        result = 31 * result + calle.hashCode();
+        result = 31 * result + numero.hashCode();
+        result = 31 * result + telefono.hashCode();
+        result = 31 * result + email.hashCode();
+        return result;
+    }
+
+    @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Restaurante{");
+        final StringBuilder sb = new StringBuilder("Restaurante{");
         sb.append("nombre='").append(nombre).append('\'');
         sb.append(", calle='").append(calle).append('\'');
         sb.append(", numero='").append(numero).append('\'');

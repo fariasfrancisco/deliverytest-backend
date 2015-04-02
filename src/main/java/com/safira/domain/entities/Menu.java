@@ -1,7 +1,7 @@
 package com.safira.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.safira.domain.entity.ModelEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -15,11 +15,12 @@ public class Menu extends ModelEntity {
     private String descripcion;
     private BigDecimal costo;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurante_id", nullable = false)
     private Restaurante restaurante;
 
-    @JsonIgnore
+    @JsonManagedReference
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "menus")
     private Set<Pedido> pedidos = new HashSet<>();
 
@@ -28,7 +29,7 @@ public class Menu extends ModelEntity {
     }
 
     public Menu(UUID uuid) {
-        super(UUID.randomUUID());
+        super(uuid);
     }
 
     public Menu(Builder builder) {
@@ -37,39 +38,23 @@ public class Menu extends ModelEntity {
         this.descripcion = builder.descripcion;
         this.costo = builder.costo;
         this.restaurante = builder.restaurante;
-        if (!restaurante.getMenus().contains(this)) {
-            restaurante.getMenus().add(this);
-        }
+        if (!restaurante.getMenus().contains(this)) restaurante.getMenus().add(this);
         this.pedidos = builder.pedidos;
-        for (Pedido pedido : pedidos) {
-            if (!pedido.getMenus().contains(this)) {
-                pedido.getMenus().add(this);
-            }
-        }
+        pedidos.stream()
+                .filter(pedido -> !pedido.getMenus().contains(this))
+                .forEach(pedido -> pedido.getMenus().add(this));
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public String getDescripcion() {
         return descripcion;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
     public BigDecimal getCosto() {
         return costo;
-    }
-
-    public void setCosto(BigDecimal costo) {
-        this.costo = costo;
     }
 
     public Restaurante getRestaurante() {
@@ -78,17 +63,11 @@ public class Menu extends ModelEntity {
 
     public void setRestaurante(Restaurante restaurante) {
         this.restaurante = restaurante;
-        if (!restaurante.getMenus().contains(this)) {
-            restaurante.getMenus().add(this);
-        }
+        if (!restaurante.getMenus().contains(this)) restaurante.getMenus().add(this);
     }
 
     public Set<Pedido> getPedidos() {
         return pedidos;
-    }
-
-    public void setPedidos(Set<Pedido> pedidos) {
-        this.pedidos = pedidos;
     }
 
     public static class Builder {
@@ -129,11 +108,35 @@ public class Menu extends ModelEntity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Menu menu = (Menu) o;
+
+        if (!nombre.equals(menu.nombre)) return false;
+        if (!descripcion.equals(menu.descripcion)) return false;
+        return costo.equals(menu.costo);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + nombre.hashCode();
+        result = 31 * result + descripcion.hashCode();
+        result = 31 * result + costo.hashCode();
+        return result;
+    }
+
+    @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Menu{");
-        sb.append("nombre='").append(nombre).append('\'');
-        sb.append(", descripcion='").append(descripcion).append('\'');
+        final StringBuilder sb = new StringBuilder("Menu{");
+        sb.append("restaurante=").append(restaurante);
         sb.append(", costo=").append(costo);
+        sb.append(", descripcion='").append(descripcion).append('\'');
+        sb.append(", nombre='").append(nombre).append('\'');
         sb.append('}');
         return sb.toString();
     }

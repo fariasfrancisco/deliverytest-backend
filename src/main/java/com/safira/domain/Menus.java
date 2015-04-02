@@ -5,7 +5,7 @@ import com.safira.domain.entities.Menu;
 import java.util.List;
 
 /**
- * Class intended to simplify List storage of Menu objects and ease jSon transmision.
+ * Class intended to simplify List storage of Menu objects and ease json transmision.
  */
 public class Menus {
     private List<Menu> menus;
@@ -20,15 +20,5 @@ public class Menus {
 
     public List<Menu> getMenus() {
         return menus;
-    }
-
-    @Override
-    public String toString() {
-        String s = "Menus{";
-        for (Menu m : menus) {
-            s += m.toString();
-        }
-        s += '}';
-        return s;
     }
 }
