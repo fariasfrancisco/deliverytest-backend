@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.safira.common.URLs.*;
+
 /**
  * Created by francisco on 22/03/15.
  */
@@ -23,7 +25,7 @@ public class MenuController {
     final static Logger menuWarnLogger = Logger.getLogger("menuWarnLogger");
     final static Logger menuErrorLogger = Logger.getLogger("menuErrorLogger");
 
-    @RequestMapping(value = "/registerMenu", method = RequestMethod.POST)
+    @RequestMapping(value = REGISTER_MENU, method = RequestMethod.POST)
     public ResponseEntity registerMenu(@RequestBody CreateMenuRequest createMenuRequest) {
         Menu menu;
         try {
@@ -34,7 +36,7 @@ public class MenuController {
         return new ResponseEntity<>(menu, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/getMenuByUuid", method = RequestMethod.GET)
+    @RequestMapping(value = GET_MENU_BY_UUID, method = RequestMethod.GET)
     public ResponseEntity getMenuById(@RequestParam(value = "uuid", required = true) String uuid) {
         Menu menu;
         try {
@@ -45,7 +47,7 @@ public class MenuController {
         return new ResponseEntity<>(menu, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/getMenusByRestaurante", method = RequestMethod.GET)
+    @RequestMapping(value = GET_MENUS_BY_RESTAURANTE, method = RequestMethod.GET)
     public ResponseEntity getMenusByRestaurante(@RequestParam(value = "uuid", required = true) String uuid) {
         Menus menus;
         try {
@@ -56,7 +58,7 @@ public class MenuController {
         return new ResponseEntity<>(menus, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/getMenusByPedido", method = RequestMethod.GET)
+    @RequestMapping(value = GET_MENUS_BY_PEDIDO, method = RequestMethod.GET)
     public ResponseEntity getMenusByPedido(@RequestParam(value = "uuid", required = true) String uuid) {
         Menus menus;
         try {

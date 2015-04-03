@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.safira.common.URLs.*;
+
 /**
  * Created by francisco on 22/03/15.
  */
@@ -25,7 +27,7 @@ public class RestauranteController {
     final static Logger restauranteWarnLogger = Logger.getLogger("restauranteWarnLogger");
     final static Logger restauranteErrorLogger = Logger.getLogger("restauranteErrorLogger");
 
-    @RequestMapping(value = "/registerRestaurante", method = RequestMethod.POST)
+    @RequestMapping(value = REGISTER_RESTAURANTE, method = RequestMethod.POST)
     public ResponseEntity registerRestaurante(@RequestBody CreateRestauranteRequest createRestauranteRequest) {
         Restaurante restaurante;
         try {
@@ -36,7 +38,7 @@ public class RestauranteController {
         return new ResponseEntity<>(restaurante, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/loginRestaurante", method = RequestMethod.POST)
+    @RequestMapping(value = LOGIN_RESTAURANTE, method = RequestMethod.POST)
     public ResponseEntity loginRestaurante(@RequestBody LoginRestauranteRequest loginRestauranteRequest) {
         AuthenticatedRestauranteToken authenticatedRestauranteToken;
         try {
@@ -47,7 +49,7 @@ public class RestauranteController {
         return new ResponseEntity<>(authenticatedRestauranteToken, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/getRestaurantes", method = RequestMethod.GET)
+    @RequestMapping(value = GET_RESTAURANTES, method = RequestMethod.GET)
     public ResponseEntity getRestaurantes() {
         Restaurantes restaurantes;
         try {
@@ -58,7 +60,7 @@ public class RestauranteController {
         return new ResponseEntity<>(restaurantes, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/getRestauranteByUuid", method = RequestMethod.GET)
+    @RequestMapping(value = GET_RESTAURANTE_BY_UUID, method = RequestMethod.GET)
     public ResponseEntity<Object> getRestauranteById(@RequestParam(value = "uuid", required = true, defaultValue = "0") String uuid) {
         Restaurante restaurante;
         try {

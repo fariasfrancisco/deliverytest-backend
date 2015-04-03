@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.safira.common.URLs.LOGIN_USUARIO;
+import static com.safira.common.URLs.REGISTER_USUARIO;
+
 /**
  * Created by francisco on 22/03/15.
  */
@@ -22,7 +25,7 @@ public class UsuarioController {
     final static Logger usuarioWarnLogger = Logger.getLogger("usuarioWarnLogger");
     final static Logger usuarioErrorLogger = Logger.getLogger("usuarioErrorLogger");
 
-    @RequestMapping(value = "/registerUsuario", method = RequestMethod.POST)
+    @RequestMapping(value = REGISTER_USUARIO, method = RequestMethod.POST)
     public ResponseEntity registerUsuario(@RequestBody CreateUsuarioRequest createUsuarioRequest) {
         Usuario usuario;
         try {
@@ -33,7 +36,7 @@ public class UsuarioController {
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/loginUsuario", method = RequestMethod.GET)
+    @RequestMapping(value = LOGIN_USUARIO, method = RequestMethod.GET)
     public ResponseEntity loginUsuario(@RequestParam(value = "uuid", required = true) String uuid) {
         Usuario usuario;
         try {

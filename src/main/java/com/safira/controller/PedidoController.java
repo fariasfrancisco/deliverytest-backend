@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.safira.common.URLs.*;
+
 /**
  * Created by francisco on 22/03/15.
  */
@@ -23,7 +25,7 @@ public class PedidoController {
     final static Logger pedidoWarnLogger = Logger.getLogger("pedidoWarnLogger");
     final static Logger pedidoErrorLogger = Logger.getLogger("pedidoExceptionLogger");
 
-    @RequestMapping(value = "/registerPedido", method = RequestMethod.POST)
+    @RequestMapping(value = REGISTER_PEDIDO, method = RequestMethod.POST)
     public ResponseEntity registerPedido(@RequestBody CreatePedidoRequest createPedidoRequest) {
         Pedido pedido;
         try {
@@ -34,7 +36,7 @@ public class PedidoController {
         return new ResponseEntity<>(pedido, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/getPedidoByUuid", method = RequestMethod.GET)
+    @RequestMapping(value = GET_PEDIDO_BY_UUID, method = RequestMethod.GET)
     public ResponseEntity getPedidoById(@RequestParam(value = "uuid", required = true) String uuid) {
         Pedido pedido;
         try {
@@ -45,7 +47,7 @@ public class PedidoController {
         return new ResponseEntity<>(pedido, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/getPedidosByRestaurante", method = RequestMethod.GET)
+    @RequestMapping(value = GET_PEDIDOS_BY_RESTAURANTE, method = RequestMethod.GET)
     public ResponseEntity getPedidosByRestaurante(@RequestParam(value = "uuid", required = true) String uuid) {
         Pedidos pedidos;
         try {
@@ -56,7 +58,7 @@ public class PedidoController {
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/getPedidosByUsuario", method = RequestMethod.GET)
+    @RequestMapping(value = GET_PEDIDOS_BY_USUARIO, method = RequestMethod.GET)
     public ResponseEntity getPedidosByUsuario(@RequestParam(value = "uuid", required = true) String uuid) {
         Pedidos pedidos;
         try {
@@ -67,7 +69,7 @@ public class PedidoController {
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/getPedidosByRestauranteAndUsuario", method = RequestMethod.GET)
+    @RequestMapping(value = GET_PEDIDOS_BY_USUARIO_AND_BY_RESTAURANTE, method = RequestMethod.GET)
     public ResponseEntity getPedidosByRestauranteAndUsuario(
             @RequestParam(value = "resuuid", required = true) String resuuid,
             @RequestParam(value = "usruuid", required = true) String usruuid) {
