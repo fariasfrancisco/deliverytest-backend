@@ -1,5 +1,6 @@
 package com.safira.api;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -11,23 +12,10 @@ public class CreatePedidoRequest {
     private String usuarioUuid;
     private String restauranteUuid;
     private String[] menuUuids;
+    private BigDecimal[] cantidades;
     private LocalDateTime fecha;
 
     public CreatePedidoRequest() {
-    }
-
-    public CreatePedidoRequest(String telefono,
-                               String direccionUuid,
-                               String usuarioUuid,
-                               String restauranteUuid,
-                               String[] menuUuids,
-                               LocalDateTime fecha) {
-        this.telefono = telefono;
-        this.direccionUuid = direccionUuid;
-        this.usuarioUuid = usuarioUuid;
-        this.restauranteUuid = restauranteUuid;
-        this.menuUuids = menuUuids;
-        this.fecha = fecha;
     }
 
     public String getTelefono() {
@@ -48,6 +36,10 @@ public class CreatePedidoRequest {
 
     public String[] getMenuUuids() {
         return menuUuids;
+    }
+
+    public BigDecimal[] getCantidades() {
+        return cantidades;
     }
 
     public LocalDateTime getFecha() {
@@ -76,6 +68,11 @@ public class CreatePedidoRequest {
 
     public CreatePedidoRequest setMenuUuids(String[] menuUuids) {
         this.menuUuids = menuUuids;
+        return this;
+    }
+
+    public CreatePedidoRequest setCantidades(BigDecimal[] cantidades) {
+        this.cantidades = cantidades;
         return this;
     }
 

@@ -2,21 +2,20 @@ package com.safira.service.implementation;
 
 import com.safira.api.CreatePedidoRequest;
 import com.safira.common.SafiraUtils;
-import com.safira.common.exceptions.InconsistencyException;
 import com.safira.common.exceptions.EmptyQueryResultException;
+import com.safira.common.exceptions.InconsistencyException;
 import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.Pedidos;
 import com.safira.domain.entities.*;
-import com.safira.service.repositories.*;
 import com.safira.service.Validator;
 import com.safira.service.interfaces.PedidoService;
+import com.safira.service.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by francisco on 24/03/15.
@@ -38,6 +37,9 @@ public class PedidoServiceImpl implements PedidoService {
     @Autowired
     PedidoRepository pedidoRepository;
 
+    @Autowired
+    MenuPedidoRepository menuPedidoRepository;
+
     @Transactional
     public Pedido createPedido(CreatePedidoRequest createPedidoRequest) throws ValidatorException, EmptyQueryResultException, InconsistencyException {
         Validator.validatePedido(createPedidoRequest);
@@ -50,29 +52,33 @@ public class PedidoServiceImpl implements PedidoService {
         Usuario usuario = usuarioRepository.findByUuid(createPedidoRequest.getUsuarioUuid());
         if (usuario == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No usuario found with uuid = " + createPedidoRequest.getUsuarioUuid());
-        Set<Menu> menus = new HashSet<>();
-        Menu menu;
-        for (String menuUuid : createPedidoRequest.getMenuUuids()) {
-            menu = menuRepository.findByUuid(menuUuid);
-            if (menu == null) throw new EmptyQueryResultException("Desearilization Failed. " +
-                    "No menu found with uuid = " + menuUuid);
-            if (!restaurante.getIdentifier().equals(menu.getRestaurante().getIdentifier())) {
-                System.out.println(restaurante.getIdentifier());
-                System.out.println(menu.getRestaurante().getIdentifier());
-                throw new InconsistencyException("Deserialization Failed. " +
-                        "menu.restaurante uuid recieved was " + menuUuid +
-                        ". Expected " + createPedidoRequest.getRestauranteUuid());
-            }
-            menus.add(menu);
-        }
         Pedido pedido = new Pedido.Builder()
                 .withDireccion(direccion)
                 .withTelefono(createPedidoRequest.getTelefono())
                 .withFecha(createPedidoRequest.getFecha())
                 .withRestaurante(restaurante)
                 .withUsuario(usuario)
-                .withMenus(menus)
                 .build();
+        Menu menu;
+        MenuPedido menuPedido;
+        int length = createPedidoRequest.getMenuUuids().length;
+        for (int index = 0; index < length; index++) {
+            String menuUuid = createPedidoRequest.getMenuUuids()[index];
+            BigDecimal cantidad = createPedidoRequest.getCantidades()[index];
+            menu = menuRepository.findByUuid(menuUuid);
+            if (menu == null) throw new EmptyQueryResultException("Desearilization Failed. " +
+                    "No menu found with uuid = " + menuUuid);
+            if (!restaurante.getIdentifier().equals(menu.getRestaurante().getIdentifier())) {
+                throw new InconsistencyException("Deserialization Failed. " +
+                        "menu.restaurante uuid recieved was " + menuUuid +
+                        ". Expected " + createPedidoRequest.getRestauranteUuid());
+            }
+            menuPedido = new MenuPedido();
+            menuPedido.setPedido(pedido);
+            menuPedido.setMenu(menu);
+            menuPedido.setCantidad(cantidad);
+            menuPedidoRepository.save(menuPedido);
+        }
         pedidoRepository.save(pedido);
         return pedido;
     }

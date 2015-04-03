@@ -17,10 +17,4 @@ import java.util.List;
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     @Query("select p from Pedido p where p.uuid = :uuid")
     Pedido findByUuid(@Param("uuid") String uuid);
-
-    List<Pedido> findByRestaurante(Restaurante restaurante);
-
-    List<Pedido> findByUsuario(Usuario usuario);
-
-    List<Pedido> findByUsuarioAndRestaurante(Usuario usuario, Restaurante restaurante);
 }

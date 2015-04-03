@@ -6,16 +6,20 @@ import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.Menus;
 import com.safira.domain.entities.Menu;
+import com.safira.domain.entities.MenuPedido;
 import com.safira.domain.entities.Pedido;
 import com.safira.domain.entities.Restaurante;
+import com.safira.service.Validator;
+import com.safira.service.interfaces.MenuService;
 import com.safira.service.repositories.MenuRepository;
 import com.safira.service.repositories.PedidoRepository;
 import com.safira.service.repositories.RestauranteRepository;
-import com.safira.service.Validator;
-import com.safira.service.interfaces.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by francisco on 24/03/15.
@@ -72,7 +76,9 @@ public class MenuServiceImpl implements MenuService {
         Pedido pedido = pedidoRepository.findByUuid(uuid);
         if (pedido == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No restaurante found with uuid = " + uuid);
-        Menus menus = new Menus(SafiraUtils.toList(pedido.getMenus()));
+        List<Menu> menuList = new ArrayList<>();
+        for (MenuPedido menuPedido : pedido.getMenuPedidos()) menuList.add(menuPedido.getMenu());
+        Menus menus = new Menus(SafiraUtils.toList(menuList));
         if (menus.getMenus().isEmpty())
             throw new EmptyQueryResultException("No menus were found by the given criteria");
         return menus;

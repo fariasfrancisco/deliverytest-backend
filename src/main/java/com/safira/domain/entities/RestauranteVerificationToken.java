@@ -80,4 +80,8 @@ public class RestauranteVerificationToken extends ModelEntity {
     public boolean hasExpired() {
         return expiryDate.isBefore(LocalDateTime.now());
     }
+
+    public enum TokenType {
+        lostPassword, emailVerification, emailRegistration
+    }
 }

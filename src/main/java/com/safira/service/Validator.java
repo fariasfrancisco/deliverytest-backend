@@ -51,7 +51,10 @@ public class Validator {
                     createRestauranteRequest.getPassword() + ") is invalid");
     }
 
-    public static void validatePedido(CreatePedidoRequest createPedidoRequest) throws ValidatorException {
+    public static void validatePedido(CreatePedidoRequest createPedidoRequest) throws ValidatorException, InconsistencyException {
+        if (createPedidoRequest.getMenuUuids().length != createPedidoRequest.getCantidades().length)
+            throw new InconsistencyException("The ammount of menus (" + createPedidoRequest.getMenuUuids().length
+                    + ") does not match the ammount of cantidad(" + createPedidoRequest.getCantidades().length +")");
         if (!validateUuid(createPedidoRequest.getDireccionUuid()))
             throw new UUIDException("The format in the field direccionUuid(" +
                     createPedidoRequest.getDireccionUuid() + ") is invalid");

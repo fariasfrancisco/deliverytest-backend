@@ -21,8 +21,8 @@ public class Menu extends ModelEntity {
     private Restaurante restaurante;
 
     @JsonManagedReference
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "menus")
-    private Set<Pedido> pedidos = new HashSet<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.menu", cascade = CascadeType.ALL)
+    private Set<MenuPedido> menuPedidos = new HashSet<>();
 
     public Menu() {
         this(UUID.randomUUID());
@@ -39,22 +39,30 @@ public class Menu extends ModelEntity {
         this.costo = builder.costo;
         this.restaurante = builder.restaurante;
         if (!restaurante.getMenus().contains(this)) restaurante.getMenus().add(this);
-        this.pedidos = builder.pedidos;
-        pedidos.stream()
-                .filter(pedido -> !pedido.getMenus().contains(this))
-                .forEach(pedido -> pedido.getMenus().add(this));
     }
 
     public String getNombre() {
         return nombre;
     }
 
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
     public String getDescripcion() {
         return descripcion;
     }
 
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
     public BigDecimal getCosto() {
         return costo;
+    }
+
+    public void setCosto(BigDecimal costo) {
+        this.costo = costo;
     }
 
     public Restaurante getRestaurante() {
@@ -66,8 +74,12 @@ public class Menu extends ModelEntity {
         if (!restaurante.getMenus().contains(this)) restaurante.getMenus().add(this);
     }
 
-    public Set<Pedido> getPedidos() {
-        return pedidos;
+    public Set<MenuPedido> getMenuPedidos() {
+        return menuPedidos;
+    }
+
+    public void setMenuPedidos(Set<MenuPedido> menuPedidos) {
+        this.menuPedidos = menuPedidos;
     }
 
     public static class Builder {
@@ -75,7 +87,6 @@ public class Menu extends ModelEntity {
         private String descripcion;
         private BigDecimal costo;
         private Restaurante restaurante;
-        private Set<Pedido> pedidos = new HashSet<>();
 
         public Builder withNombre(String nombre) {
             this.nombre = nombre;
@@ -94,11 +105,6 @@ public class Menu extends ModelEntity {
 
         public Builder withRestaurante(Restaurante restaurante) {
             this.restaurante = restaurante;
-            return this;
-        }
-
-        public Builder withPedidos(Set<Pedido> pedidos) {
-            this.pedidos = pedidos;
             return this;
         }
 

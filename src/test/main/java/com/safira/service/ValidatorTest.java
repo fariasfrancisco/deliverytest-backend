@@ -15,18 +15,21 @@ public class ValidatorTest {
 
     private String[] validMenuUuids;
     private String[] invalidMenuUuids;
+    private BigDecimal[] validCantidad;
+    private BigDecimal[] invalidCantidad;
     private CreateUsuarioRequest usuarioRequestWithInvalidEmailAddress;
     private CreateRestauranteRequest restauranteRequestWithInvalidUsuario;
     private CreateRestauranteRequest restauranteRequestWithInvalidNumero;
     private CreateRestauranteRequest restauranteRequestWithInvalidTelefono;
     private CreateRestauranteRequest restauranteRequestWithInvalidEmail;
     private CreateRestauranteRequest restauranteRequestWithInvalidPassword;
-    private CreatePedidoRequest pedidoRequestInvalidDireccionUuid;
-    private CreatePedidoRequest pedidoRequestInvalidPhone;
-    private CreatePedidoRequest pedidoRequestInvalidUsuarioUuid;
-    private CreatePedidoRequest pedidoRequestInvalidRestauranteUuid;
-    private CreatePedidoRequest pedidoRequestInvalidMenuUuids;
-    private CreatePedidoRequest pedidoRequestInvalidDate;
+    private CreatePedidoRequest pedidoRequestWithInvalidDireccionUuid;
+    private CreatePedidoRequest pedidoRequestWithInvalidPhone;
+    private CreatePedidoRequest pedidoRequestWithInvalidUsuarioUuid;
+    private CreatePedidoRequest pedidoRequestWithInvalidRestauranteUuid;
+    private CreatePedidoRequest pedidoRequestWithInvalidMenuUuids;
+    private CreatePedidoRequest pedidoRequestWithInvalidDate;
+    private CreatePedidoRequest pedidoRequestWithDifferentAmmountOfCantidadAndMenus;
     private CreateDireccionRequest direccionRequestWithAlphanumericInNumero;
     private CreateDireccionRequest direccionRequestWithNullPisoAndNotNullDepartamento;
     private CreateDireccionRequest direccionRequestWithInvalidUsuarioUuid;
@@ -39,6 +42,8 @@ public class ValidatorTest {
         validMenuUuids[0] = "6eab2b70-d665-11e4-8830-0800200c9a66";
         invalidMenuUuids = new String[1];
         invalidMenuUuids[0] = "6eab2x70-d665-11e4-8830-0800200c9a66";
+        validCantidad = new BigDecimal[1];
+        invalidCantidad = new BigDecimal[2];
         usuarioRequestWithInvalidEmailAddress =
                 new CreateUsuarioRequest()
                         .setFacebookId("123123123123")
@@ -90,53 +95,68 @@ public class ValidatorTest {
                         .setEmail("test@domain.com")
                         .setUsuario("testuser")
                         .setPassword("12");
-        pedidoRequestInvalidDireccionUuid =
+        pedidoRequestWithInvalidDireccionUuid =
                 new CreatePedidoRequest()
                         .setDireccionUuid("6eap2b70-d665-11e4-8830-0800200c9a66")
                         .setRestauranteUuid("6eab2b70-d665-11e4-8830-0800200c9a66")
                         .setUsuarioUuid("6eab2b70-d665-11e4-8830-0800200c9a66")
                         .setFecha(LocalDateTime.now())
                         .setMenuUuids(validMenuUuids)
+                        .setCantidades(validCantidad)
                         .setTelefono("12345678");
-        pedidoRequestInvalidPhone =
+        pedidoRequestWithInvalidPhone =
                 new CreatePedidoRequest()
                         .setDireccionUuid("6eab2b70-d665-11e4-8830-0800200c9a66")
                         .setRestauranteUuid("6eab2b70-d665-11e4-8830-0800200c9a66")
                         .setUsuarioUuid("6eab2b70-d665-11e4-8830-0800200c9a66")
                         .setFecha(LocalDateTime.now())
                         .setMenuUuids(validMenuUuids)
+                        .setCantidades(validCantidad)
                         .setTelefono("123asd45678");
-        pedidoRequestInvalidUsuarioUuid =
+        pedidoRequestWithInvalidUsuarioUuid =
                 new CreatePedidoRequest()
                         .setDireccionUuid("6eab2b70-d665-11e4-8830-0800200c9a66")
                         .setRestauranteUuid("6ebb2b70-d665-11e4-8830-0800200c9a66")
                         .setUsuarioUuid("6eab2bx0-d665-11e4-8830-0800200c9a66")
                         .setFecha(LocalDateTime.now())
                         .setMenuUuids(validMenuUuids)
+                        .setCantidades(validCantidad)
                         .setTelefono("12345678");
-        pedidoRequestInvalidRestauranteUuid =
+        pedidoRequestWithInvalidRestauranteUuid =
                 new CreatePedidoRequest()
                         .setDireccionUuid("6eab2b70-d665-11e4-8830-0800200c9a66")
                         .setRestauranteUuid("6eyb2b70-d665-11e4-8830-0800200c9a66")
                         .setUsuarioUuid("6eab2b70-d665-11e4-8830-0800200c9a66")
                         .setFecha(LocalDateTime.now())
                         .setMenuUuids(validMenuUuids)
+                        .setCantidades(validCantidad)
                         .setTelefono("12345678");
-        pedidoRequestInvalidMenuUuids =
+        pedidoRequestWithInvalidMenuUuids =
                 new CreatePedidoRequest()
                         .setDireccionUuid("6eab2b70-d665-11e4-8830-0800200c9a66")
                         .setRestauranteUuid("6eab2b70-d665-11e4-8830-0800200c9a66")
                         .setUsuarioUuid("6eab2b70-d665-11e4-8830-0800200c9a66")
                         .setFecha(LocalDateTime.now())
                         .setMenuUuids(invalidMenuUuids)
+                        .setCantidades(validCantidad)
                         .setTelefono("12345678");
-        pedidoRequestInvalidDate =
+        pedidoRequestWithInvalidDate =
                 new CreatePedidoRequest()
                         .setDireccionUuid("6eab2b70-d665-11e4-8830-0800200c9a66")
                         .setRestauranteUuid("6eab2b70-d665-11e4-8830-0800200c9a66")
                         .setUsuarioUuid("6eab2b70-d665-11e4-8830-0800200c9a66")
                         .setFecha(LocalDateTime.now().plusDays(12))
                         .setMenuUuids(validMenuUuids)
+                        .setCantidades(validCantidad)
+                        .setTelefono("12345678");
+        pedidoRequestWithDifferentAmmountOfCantidadAndMenus =
+                new CreatePedidoRequest()
+                        .setDireccionUuid("6eab2b70-d665-11e4-8830-0800200c9a66")
+                        .setRestauranteUuid("6eab2b70-d665-11e4-8830-0800200c9a66")
+                        .setUsuarioUuid("6eab2b70-d665-11e4-8830-0800200c9a66")
+                        .setFecha(LocalDateTime.now())
+                        .setMenuUuids(validMenuUuids)
+                        .setCantidades(invalidCantidad)
                         .setTelefono("12345678");
         direccionRequestWithAlphanumericInNumero =
                 new CreateDireccionRequest()
@@ -214,33 +234,38 @@ public class ValidatorTest {
     }
 
     @Test(expected = DateException.class)
-    public void shouldThrowDateExceptionWhenRecievingAPedidoWithADateAfterNow() throws ValidatorException {
-        Validator.validatePedido(pedidoRequestInvalidDate);
+    public void shouldThrowDateExceptionWhenRecievingAPedidoWithADateAfterNow() throws ValidatorException, InconsistencyException {
+        Validator.validatePedido(pedidoRequestWithInvalidDate);
     }
 
     @Test(expected = UUIDException.class)
-    public void shouldThrowDateExceptionWhenRecievingAPedidoWithAnInvalidDireccionUuid() throws ValidatorException {
-        Validator.validatePedido(pedidoRequestInvalidDireccionUuid);
+    public void shouldThrowDateExceptionWhenRecievingAPedidoWithAnInvalidDireccionUuid() throws ValidatorException, InconsistencyException {
+        Validator.validatePedido(pedidoRequestWithInvalidDireccionUuid);
     }
 
     @Test(expected = UUIDException.class)
-    public void shouldThrowDateExceptionWhenRecievingAPedidoWithAnInvalidRestauranteUuid() throws ValidatorException {
-        Validator.validatePedido(pedidoRequestInvalidRestauranteUuid);
+    public void shouldThrowDateExceptionWhenRecievingAPedidoWithAnInvalidRestauranteUuid() throws ValidatorException, InconsistencyException {
+        Validator.validatePedido(pedidoRequestWithInvalidRestauranteUuid);
     }
 
     @Test(expected = UUIDException.class)
-    public void shouldThrowDateExceptionWhenRecievingAPedidoWithAnInvalidUsuarioUuid() throws ValidatorException {
-        Validator.validatePedido(pedidoRequestInvalidUsuarioUuid);
+    public void shouldThrowDateExceptionWhenRecievingAPedidoWithAnInvalidUsuarioUuid() throws ValidatorException, InconsistencyException {
+        Validator.validatePedido(pedidoRequestWithInvalidUsuarioUuid);
     }
 
     @Test(expected = PhoneException.class)
-    public void shouldThrowDateExceptionWhenRecievingAPedidoWithAnInvalidTelefono() throws ValidatorException {
-        Validator.validatePedido(pedidoRequestInvalidPhone);
+    public void shouldThrowDateExceptionWhenRecievingAPedidoWithAnInvalidTelefono() throws ValidatorException, InconsistencyException {
+        Validator.validatePedido(pedidoRequestWithInvalidPhone);
     }
 
     @Test(expected = UUIDException.class)
-    public void shouldThrowDateExceptionWhenRecievingAPedidoWithAnInvalidArrayOfMenuUuids() throws ValidatorException {
-        Validator.validatePedido(pedidoRequestInvalidMenuUuids);
+    public void shouldThrowDateExceptionWhenRecievingAPedidoWithAnInvalidArrayOfMenuUuids() throws ValidatorException, InconsistencyException {
+        Validator.validatePedido(pedidoRequestWithInvalidMenuUuids);
+    }
+
+    @Test(expected = InconsistencyException.class)
+    public void shouldThrowInconsistencyExceptionWhenRecievingAPedidoWithDifferentAmmountsOfCantidadAndMenus() throws ValidatorException, InconsistencyException {
+        Validator.validatePedido(pedidoRequestWithDifferentAmmountOfCantidadAndMenus);
     }
 
     @Test
