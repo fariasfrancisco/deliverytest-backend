@@ -39,11 +39,11 @@ public class ValidatorTest {
     @Before
     public void setUp() throws Exception {
         validMenuUuids = new String[1];
-        validMenuUuids[0] = "6eab2b70-d665-11e4-8830-0800200c9a66";
         invalidMenuUuids = new String[1];
-        invalidMenuUuids[0] = "6eab2x70-d665-11e4-8830-0800200c9a66";
         validCantidad = new BigDecimal[1];
         invalidCantidad = new BigDecimal[2];
+        validMenuUuids[0] = "6eab2b70-d665-11e4-8830-0800200c9a66";
+        invalidMenuUuids[0] = "6eab2x70-d665-11e4-8830-0800200c9a66";
         usuarioRequestWithInvalidEmailAddress =
                 new CreateUsuarioRequest()
                         .setFacebookId("123123123123")

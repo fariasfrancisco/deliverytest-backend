@@ -12,13 +12,6 @@ public class CreateUsuarioRequest {
     public CreateUsuarioRequest() {
     }
 
-    public CreateUsuarioRequest(String facebookId, String nombre, String apellido, String email) {
-        this.facebookId = facebookId;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.email = email;
-    }
-
     public String getFacebookId() {
         return facebookId;
     }

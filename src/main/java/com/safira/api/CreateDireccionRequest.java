@@ -13,14 +13,6 @@ public class CreateDireccionRequest {
     public CreateDireccionRequest() {
     }
 
-    public CreateDireccionRequest(String calle, String numero, String piso, String departamento, String usuarioUuid) {
-        this.calle = calle;
-        this.numero = numero;
-        this.piso = piso;
-        this.departamento = departamento;
-        this.usuarioUuid = usuarioUuid;
-    }
-
     public String getCalle() {
         return calle;
     }

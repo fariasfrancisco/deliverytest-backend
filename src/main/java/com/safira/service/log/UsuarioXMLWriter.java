@@ -5,6 +5,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+import java.time.LocalDateTime;
+
 /**
  * Class in charge of creating XML data for a new created Usuario.
  */
@@ -13,6 +15,8 @@ public class UsuarioXMLWriter {
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("Usuario")
                 .addAttribute("Id", String.valueOf(usuario.getId()));
+        Element creation = root.addElement("Creation")
+                .addAttribute("TimeStamp", LocalDateTime.now().toString());
         Element nombre = root.addElement("NombreYApellido")
                 .addText(usuario.getNombre() + " " + usuario.getApellido());
         Element facebookId = root.addElement("FacebookId")

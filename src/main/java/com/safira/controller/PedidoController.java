@@ -4,6 +4,7 @@ import com.safira.api.CreatePedidoRequest;
 import com.safira.domain.Pedidos;
 import com.safira.domain.entities.Pedido;
 import com.safira.service.interfaces.PedidoService;
+import com.safira.service.log.PedidosXMLWriter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,6 @@ public class PedidoController {
     PedidoService pedidoService;
 
     final static Logger pedidoLogger = Logger.getLogger("pedidoLogger");
-    final static Logger pedidoWarnLogger = Logger.getLogger("pedidoWarnLogger");
     final static Logger pedidoErrorLogger = Logger.getLogger("pedidoExceptionLogger");
 
     @RequestMapping(value = REGISTER_PEDIDO, method = RequestMethod.POST)
@@ -30,7 +30,10 @@ public class PedidoController {
         Pedido pedido;
         try {
             pedido = pedidoService.createPedido(createPedidoRequest);
+            pedidoLogger.info("Successfully created new Pedido: \n" +
+                    PedidosXMLWriter.createDocument(pedido).getDocument());
         } catch (Exception e) {
+            pedidoErrorLogger.error("An exception has occured when creating a new Pedido.", e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedido, HttpStatus.OK);
@@ -42,6 +45,7 @@ public class PedidoController {
         try {
             pedido = pedidoService.getPedidoByUuid(uuid);
         } catch (Exception e) {
+            pedidoErrorLogger.error("An exception has occured when finding Pedido with uuid = " + uuid, e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedido, HttpStatus.OK);
@@ -53,6 +57,7 @@ public class PedidoController {
         try {
             pedidos = pedidoService.getPedidosByRestauranteUuid(uuid);
         } catch (Exception e) {
+            pedidoErrorLogger.error("An exception has occured when finding Pedido with Restaurante uuid = " + uuid, e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
@@ -64,6 +69,7 @@ public class PedidoController {
         try {
             pedidos = pedidoService.getPedidosByUsuarioUuid(uuid);
         } catch (Exception e) {
+            pedidoErrorLogger.error("An exception has occured when finding Pedido with Usuario uuid = " + uuid, e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
@@ -77,6 +83,9 @@ public class PedidoController {
         try {
             pedidos = pedidoService.getPedidosByUsuarioUuidAndByRestauranteUuid(usruuid, resuuid);
         } catch (Exception e) {
+            pedidoErrorLogger.error("An exception has occured when finding Pedido with" +
+                    " Restaurante uuid = " + resuuid +
+                    " Usuario uuid = " + usruuid, e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedidos, HttpStatus.OK);

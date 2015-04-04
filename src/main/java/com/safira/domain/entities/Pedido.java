@@ -7,9 +7,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 public class Pedido extends ModelEntity {
@@ -163,9 +161,23 @@ public class Pedido extends ModelEntity {
         }
     }
 
-    public String costoTotalAsString() {
+    public BigDecimal calculateTotalCost() {
         BigDecimal total = BigDecimal.ZERO;
-        return total.toString();
+        for (MenuPedido menuPedido : menuPedidos) {
+            BigDecimal costo = menuPedido.getMenu().getCosto();
+            BigDecimal cantidad = menuPedido.getCantidad();
+            BigDecimal totalForItem = costo.multiply(cantidad);
+            total = total.add(totalForItem);
+        }
+        return total;
+    }
+
+    public List<Menu> retrieveMenuList() {
+        List<Menu> menuList = new ArrayList<>();
+        for (MenuPedido menuPedido : menuPedidos) {
+            menuList.add(menuPedido.getMenu());
+        }
+        return menuList;
     }
 
     public enum Estado {

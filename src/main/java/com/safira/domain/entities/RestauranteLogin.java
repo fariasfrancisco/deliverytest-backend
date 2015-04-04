@@ -44,11 +44,6 @@ public class RestauranteLogin extends ModelEntity {
         this.hash = builder.hash;
         this.salt = builder.salt;
         this.isVerified = builder.isVerified;
-        this.restaurante = builder.restaurante;
-        if (restaurante.getRestauranteLogin() != this) restaurante.setRestauranteLogin(this);
-        this.restauranteSessionToken = builder.restauranteSessionToken;
-        if (restauranteSessionToken != null && restauranteSessionToken.getRestauranteLogin() != this)
-            restauranteSessionToken.setRestauranteLogin(this);
     }
 
     public String getUsuario() {
@@ -114,8 +109,6 @@ public class RestauranteLogin extends ModelEntity {
         private byte[] salt;
         private boolean isVerified = false;
         private UUID uuid;
-        private Restaurante restaurante;
-        private RestauranteSessionToken restauranteSessionToken;
 
         public Builder withUsuario(String usuario) {
             this.usuario = usuario;
@@ -139,16 +132,6 @@ public class RestauranteLogin extends ModelEntity {
 
         public Builder withUuid(UUID uuid) {
             this.uuid = uuid;
-            return this;
-        }
-
-        public Builder withRestaurante(Restaurante restaurante) {
-            this.restaurante = restaurante;
-            return this;
-        }
-
-        public Builder withRestauranteSessionToken(RestauranteSessionToken restauranteSessionToken) {
-            this.restauranteSessionToken = restauranteSessionToken;
             return this;
         }
 

@@ -15,22 +15,6 @@ public class CreateRestauranteRequest {
     public CreateRestauranteRequest() {
     }
 
-    public CreateRestauranteRequest(String nombre,
-                                    String calle,
-                                    String numero,
-                                    String telefono,
-                                    String email,
-                                    String usuario,
-                                    String password) {
-        this.nombre = nombre;
-        this.calle = calle;
-        this.numero = numero;
-        this.telefono = telefono;
-        this.email = email;
-        this.usuario = usuario;
-        this.password = password;
-    }
-
     public String getNombre() {
         return nombre;
     }

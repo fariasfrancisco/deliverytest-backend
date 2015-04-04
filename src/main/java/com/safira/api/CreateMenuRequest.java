@@ -14,13 +14,6 @@ public class CreateMenuRequest {
     public CreateMenuRequest() {
     }
 
-    public CreateMenuRequest(String nombre, String descripcion, BigDecimal costo, String restauranteUuid) {
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.costo = costo;
-        this.restauranteUuid = restauranteUuid;
-    }
-
     public String getNombre() {
         return nombre;
     }

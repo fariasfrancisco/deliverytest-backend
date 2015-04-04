@@ -42,14 +42,6 @@ public class Usuario extends ModelEntity {
         this.email = builder.email;
         this.nombre = builder.nombre;
         this.apellido = builder.apellido;
-        this.pedidos = builder.pedidos;
-        pedidos.stream()
-                .filter(pedido -> pedido.getUsuario() != this)
-                .forEach(pedido -> pedido.setUsuario(this));
-        this.direcciones = builder.direcciones;
-        direcciones.stream()
-                .filter(direccion -> direccion.getUsuario() != this)
-                .forEach(direccion -> direccion.setUsuario(this));
     }
 
     public String getFacebookId() {
@@ -72,8 +64,22 @@ public class Usuario extends ModelEntity {
         return pedidos;
     }
 
+    public void setPedidos(Set<Pedido> pedidos) {
+        this.pedidos = pedidos;
+        pedidos.stream()
+                .filter(pedido -> pedido.getUsuario() != this)
+                .forEach(pedido -> pedido.setUsuario(this));
+    }
+
     public Set<Direccion> getDirecciones() {
         return direcciones;
+    }
+
+    public void setDirecciones(Set<Direccion> direcciones) {
+        this.direcciones = direcciones;
+        direcciones.stream()
+                .filter(direccion -> direccion.getUsuario() != this)
+                .forEach(direccion -> direccion.setUsuario(this));
     }
 
     public static class Builder {
@@ -81,8 +87,6 @@ public class Usuario extends ModelEntity {
         private String email;
         private String nombre;
         private String apellido;
-        private Set<Pedido> pedidos = new HashSet<>();
-        private Set<Direccion> direcciones = new HashSet<>();
 
         public Builder withFacebookId(String facebookId) {
             this.facebookId = facebookId;
@@ -101,16 +105,6 @@ public class Usuario extends ModelEntity {
 
         public Builder withApellido(String apellido) {
             this.apellido = apellido;
-            return this;
-        }
-
-        public Builder withPedidos(Set<Pedido> pedidos) {
-            this.pedidos = pedidos;
-            return this;
-        }
-
-        public Builder withDirecciones(Set<Direccion> direcciones) {
-            this.direcciones = direcciones;
             return this;
         }
 

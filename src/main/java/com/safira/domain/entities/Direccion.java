@@ -42,10 +42,6 @@ public class Direccion extends ModelEntity {
         this.departamento = builder.departamento;
         this.usuario = builder.usuario;
         if (!usuario.getDirecciones().contains(this)) usuario.getDirecciones().add(this);
-        this.pedidos = builder.pedidos;
-        pedidos.stream()
-                .filter(pedido -> pedido.getDireccion() != this)
-                .forEach(pedido -> pedido.setDireccion(this));
     }
 
     public String getCalle() {
@@ -77,13 +73,19 @@ public class Direccion extends ModelEntity {
         return pedidos;
     }
 
+    public void setPedidos(Set<Pedido> pedidos) {
+        this.pedidos = pedidos;
+        pedidos.stream()
+                .filter(pedido -> pedido.getDireccion() != this)
+                .forEach(pedido -> pedido.setDireccion(this));
+    }
+
     public static class Builder {
         private String calle;
         private String numero;
         private String piso;
         private String departamento;
         private Usuario usuario;
-        private Set<Pedido> pedidos = new HashSet<>();
 
         public Builder withCalle(String calle) {
             this.calle = calle;
@@ -107,11 +109,6 @@ public class Direccion extends ModelEntity {
 
         public Builder withUsuario(Usuario usuario) {
             this.usuario = usuario;
-            return this;
-        }
-
-        public Builder withPedidos(Set<Pedido> pedidos) {
-            this.pedidos = pedidos;
             return this;
         }
 
