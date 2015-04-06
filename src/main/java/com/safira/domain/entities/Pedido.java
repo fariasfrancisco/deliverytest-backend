@@ -2,7 +2,10 @@ package com.safira.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.hibernate.annotations.Type;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.safira.common.LocalDateTimeDeserializer;
+import com.safira.common.LocalDateTimeSerializer;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -17,7 +20,8 @@ public class Pedido extends ModelEntity {
     @Enumerated(EnumType.STRING)
     private Estado estado;
 
-    @Type(type = "com.safira.common.LocalDateTimeUserType")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime fecha;
 
     @JsonManagedReference

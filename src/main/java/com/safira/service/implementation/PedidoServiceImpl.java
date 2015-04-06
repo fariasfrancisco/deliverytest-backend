@@ -2,9 +2,7 @@ package com.safira.service.implementation;
 
 import com.safira.api.CreatePedidoRequest;
 import com.safira.common.SafiraUtils;
-import com.safira.common.exceptions.EmptyQueryResultException;
-import com.safira.common.exceptions.InconsistencyException;
-import com.safira.common.exceptions.ValidatorException;
+import com.safira.common.exceptions.*;
 import com.safira.domain.Pedidos;
 import com.safira.domain.entities.*;
 import com.safira.service.Validator;
@@ -15,6 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -41,17 +42,22 @@ public class PedidoServiceImpl implements PedidoService {
     MenuPedidoRepository menuPedidoRepository;
 
     @Transactional
-    public Pedido createPedido(CreatePedidoRequest createPedidoRequest) throws ValidatorException, EmptyQueryResultException, InconsistencyException {
+    public Pedido createPedido(CreatePedidoRequest createPedidoRequest) throws ValidatorException, EmptyQueryResultException, InconsistencyException, PedidoTimeoutException {
         Validator.validatePedido(createPedidoRequest);
         Direccion direccion = direccionRepository.findByUuid(createPedidoRequest.getDireccionUuid());
         if (direccion == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No direccion found with uuid = " + createPedidoRequest.getDireccionUuid());
-        Restaurante restaurante = restauranteRepository.findByUuid(createPedidoRequest.getRestauranteUuid());
-        if (restaurante == null) throw new EmptyQueryResultException("Desearilization Failed. " +
-                "No restaurante found with uuid = " + createPedidoRequest.getRestauranteUuid());
         Usuario usuario = usuarioRepository.findByUuid(createPedidoRequest.getUsuarioUuid());
         if (usuario == null) throw new EmptyQueryResultException("Desearilization Failed. " +
                 "No usuario found with uuid = " + createPedidoRequest.getUsuarioUuid());
+        if (!direccion.getUsuario().equals(usuario))
+            throw new InconsistencyException("Deserialization Failed. " +
+                    "The Direccion recieved does not belong to the recieved Usuario");
+        Restaurante restaurante = restauranteRepository.findByUuid(createPedidoRequest.getRestauranteUuid());
+        if (restaurante == null) throw new EmptyQueryResultException("Desearilization Failed. " +
+                "No restaurante found with uuid = " + createPedidoRequest.getRestauranteUuid());
+        if (createPedidoRequest.getFecha().isBefore(LocalDateTime.now().minusMinutes(2)))
+            throw new PedidoTimeoutException();
         Pedido pedido = new Pedido.Builder()
                 .withDireccion(direccion)
                 .withTelefono(createPedidoRequest.getTelefono())
@@ -59,6 +65,7 @@ public class PedidoServiceImpl implements PedidoService {
                 .withRestaurante(restaurante)
                 .withUsuario(usuario)
                 .build();
+        pedidoRepository.save(pedido);
         Menu menu;
         MenuPedido menuPedido;
         int length = createPedidoRequest.getMenuUuids().length;
@@ -74,8 +81,8 @@ public class PedidoServiceImpl implements PedidoService {
                         ". Expected " + createPedidoRequest.getRestauranteUuid());
             }
             menuPedido = new MenuPedido();
-            menuPedido.setPedido(pedido);
             menuPedido.setMenu(menu);
+            menuPedido.setPedido(pedido);
             menuPedido.setCantidad(cantidad);
             menuPedidoRepository.save(menuPedido);
         }

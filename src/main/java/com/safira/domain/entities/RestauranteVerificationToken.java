@@ -17,7 +17,6 @@ public class RestauranteVerificationToken extends ModelEntity {
     @Column(length = 36)
     private final String token;
 
-    @Type(type = "com.safira.common.LocalDateTimeUserType")
     private LocalDateTime expiryDate;
 
     @Enumerated(EnumType.STRING)

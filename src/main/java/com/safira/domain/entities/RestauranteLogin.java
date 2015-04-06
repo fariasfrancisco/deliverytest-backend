@@ -1,6 +1,5 @@
 package com.safira.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -17,7 +16,7 @@ public class RestauranteLogin extends ModelEntity {
     private byte[] salt;
     private boolean isVerified;
 
-    @JsonBackReference
+    @JsonManagedReference
     @OneToOne(fetch = FetchType.EAGER)
     @PrimaryKeyJoinColumn
     private Restaurante restaurante;

@@ -13,6 +13,14 @@ public class CreateDireccionRequest {
     public CreateDireccionRequest() {
     }
 
+    public CreateDireccionRequest(String calle, String numero, String piso, String departamento, String usuarioUuid) {
+        this.calle = calle;
+        this.numero = numero;
+        this.piso = piso;
+        this.departamento = departamento;
+        this.usuarioUuid = usuarioUuid;
+    }
+
     public String getCalle() {
         return calle;
     }
@@ -33,11 +41,6 @@ public class CreateDireccionRequest {
         return usuarioUuid;
     }
 
-    public CreateDireccionRequest setUsuarioUuid(String usuarioUuid) {
-        this.usuarioUuid = usuarioUuid;
-        return this;
-    }
-
     public CreateDireccionRequest setCalle(String calle) {
         this.calle = calle;
         return this;
@@ -55,6 +58,11 @@ public class CreateDireccionRequest {
 
     public CreateDireccionRequest setDepartamento(String departamento) {
         this.departamento = departamento;
+        return this;
+    }
+
+    public CreateDireccionRequest setUsuarioUuid(String usuarioUuid) {
+        this.usuarioUuid = usuarioUuid;
         return this;
     }
 }

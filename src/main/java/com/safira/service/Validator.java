@@ -52,9 +52,11 @@ public class Validator {
     }
 
     public static void validatePedido(CreatePedidoRequest createPedidoRequest) throws ValidatorException, InconsistencyException {
+        if (!validateCantidades(createPedidoRequest.getCantidades()))
+            throw new AmmountException("The format in at least one of the values in the field cantidades is invalid");
         if (createPedidoRequest.getMenuUuids().length != createPedidoRequest.getCantidades().length)
             throw new InconsistencyException("The ammount of menus (" + createPedidoRequest.getMenuUuids().length
-                    + ") does not match the ammount of cantidad(" + createPedidoRequest.getCantidades().length +")");
+                    + ") does not match the ammount of cantidad(" + createPedidoRequest.getCantidades().length + ")");
         if (!validateUuid(createPedidoRequest.getDireccionUuid()))
             throw new UUIDException("The format in the field direccionUuid(" +
                     createPedidoRequest.getDireccionUuid() + ") is invalid");
@@ -70,7 +72,7 @@ public class Validator {
         if (!validateMenuArray(createPedidoRequest.getMenuUuids()))
             throw new UUIDException("The format in the field menuUuids is invalid");
         if (!validateDate(createPedidoRequest.getFecha()))
-            throw new DateException("The date in the field fecha is invalid");
+            throw new DateException("The recieved date is invalid: " + createPedidoRequest.getFecha().toString());
     }
 
     public static void validateRestauranteLogin(LoginRestauranteRequest loginRestauranteRequest) throws ValidatorException {
@@ -96,6 +98,12 @@ public class Validator {
 
     private static boolean validateMenuArray(String[] menuUuids) {
         for (String uuid : menuUuids) if (!validateUuid(uuid)) return false;
+        return true;
+    }
+
+    private static boolean validateCantidades(BigDecimal[] cantidades) {
+        for (BigDecimal cantidad : cantidades)
+            if (cantidad.signum() != 1) return false;
         return true;
     }
 
@@ -128,6 +136,6 @@ public class Validator {
     }
 
     private static boolean validateDate(LocalDateTime date) {
-        return date.isBefore(LocalDateTime.now());
+        return (date.isBefore(LocalDateTime.now()));
     }
 }

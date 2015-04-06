@@ -13,10 +13,6 @@ import java.time.LocalDateTime;
  */
 public class ValidatorTest {
 
-    private String[] validMenuUuids;
-    private String[] invalidMenuUuids;
-    private BigDecimal[] validCantidad;
-    private BigDecimal[] invalidCantidad;
     private CreateUsuarioRequest usuarioRequestWithInvalidEmailAddress;
     private CreateRestauranteRequest restauranteRequestWithInvalidUsuario;
     private CreateRestauranteRequest restauranteRequestWithInvalidNumero;
@@ -38,12 +34,14 @@ public class ValidatorTest {
 
     @Before
     public void setUp() throws Exception {
-        validMenuUuids = new String[1];
-        invalidMenuUuids = new String[1];
-        validCantidad = new BigDecimal[1];
-        invalidCantidad = new BigDecimal[2];
+        String[] validMenuUuids = new String[1];
+        String[] invalidMenuUuids = new String[1];
+        BigDecimal[] validCantidad = new BigDecimal[1];
+        BigDecimal[] invalidCantidad = new BigDecimal[2];
         validMenuUuids[0] = "6eab2b70-d665-11e4-8830-0800200c9a66";
         invalidMenuUuids[0] = "6eab2x70-d665-11e4-8830-0800200c9a66";
+        validCantidad[0] = new BigDecimal(1);
+        invalidCantidad[0] = new BigDecimal(1);
         usuarioRequestWithInvalidEmailAddress =
                 new CreateUsuarioRequest()
                         .setFacebookId("123123123123")

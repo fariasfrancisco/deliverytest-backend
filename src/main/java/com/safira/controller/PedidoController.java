@@ -34,7 +34,7 @@ public class PedidoController {
                     PedidosXMLWriter.createDocument(pedido).getDocument());
         } catch (Exception e) {
             pedidoErrorLogger.error("An exception has occured when creating a new Pedido.", e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedido, HttpStatus.OK);
     }
@@ -46,7 +46,7 @@ public class PedidoController {
             pedido = pedidoService.getPedidoByUuid(uuid);
         } catch (Exception e) {
             pedidoErrorLogger.error("An exception has occured when finding Pedido with uuid = " + uuid, e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedido, HttpStatus.OK);
     }
@@ -58,7 +58,7 @@ public class PedidoController {
             pedidos = pedidoService.getPedidosByRestauranteUuid(uuid);
         } catch (Exception e) {
             pedidoErrorLogger.error("An exception has occured when finding Pedido with Restaurante uuid = " + uuid, e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
     }
@@ -70,7 +70,7 @@ public class PedidoController {
             pedidos = pedidoService.getPedidosByUsuarioUuid(uuid);
         } catch (Exception e) {
             pedidoErrorLogger.error("An exception has occured when finding Pedido with Usuario uuid = " + uuid, e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
     }
@@ -86,7 +86,7 @@ public class PedidoController {
             pedidoErrorLogger.error("An exception has occured when finding Pedido with" +
                     " Restaurante uuid = " + resuuid +
                     " Usuario uuid = " + usruuid, e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
     }

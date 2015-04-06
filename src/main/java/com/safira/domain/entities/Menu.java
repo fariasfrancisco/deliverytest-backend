@@ -20,7 +20,7 @@ public class Menu extends ModelEntity {
     @JoinColumn(name = "restaurante_id", nullable = false)
     private Restaurante restaurante;
 
-    @JsonManagedReference
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.menu", cascade = CascadeType.ALL)
     private Set<MenuPedido> menuPedidos = new HashSet<>();
 

@@ -1,5 +1,10 @@
 package com.safira.api;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.safira.common.LocalDateTimeDeserializer;
+import com.safira.common.LocalDateTimeSerializer;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -13,6 +18,9 @@ public class CreatePedidoRequest {
     private String restauranteUuid;
     private String[] menuUuids;
     private BigDecimal[] cantidades;
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime fecha;
 
     public CreatePedidoRequest() {
@@ -46,6 +54,11 @@ public class CreatePedidoRequest {
         return fecha;
     }
 
+    public CreatePedidoRequest setFecha(LocalDateTime fecha) {
+        this.fecha = fecha;
+        return this;
+    }
+
     public CreatePedidoRequest setTelefono(String telefono) {
         this.telefono = telefono;
         return this;
@@ -73,11 +86,6 @@ public class CreatePedidoRequest {
 
     public CreatePedidoRequest setCantidades(BigDecimal[] cantidades) {
         this.cantidades = cantidades;
-        return this;
-    }
-
-    public CreatePedidoRequest setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
         return this;
     }
 }

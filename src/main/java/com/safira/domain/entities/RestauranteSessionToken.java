@@ -18,10 +18,8 @@ public class RestauranteSessionToken extends AbstractPersistable<Long> {
     @Column(length = 36)
     private String token;
 
-    @Type(type = "com.safira.common.LocalDateTimeUserType")
     private LocalDateTime creationTime;
 
-    @Type(type = "com.safira.common.LocalDateTimeUserType")
     private LocalDateTime expirationTime;
 
     @JsonBackReference

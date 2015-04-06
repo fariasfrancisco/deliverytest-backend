@@ -6,7 +6,7 @@ import com.safira.api.LoginRestauranteRequest;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.LoginException;
 import com.safira.common.exceptions.ValidatorException;
-import com.safira.configuration.ApplicationConfiguration;
+import com.safira.common.configuration.ApplicationConfiguration;
 import com.safira.domain.Restaurantes;
 import com.safira.domain.entities.Restaurante;
 import com.safira.domain.entities.RestauranteLogin;

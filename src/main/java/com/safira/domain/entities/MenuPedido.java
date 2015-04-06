@@ -1,5 +1,8 @@
 package com.safira.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -21,6 +24,13 @@ public class MenuPedido implements Serializable {
     public MenuPedido() {
     }
 
+    public MenuPedido(Menu menu, Pedido pedido) {
+        pk.setMenu(menu);
+        pk.setPedido(pedido);
+        if (!menu.getMenuPedidos().contains(this)) menu.getMenuPedidos().add(this);
+        if (!pedido.getMenuPedidos().contains(this)) pedido.getMenuPedidos().add(this);
+    }
+
     public MenuPedidoId getPk() {
         return pk;
     }
@@ -29,24 +39,22 @@ public class MenuPedido implements Serializable {
         this.pk = pk;
     }
 
-    @Transient
+    @JsonManagedReference
     public Menu getMenu() {
         return pk.getMenu();
     }
 
     public void setMenu(Menu menu) {
         pk.setMenu(menu);
-        if (!menu.getMenuPedidos().contains(this)) menu.getMenuPedidos().add(this);
     }
 
-    @Transient
+    @JsonBackReference
     public Pedido getPedido() {
         return pk.getPedido();
     }
 
     public void setPedido(Pedido pedido) {
         pk.setPedido(pedido);
-        if (!pedido.getMenuPedidos().contains(this)) pedido.getMenuPedidos().add(this);
     }
 
     public BigDecimal getCantidad() {

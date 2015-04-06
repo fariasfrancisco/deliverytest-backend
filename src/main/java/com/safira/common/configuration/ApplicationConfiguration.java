@@ -1,4 +1,4 @@
-package com.safira.configuration;
+package com.safira.common.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
