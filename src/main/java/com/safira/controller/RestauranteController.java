@@ -33,7 +33,7 @@ public class RestauranteController {
         try {
             restaurante = restauranteService.createRestaurante(createRestauranteRequest);
             restauranteLogger.info("Successfully created new Restaurante: \n" +
-                    RestauranteXMLWriter.createDocument(restaurante).getDocument());
+                    RestauranteXMLWriter.createDocument(restaurante).asXML());
         } catch (Exception e) {
             restauranteErrorLogger.error("An exception has occured when creating a new Restaurante.", e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

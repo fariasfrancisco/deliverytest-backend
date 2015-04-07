@@ -16,13 +16,13 @@ public class PedidosXMLWriter {
     public static Document createDocument(Pedido pedido) {
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("Pedido")
-                .addAttribute("Id", String.valueOf(pedido.getId()))
+                .addAttribute("UUID", pedido.getIdentifier())
                 .addAttribute("Fecha", pedido.getFecha().toString())
                 .addAttribute("Cantidad", String.valueOf(pedido.retrieveMenuList().size()))
                 .addAttribute("CostoTotal", pedido.calculateTotalCost().toString());
         Element creation = root.addElement("Creation")
                 .addAttribute("TimeStamp", LocalDateTime.now().toString())
-                .addText(pedido.getUsuario().getFacebookId());
+                .addText(pedido.getUsuario().getIdentifier());
         for (MenuPedido menuPedido : pedido.getMenuPedidos()) {
             Menu menu = menuPedido.getMenu();
             Element element = root.addElement("Menu")

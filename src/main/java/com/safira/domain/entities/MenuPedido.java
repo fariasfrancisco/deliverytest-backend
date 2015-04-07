@@ -24,9 +24,10 @@ public class MenuPedido implements Serializable {
     public MenuPedido() {
     }
 
-    public MenuPedido(Menu menu, Pedido pedido) {
+    public MenuPedido(Menu menu, Pedido pedido, BigDecimal cantidad) {
         pk.setMenu(menu);
         pk.setPedido(pedido);
+        this.cantidad = cantidad;
         if (!menu.getMenuPedidos().contains(this)) menu.getMenuPedidos().add(this);
         if (!pedido.getMenuPedidos().contains(this)) pedido.getMenuPedidos().add(this);
     }

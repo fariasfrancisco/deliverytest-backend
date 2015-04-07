@@ -31,7 +31,7 @@ public class PedidoController {
         try {
             pedido = pedidoService.createPedido(createPedidoRequest);
             pedidoLogger.info("Successfully created new Pedido: \n" +
-                    PedidosXMLWriter.createDocument(pedido).getDocument());
+                    PedidosXMLWriter.createDocument(pedido).asXML());
         } catch (Exception e) {
             pedidoErrorLogger.error("An exception has occured when creating a new Pedido.", e);
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -14,7 +14,7 @@ public class UsuarioXMLWriter {
     public static Document createDocument(Usuario usuario) {
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("Usuario")
-                .addAttribute("Id", String.valueOf(usuario.getId()));
+                .addAttribute("Id", usuario.getIdentifier());
         Element creation = root.addElement("Creation")
                 .addAttribute("TimeStamp", LocalDateTime.now().toString());
         Element nombre = root.addElement("NombreYApellido")

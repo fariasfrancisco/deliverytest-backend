@@ -18,6 +18,4 @@ public interface UsuarioService {
     public Usuario loginUsuario(LoginUsuarioRequest loginUsuarioRequest);
 
     public Usuario getUsuarioByUuid(String uuid) throws EmptyQueryResultException;
-
-    public Direccion createDireccion(CreateDireccionRequest createDireccionRequest) throws ValidatorException, EmptyQueryResultException;
 }

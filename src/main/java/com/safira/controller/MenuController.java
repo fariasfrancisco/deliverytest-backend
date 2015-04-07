@@ -31,7 +31,7 @@ public class MenuController {
         try {
             menu = menuService.createMenu(createMenuRequest);
             menuLogger.info("Successfully created new Menu: \n" +
-                    MenusXMLWriter.createDocument(menu).getDocument());
+                    MenusXMLWriter.createDocument(menu).asXML());
         } catch (Exception e) {
             menuErrorLogger.error("An exception has occured when creating a new Menu.", e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
