@@ -1,6 +1,9 @@
 package com.safira.controller;
 
 import com.safira.api.CreateUsuarioRequest;
+import com.safira.common.ErrorMessage;
+import com.safira.common.exceptions.EmptyQueryResultException;
+import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.entities.Usuario;
 import com.safira.service.interfaces.UsuarioService;
 import com.safira.service.log.UsuarioXMLWriter;
@@ -32,11 +35,14 @@ public class UsuarioController {
             usuario = usuarioService.createUsuario(createUsuarioRequest);
             usuarioLogger.info("Successfully created new Usuario: \n" +
                     UsuarioXMLWriter.createDocument(usuario).asXML());
-        } catch (Exception e) {
-            usuarioErrorLogger.error("An exception has occured when creating a new Usuario.", e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (ValidatorException e) {
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.CONFLICT);
         }
-        return new ResponseEntity<>(usuario, HttpStatus.OK);
+        catch (Exception e) {
+            usuarioErrorLogger.error("An exception has occured when creating a new Usuario.", e);
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(usuario, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = LOGIN_USUARIO, method = RequestMethod.GET)
@@ -44,8 +50,8 @@ public class UsuarioController {
         Usuario usuario;
         try {
             usuario = usuarioService.getUsuarioByUuid(uuid);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (EmptyQueryResultException e) {
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }

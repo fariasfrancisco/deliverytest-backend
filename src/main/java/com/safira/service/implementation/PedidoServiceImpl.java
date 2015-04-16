@@ -51,7 +51,7 @@ public class PedidoServiceImpl implements PedidoService {
         Usuario usuario = usuarioService.getUsuarioByUuid(createPedidoRequest.getUsuarioUuid());
         Restaurante restaurante = restauranteService.getRestauranteByUuid(createPedidoRequest.getRestauranteUuid());
         if (!direccion.getUsuario().equals(usuario))
-            throw new InconsistencyException("Deserialization Failed. " +
+            throw new InconsistencyException("Inconsistency found with the recieved Direccion",
                     "The Direccion recieved does not belong to the recieved Usuario");
         if (createPedidoRequest.getFecha().isBefore(LocalDateTime.now().minusMinutes(2)))
             throw new PedidoTimeoutException();
@@ -71,9 +71,9 @@ public class PedidoServiceImpl implements PedidoService {
             BigDecimal cantidad = createPedidoRequest.getCantidades()[index];
             menu = menuService.getMenuByUuid(menuUuid);
             if (!restaurante.getIdentifier().equals(menu.getRestaurante().getIdentifier())) {
-                throw new InconsistencyException("Deserialization Failed. " +
+                throw new InconsistencyException("Inconsistency found with the recieved Menu.",
                         "menu.restaurante uuid recieved was " + menuUuid +
-                        ". Expected " + createPedidoRequest.getRestauranteUuid());
+                                ". Expected " + createPedidoRequest.getRestauranteUuid());
             }
             menuPedido = new MenuPedido(menu, pedido, cantidad);
             menuPedidoRepository.save(menuPedido);
@@ -85,8 +85,8 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     public Pedido getPedidoByUuid(String uuid) throws EmptyQueryResultException {
         Pedido pedido = pedidoRepository.findByUuid(uuid);
-        if (pedido == null) throw new EmptyQueryResultException("Desearilization Failed. " +
-                "No pedido found with uuid = " + uuid);
+        if (pedido == null) throw new EmptyQueryResultException("No pedido found with uuid = " + uuid,
+                "Please check the UUID entered and try again");
         return pedido;
     }
 
@@ -95,7 +95,8 @@ public class PedidoServiceImpl implements PedidoService {
         Restaurante restaurante = restauranteService.getRestauranteByUuid(uuid);
         Pedidos pedidos = new Pedidos(SafiraUtils.toList(restaurante.getPedidos()));
         if (pedidos.getPedidos().isEmpty())
-            throw new EmptyQueryResultException("No pedidos were found by the given criteria");
+            throw new EmptyQueryResultException("No pedidos were found by the given criteria",
+                    "Please check the Restaurante entered and try again");
         return pedidos;
     }
 
@@ -104,7 +105,8 @@ public class PedidoServiceImpl implements PedidoService {
         Usuario usuario = usuarioService.getUsuarioByUuid(uuid);
         Pedidos pedidos = new Pedidos(SafiraUtils.toList(usuario.getPedidos()));
         if (pedidos.getPedidos().isEmpty())
-            throw new EmptyQueryResultException("No pedidos were found by the given criteria");
+            throw new EmptyQueryResultException("No pedidos were found by the given criteria",
+                    "Please check the Usuario entered and try again");
         return pedidos;
     }
 
@@ -118,7 +120,8 @@ public class PedidoServiceImpl implements PedidoService {
         List<Pedido> intersection = SafiraUtils.intersection(pedidosByRestaurante, pedidosByUsuario);
         Pedidos pedidos = new Pedidos(intersection);
         if (pedidos.getPedidos().isEmpty())
-            throw new EmptyQueryResultException("No pedidos were found by the given criteria");
+            throw new EmptyQueryResultException("No pedidos were found by the given criteria",
+                    "Please check the Usuario and Restaurante entered and try again");
         return pedidos;
     }
 }

@@ -53,8 +53,8 @@ public class MenuServiceImpl implements MenuService {
     @Transactional
     public Menu getMenuByUuid(String uuid) throws EmptyQueryResultException {
         Menu menu = menuRepository.findByUuid(uuid);
-        if (menu == null) throw new EmptyQueryResultException("Desearilization Failed. " +
-                "No menu found with uuid = " + uuid);
+        if (menu == null) throw new EmptyQueryResultException("No menu found with uuid = " + uuid,
+                "Please heck the UUID entered and try again.");
         return menu;
     }
 
@@ -63,7 +63,8 @@ public class MenuServiceImpl implements MenuService {
         Restaurante restaurante = restauranteService.getRestauranteByUuid(uuid);
         Menus menus = new Menus(SafiraUtils.toList(restaurante.getMenus()));
         if (menus.getMenus().isEmpty())
-            throw new EmptyQueryResultException("No menus were found by the given criteria");
+            throw new EmptyQueryResultException("No menus were found by the given criteria",
+                    "Please heck the Restaurante entered and try again.");
         return menus;
     }
 
@@ -74,7 +75,8 @@ public class MenuServiceImpl implements MenuService {
         for (MenuPedido menuPedido : pedido.getMenuPedidos()) menuList.add(menuPedido.getMenu());
         Menus menus = new Menus(SafiraUtils.toList(menuList));
         if (menus.getMenus().isEmpty())
-            throw new EmptyQueryResultException("No menus were found by the given criteria");
+            throw new EmptyQueryResultException("No menus were found by the given criteria",
+                    "Please heck the Pedido entered and try again.");
         return menus;
     }
 }

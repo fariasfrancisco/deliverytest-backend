@@ -3,19 +3,19 @@ package com.safira.service.implementation;
 import com.safira.api.AuthenticatedRestauranteToken;
 import com.safira.api.CreateRestauranteRequest;
 import com.safira.api.LoginRestauranteRequest;
+import com.safira.common.configuration.ApplicationConfiguration;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.LoginException;
 import com.safira.common.exceptions.ValidatorException;
-import com.safira.common.configuration.ApplicationConfiguration;
 import com.safira.domain.Restaurantes;
 import com.safira.domain.entities.Restaurante;
 import com.safira.domain.entities.RestauranteLogin;
 import com.safira.domain.entities.RestauranteSessionToken;
-import com.safira.service.repositories.RestauranteLoginRepository;
-import com.safira.service.repositories.RestauranteRepository;
 import com.safira.service.PasswordService;
 import com.safira.service.Validator;
 import com.safira.service.interfaces.RestauranteService;
+import com.safira.service.repositories.RestauranteLoginRepository;
+import com.safira.service.repositories.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,11 +64,13 @@ public class RestauranteServiceImpl implements RestauranteService {
             throws ValidatorException, EmptyQueryResultException, LoginException {
         Validator.validateRestauranteLogin(loginRestauranteRequest);
         RestauranteLogin restauranteLogin = restauranteLoginRepository.findByUsuario(loginRestauranteRequest.getUsuario());
-        if (restauranteLogin == null) throw new EmptyQueryResultException("Desearilization Failed. " +
-                "No restaurante found with usuario = " + loginRestauranteRequest.getUsuario());
+        if (restauranteLogin == null)
+            throw new EmptyQueryResultException("No restaurante found with usuario = " + loginRestauranteRequest.getUsuario(),
+                    "Please check the login information entered and try again.");
         if (!PasswordService.isExpectedPassword(loginRestauranteRequest.getPassword().toCharArray()
                 , restauranteLogin.getSalt(), restauranteLogin.getHash()))
-            throw new LoginException("The password recieved does not match stored password.");
+            throw new LoginException("The password recieved does not match stored password.",
+                    "Please check the login information entered and try again.");
         Restaurante restaurante = restauranteLogin.getRestaurante();
         return new AuthenticatedRestauranteToken(restaurante.getIdentifier(), null);
     }
@@ -78,15 +80,16 @@ public class RestauranteServiceImpl implements RestauranteService {
         Restaurantes restaurantes;
         restaurantes = new Restaurantes(restauranteRepository.findAll());
         if (restaurantes.getRestaurantes().isEmpty())
-            throw new EmptyQueryResultException("No restaurantes were found by the given criteria");
+            throw new EmptyQueryResultException("No restaurantes were found by the given criteria",
+                    "The Database may not contain any Restaurante, please try again later.");
         return restaurantes;
     }
 
     @Transactional
     public Restaurante getRestauranteByUuid(String uuid) throws EmptyQueryResultException {
         Restaurante restaurante = restauranteRepository.findByUuid(uuid);
-        if (restaurante == null) throw new EmptyQueryResultException("Desearilization Failed. " +
-                "No restaurante found with uuid = " + uuid);
+        if (restaurante == null) throw new EmptyQueryResultException("No restaurante found with uuid = " + uuid,
+                "Please check the UUID entered and try again.");
         return restaurante;
     }
 

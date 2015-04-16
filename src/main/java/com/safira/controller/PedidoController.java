@@ -1,6 +1,9 @@
 package com.safira.controller;
 
 import com.safira.api.CreatePedidoRequest;
+import com.safira.common.ErrorMessage;
+import com.safira.common.exceptions.EmptyQueryResultException;
+import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.Pedidos;
 import com.safira.domain.entities.Pedido;
 import com.safira.service.interfaces.PedidoService;
@@ -32,11 +35,13 @@ public class PedidoController {
             pedido = pedidoService.createPedido(createPedidoRequest);
             pedidoLogger.info("Successfully created new Pedido: \n" +
                     PedidosXMLWriter.createDocument(pedido).asXML());
+        } catch (ValidatorException e) {
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.CONFLICT);
         } catch (Exception e) {
             pedidoErrorLogger.error("An exception has occured when creating a new Pedido.", e);
-            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(pedido, HttpStatus.OK);
+        return new ResponseEntity<>(pedido, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = GET_PEDIDO_BY_UUID, method = RequestMethod.GET)
@@ -44,9 +49,11 @@ public class PedidoController {
         Pedido pedido;
         try {
             pedido = pedidoService.getPedidoByUuid(uuid);
+        } catch (EmptyQueryResultException e) {
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             pedidoErrorLogger.error("An exception has occured when finding Pedido with uuid = " + uuid, e);
-            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedido, HttpStatus.OK);
     }
@@ -56,9 +63,11 @@ public class PedidoController {
         Pedidos pedidos;
         try {
             pedidos = pedidoService.getPedidosByRestauranteUuid(uuid);
+        } catch (EmptyQueryResultException e) {
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             pedidoErrorLogger.error("An exception has occured when finding Pedido with Restaurante uuid = " + uuid, e);
-            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
     }
@@ -68,9 +77,11 @@ public class PedidoController {
         Pedidos pedidos;
         try {
             pedidos = pedidoService.getPedidosByUsuarioUuid(uuid);
+        } catch (EmptyQueryResultException e) {
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             pedidoErrorLogger.error("An exception has occured when finding Pedido with Usuario uuid = " + uuid, e);
-            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
     }
@@ -82,11 +93,13 @@ public class PedidoController {
         Pedidos pedidos;
         try {
             pedidos = pedidoService.getPedidosByUsuarioUuidAndByRestauranteUuid(usruuid, resuuid);
+        } catch (EmptyQueryResultException e) {
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             pedidoErrorLogger.error("An exception has occured when finding Pedido with" +
                     " Restaurante uuid = " + resuuid +
                     " Usuario uuid = " + usruuid, e);
-            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
     }

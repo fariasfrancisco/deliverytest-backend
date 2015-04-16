@@ -1,6 +1,8 @@
 package com.safira.controller;
 
 import com.safira.api.CreateDireccionRequest;
+import com.safira.common.ErrorMessage;
+import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.entities.Direccion;
 import com.safira.service.interfaces.DireccionService;
 import com.safira.service.log.DireccionXMLWriter;
@@ -34,10 +36,12 @@ public class DireccionController {
             direccion = direccionService.createDireccion(createDireccionRequest);
             direccionLogger.info("Successfully created new Direccion: " +
                     DireccionXMLWriter.createDocument(direccion).asXML());
+        } catch (ValidatorException e) {
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.CONFLICT);
         } catch (Exception e) {
             direccionErrorLogger.error("An exception has occured when creating a new Direccion.", e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(direccion, HttpStatus.OK);
+        return new ResponseEntity<>(direccion, HttpStatus.CREATED);
     }
 }

@@ -3,20 +3,9 @@ package com.safira.common.exceptions;
 /**
  * Created by francisco on 05/04/15.
  */
-public class PedidoTimeoutException extends Exception {
+public class PedidoTimeoutException extends SafiraException {
     public PedidoTimeoutException() {
-        super("Pedido Timeout. More than 15 minutes have passed since the request was sent");
+        super("The creation request for Pedido took too long.", "Please try again later.");
     }
 
-    public PedidoTimeoutException(String message) {
-        super(message);
-    }
-
-    public PedidoTimeoutException(Throwable cause) {
-        super(cause);
-    }
-
-    public PedidoTimeoutException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

@@ -43,8 +43,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional
     public Usuario getUsuarioByUuid(String uuid) throws EmptyQueryResultException {
         Usuario usuario = usuarioRepository.findByUuid(uuid);
-        if (usuario == null) throw new EmptyQueryResultException("Desearilization Failed. " +
-                "No usuario found with uuid = " + uuid);
+        if (usuario == null) throw new EmptyQueryResultException("No usuario found with uuid = " + uuid,
+                "Please check the UUID entered and try again.");
         return usuario;
     }
 }

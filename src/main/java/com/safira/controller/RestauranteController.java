@@ -3,6 +3,10 @@ package com.safira.controller;
 import com.safira.api.AuthenticatedRestauranteToken;
 import com.safira.api.CreateRestauranteRequest;
 import com.safira.api.LoginRestauranteRequest;
+import com.safira.common.ErrorMessage;
+import com.safira.common.exceptions.EmptyQueryResultException;
+import com.safira.common.exceptions.LoginException;
+import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.Restaurantes;
 import com.safira.domain.entities.Restaurante;
 import com.safira.service.interfaces.RestauranteService;
@@ -34,11 +38,13 @@ public class RestauranteController {
             restaurante = restauranteService.createRestaurante(createRestauranteRequest);
             restauranteLogger.info("Successfully created new Restaurante: \n" +
                     RestauranteXMLWriter.createDocument(restaurante).asXML());
+        } catch (ValidatorException e) {
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.CONFLICT);
         } catch (Exception e) {
             restauranteErrorLogger.error("An exception has occured when creating a new Restaurante.", e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(restaurante, HttpStatus.OK);
+        return new ResponseEntity<>(restaurante, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = LOGIN_RESTAURANTE, method = RequestMethod.POST)
@@ -48,10 +54,14 @@ public class RestauranteController {
             authenticatedRestauranteToken = restauranteService.loginRestaurante(loginRestauranteRequest);
             restauranteLogger.info("Successfully created logged Restaurante: " +
                     authenticatedRestauranteToken.getRestauranteUuid());
+        } catch (EmptyQueryResultException e) {
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.NOT_FOUND);
+        } catch (LoginException e) {
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.CONFLICT);
         } catch (Exception e) {
             restauranteErrorLogger.error("Failed attempt to log in Restaurante with usuario = "
                     + loginRestauranteRequest.getUsuario(), e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(authenticatedRestauranteToken, HttpStatus.OK);
     }
@@ -61,9 +71,11 @@ public class RestauranteController {
         Restaurantes restaurantes;
         try {
             restaurantes = restauranteService.getAllRestaurantes();
+        } catch (EmptyQueryResultException e) {
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             restauranteErrorLogger.error("An exception has occured when finding all Restaurantes", e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(restaurantes, HttpStatus.OK);
     }
@@ -73,9 +85,11 @@ public class RestauranteController {
         Restaurante restaurante;
         try {
             restaurante = restauranteService.getRestauranteByUuid(uuid);
+        } catch (EmptyQueryResultException e) {
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             restauranteErrorLogger.error("An exception has occured when finding Restaurante with uuid = " + uuid, e);
-            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(restaurante, HttpStatus.OK);
     }

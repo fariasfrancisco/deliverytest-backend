@@ -39,8 +39,8 @@ public class DireccionServiceImpl implements DireccionService {
     @Override
     public Direccion getDireccionByUuid(String uuid) throws EmptyQueryResultException {
         Direccion direccion = direccionRepository.findByUuid(uuid);
-        if (direccion == null) throw new EmptyQueryResultException("Desearilization Failed. " +
-                "No direccion found with uuid = " + uuid);
+        if (direccion == null) throw new EmptyQueryResultException("No direccion found with uuid = " + uuid,
+                "Please check the UUID entered and try again.");
         return direccion;
     }
 }
