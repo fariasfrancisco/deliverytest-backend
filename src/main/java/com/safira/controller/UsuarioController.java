@@ -1,10 +1,10 @@
 package com.safira.controller;
 
 import com.safira.api.CreateUsuarioRequest;
-import com.safira.common.ErrorMessage;
-import com.safira.common.exceptions.EmptyQueryResultException;
+import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.entities.Usuario;
+import com.safira.service.Validator;
 import com.safira.service.interfaces.UsuarioService;
 import com.safira.service.log.UsuarioXMLWriter;
 import org.apache.log4j.Logger;
@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.safira.common.URLs.LOGIN_USUARIO;
+import static com.safira.common.URLs.GET_USUARIO;
 import static com.safira.common.URLs.REGISTER_USUARIO;
 
 /**
@@ -25,6 +25,8 @@ public class UsuarioController {
     @Autowired
     UsuarioService usuarioService;
 
+    ErrorOutput errors = new ErrorOutput();
+
     final static Logger usuarioLogger = Logger.getLogger("usuarioLogger");
     final static Logger usuarioErrorLogger = Logger.getLogger("usuarioErrorLogger");
 
@@ -32,26 +34,27 @@ public class UsuarioController {
     public ResponseEntity registerUsuario(@RequestBody CreateUsuarioRequest createUsuarioRequest) {
         Usuario usuario;
         try {
+            Validator.validateUsuario(createUsuarioRequest, errors);
             usuario = usuarioService.createUsuario(createUsuarioRequest);
-            usuarioLogger.info("Successfully created new Usuario: \n" +
-                    UsuarioXMLWriter.createDocument(usuario).asXML());
-        }catch (ValidatorException e) {
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.CONFLICT);
-        }
-        catch (Exception e) {
+            usuarioLogger.info("Successfully created new Usuario: \n"
+                    + UsuarioXMLWriter.createDocument(usuario).asXML());
+        } catch (ValidatorException e) {
+            return new ResponseEntity<>(errors, HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (Exception e) {
             usuarioErrorLogger.error("An exception has occured when creating a new Usuario.", e);
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(usuario, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = LOGIN_USUARIO, method = RequestMethod.GET)
-    public ResponseEntity loginUsuario(@RequestParam(value = "uuid", required = true) String uuid) {
+    @RequestMapping(value = GET_USUARIO, method = RequestMethod.GET)
+    public ResponseEntity getUsuario(@RequestParam(value = "uuid", required = true) String uuid) {
         Usuario usuario;
         try {
-            usuario = usuarioService.getUsuarioByUuid(uuid);
-        } catch (EmptyQueryResultException e) {
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.NOT_FOUND);
+            usuario = usuarioService.getUsuarioByUuid(uuid, errors);
+            if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }

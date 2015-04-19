@@ -19,7 +19,7 @@ public class URLs {
 
     //USUARIOS
     public static final String REGISTER_USUARIO = "/postUsuario";
-    public static final String LOGIN_USUARIO = "/loginUsuario";
+    public static final String GET_USUARIO = "/getUsuario";
 
     //DIRECCION
     public static final String REGISTER_DIRECCION = "/postDireccion";

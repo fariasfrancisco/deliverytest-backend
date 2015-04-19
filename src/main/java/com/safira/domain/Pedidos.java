@@ -2,13 +2,17 @@ package com.safira.domain;
 
 import com.safira.domain.entities.Pedido;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Class intended to simplify List storage of Pedido objects and ease jSon transmision.
  */
 public class Pedidos {
-    private List<Pedido> pedidos;
+    private List<Pedido> pedidos = new ArrayList<>();
+
+    public Pedidos() {
+    }
 
     public Pedidos(List<Pedido> pedidos) {
         this.pedidos = pedidos;

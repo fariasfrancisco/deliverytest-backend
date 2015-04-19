@@ -1,11 +1,9 @@
 package com.safira.service.implementation;
 
 import com.safira.api.CreateUsuarioRequest;
-import com.safira.api.LoginUsuarioRequest;
-import com.safira.common.exceptions.EmptyQueryResultException;
-import com.safira.common.exceptions.ValidatorException;
+import com.safira.common.ErrorDescription;
+import com.safira.common.ErrorOutput;
 import com.safira.domain.entities.Usuario;
-import com.safira.service.Validator;
 import com.safira.service.interfaces.UsuarioService;
 import com.safira.service.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +20,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     UsuarioRepository usuarioRepository;
 
     @Transactional
-    public Usuario createUsuario(CreateUsuarioRequest createUsuarioRequest) throws ValidatorException {
-        Validator.validateUsuario(createUsuarioRequest);
+    public Usuario createUsuario(CreateUsuarioRequest createUsuarioRequest) {
         Usuario usuario = new Usuario.Builder()
                 .withFacebookId(createUsuarioRequest.getFacebookId())
                 .withNombre(createUsuarioRequest.getNombre())
@@ -35,16 +32,15 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Transactional
-    public Usuario loginUsuario(LoginUsuarioRequest loginUsuarioRequest) {
-        return null;
-    }
-
-
-    @Transactional
-    public Usuario getUsuarioByUuid(String uuid) throws EmptyQueryResultException {
+    public Usuario getUsuarioByUuid(String uuid, ErrorOutput errors) {
         Usuario usuario = usuarioRepository.findByUuid(uuid);
-        if (usuario == null) throw new EmptyQueryResultException("No usuario found with uuid = " + uuid,
-                "Please check the UUID entered and try again.");
+        if (usuario == null) {
+            errors.setMessage("Empty Query Exception.");
+            String field = "usuarioUuid";
+            String message = "No usuario found with uuid = " + uuid + '.';
+            ErrorDescription error = new ErrorDescription(field, message);
+            errors.addError(error);
+        }
         return usuario;
     }
 }

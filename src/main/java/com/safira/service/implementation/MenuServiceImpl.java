@@ -1,15 +1,15 @@
 package com.safira.service.implementation;
 
 import com.safira.api.CreateMenuRequest;
+import com.safira.common.ErrorDescription;
+import com.safira.common.ErrorOutput;
 import com.safira.common.SafiraUtils;
 import com.safira.common.exceptions.EmptyQueryResultException;
-import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.Menus;
 import com.safira.domain.entities.Menu;
 import com.safira.domain.entities.MenuPedido;
 import com.safira.domain.entities.Pedido;
 import com.safira.domain.entities.Restaurante;
-import com.safira.service.Validator;
 import com.safira.service.interfaces.MenuService;
 import com.safira.service.interfaces.PedidoService;
 import com.safira.service.interfaces.RestauranteService;
@@ -18,14 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by francisco on 24/03/15.
  */
 @Service("menuService")
 public class MenuServiceImpl implements MenuService {
+
 
     @Autowired
     RestauranteService restauranteService;
@@ -37,9 +38,10 @@ public class MenuServiceImpl implements MenuService {
     MenuRepository menuRepository;
 
     @Transactional
-    public Menu createMenu(CreateMenuRequest createMenuRequest) throws ValidatorException, EmptyQueryResultException {
-        Validator.validateMenu(createMenuRequest);
-        Restaurante restaurante = restauranteService.getRestauranteByUuid(createMenuRequest.getRestauranteUuid());
+    public Menu createMenu(CreateMenuRequest createMenuRequest, ErrorOutput errors) throws EmptyQueryResultException {
+        String restauranteUuid = createMenuRequest.getRestauranteUuid();
+        Restaurante restaurante = restauranteService.getRestauranteByUuid(restauranteUuid, errors);
+        if (errors.hasErrors()) throw new EmptyQueryResultException();
         Menu menu = new Menu.Builder()
                 .withNombre(createMenuRequest.getNombre())
                 .withDescripcion(createMenuRequest.getDescripcion())
@@ -51,32 +53,49 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Transactional
-    public Menu getMenuByUuid(String uuid) throws EmptyQueryResultException {
+    public Menu getMenuByUuid(String uuid, ErrorOutput errors) {
         Menu menu = menuRepository.findByUuid(uuid);
-        if (menu == null) throw new EmptyQueryResultException("No menu found with uuid = " + uuid,
-                "Please heck the UUID entered and try again.");
+        if (menu == null) {
+            errors.setMessage("Empty Query Result.");
+            String field = "menuUuid";
+            String message = "No menu found with uuid = " + uuid + '.';
+            ErrorDescription error = new ErrorDescription(field, message);
+            errors.addError(error);
+        }
         return menu;
     }
 
     @Transactional
-    public Menus getMenusByRestauranteUuid(String uuid) throws EmptyQueryResultException {
-        Restaurante restaurante = restauranteService.getRestauranteByUuid(uuid);
+    public Menus getMenusByRestauranteUuid(String uuid, ErrorOutput errors) {
+        Restaurante restaurante = restauranteService.getRestauranteByUuid(uuid, errors);
+        if (errors.hasErrors()) return new Menus();
         Menus menus = new Menus(SafiraUtils.toList(restaurante.getMenus()));
-        if (menus.getMenus().isEmpty())
-            throw new EmptyQueryResultException("No menus were found by the given criteria",
-                    "Please heck the Restaurante entered and try again.");
+        if (menus.getMenus().isEmpty()) {
+            errors.setMessage("Empty Query Result.");
+            String field = "restauranteUuid";
+            String message = "No menus were found by the given criteria.";
+            ErrorDescription error = new ErrorDescription(field, message);
+            errors.addError(error);
+        }
         return menus;
     }
 
     @Transactional
-    public Menus getMenusByPedidoUuid(String uuid) throws EmptyQueryResultException {
-        Pedido pedido = pedidoService.getPedidoByUuid(uuid);
-        List<Menu> menuList = new ArrayList<>();
-        for (MenuPedido menuPedido : pedido.getMenuPedidos()) menuList.add(menuPedido.getMenu());
+    public Menus getMenusByPedidoUuid(String uuid, ErrorOutput errors) {
+        Pedido pedido = pedidoService.getPedidoByUuid(uuid, errors);
+        if (errors.hasErrors()) return new Menus();
+        List<Menu> menuList = pedido.getMenuPedidos()
+                .stream()
+                .map(MenuPedido::getMenu)
+                .collect(Collectors.toList());
         Menus menus = new Menus(SafiraUtils.toList(menuList));
-        if (menus.getMenus().isEmpty())
-            throw new EmptyQueryResultException("No menus were found by the given criteria",
-                    "Please heck the Pedido entered and try again.");
+        if (menus.getMenus().isEmpty()) {
+            errors.setMessage("Empty Query Result.");
+            String field = "pedidoUuid";
+            String message = "No menus were found by the given criteria.";
+            ErrorDescription error = new ErrorDescription(field, message);
+            errors.addError(error);
+        }
         return menus;
     }
 }

@@ -1,5 +1,7 @@
 package com.safira.api;
 
+import java.util.UUID;
+
 /**
  * Created by francisco on 25/03/15.
  */
@@ -10,7 +12,10 @@ public class AuthenticatedRestauranteToken {
 
     public AuthenticatedRestauranteToken() {
     }
-
+    public AuthenticatedRestauranteToken(String restauranteUuid) {
+        this.restauranteUuid = restauranteUuid;
+        this.token = UUID.randomUUID().toString();
+    }
     public AuthenticatedRestauranteToken(String restauranteUuid, String token) {
         this.restauranteUuid = restauranteUuid;
         this.token = token;

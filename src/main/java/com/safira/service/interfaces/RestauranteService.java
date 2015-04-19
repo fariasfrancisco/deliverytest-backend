@@ -3,9 +3,9 @@ package com.safira.service.interfaces;
 import com.safira.api.AuthenticatedRestauranteToken;
 import com.safira.api.CreateRestauranteRequest;
 import com.safira.api.LoginRestauranteRequest;
+import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.LoginException;
-import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.Restaurantes;
 import com.safira.domain.entities.Restaurante;
 import com.safira.domain.entities.RestauranteLogin;
@@ -16,13 +16,13 @@ import com.safira.domain.entities.RestauranteSessionToken;
  */
 public interface RestauranteService {
 
-    public Restaurante createRestaurante(CreateRestauranteRequest createRestauranteRequest) throws ValidatorException;
+    public Restaurante createRestaurante(CreateRestauranteRequest createRestauranteRequest);
 
-    public AuthenticatedRestauranteToken loginRestaurante(LoginRestauranteRequest loginRestauranteRequest) throws ValidatorException, EmptyQueryResultException, LoginException;
+    public AuthenticatedRestauranteToken loginRestaurante(LoginRestauranteRequest loginRestauranteRequest, ErrorOutput errorOutput) throws EmptyQueryResultException, LoginException;
 
-    public Restaurantes getAllRestaurantes() throws EmptyQueryResultException;
+    public Restaurantes getAllRestaurantes(ErrorOutput errorOutput);
 
-    public Restaurante getRestauranteByUuid(String uuid) throws EmptyQueryResultException;
+    public Restaurante getRestauranteByUuid(String uuid, ErrorOutput errorOutput);
 
     public RestauranteSessionToken createToken(RestauranteLogin restauranteLogin);
 

@@ -1,14 +1,14 @@
 package com.safira.service.implementation;
 
 import com.safira.api.CreatePedidoRequest;
+import com.safira.common.ErrorDescription;
+import com.safira.common.ErrorOutput;
 import com.safira.common.SafiraUtils;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.InconsistencyException;
 import com.safira.common.exceptions.PedidoTimeoutException;
-import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.Pedidos;
 import com.safira.domain.entities.*;
-import com.safira.service.Validator;
 import com.safira.service.interfaces.*;
 import com.safira.service.repositories.MenuPedidoRepository;
 import com.safira.service.repositories.PedidoRepository;
@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,16 +46,29 @@ public class PedidoServiceImpl implements PedidoService {
     MenuPedidoRepository menuPedidoRepository;
 
     @Transactional
-    public Pedido createPedido(CreatePedidoRequest createPedidoRequest) throws ValidatorException, EmptyQueryResultException, InconsistencyException, PedidoTimeoutException {
-        Validator.validatePedido(createPedidoRequest);
-        Direccion direccion = direccionService.getDireccionByUuid(createPedidoRequest.getDireccionUuid());
-        Usuario usuario = usuarioService.getUsuarioByUuid(createPedidoRequest.getUsuarioUuid());
-        Restaurante restaurante = restauranteService.getRestauranteByUuid(createPedidoRequest.getRestauranteUuid());
-        if (!direccion.getUsuario().equals(usuario))
-            throw new InconsistencyException("Inconsistency found with the recieved Direccion",
-                    "The Direccion recieved does not belong to the recieved Usuario");
-        if (createPedidoRequest.getFecha().isBefore(LocalDateTime.now().minusMinutes(2)))
+    public Pedido createPedido(CreatePedidoRequest createPedidoRequest, ErrorOutput errors)
+            throws EmptyQueryResultException, InconsistencyException, PedidoTimeoutException {
+        String restauranteUuid = createPedidoRequest.getRestauranteUuid();
+        String usuarioUuid = createPedidoRequest.getUsuarioUuid();
+        String direccionUuid = createPedidoRequest.getDireccionUuid();
+        Restaurante restaurante = restauranteService.getRestauranteByUuid(restauranteUuid, errors);
+        Direccion direccion = direccionService.getDireccionByUuid(usuarioUuid, errors);
+        Usuario usuario = usuarioService.getUsuarioByUuid(direccionUuid, errors);
+        if (errors.hasErrors()) throw new EmptyQueryResultException();
+        if (createPedidoRequest.getFecha().isBefore(LocalDateTime.now().minusMinutes(2))) {
+            errors.setMessage("Inconsistency Found.");
+            String field = "fecha";
+            String message = "The Pedido creation request took too long to reach the server.";
+            ErrorDescription error = new ErrorDescription(field, message);
+            errors.addError(error);
             throw new PedidoTimeoutException();
+        }
+        if (!direccion.getUsuario().equals(usuario)) {
+            String field = "direccionUuid = " + direccionUuid + ", usuario = " + usuarioUuid;
+            String message = "Inconsistency found with the recieved Direccion (Recieved Usuario does not match).";
+            ErrorDescription error = new ErrorDescription(field, message);
+            errors.addError(error);
+        }
         Pedido pedido = new Pedido.Builder()
                 .withDireccion(direccion)
                 .withTelefono(createPedidoRequest.getTelefono())
@@ -62,66 +76,87 @@ public class PedidoServiceImpl implements PedidoService {
                 .withRestaurante(restaurante)
                 .withUsuario(usuario)
                 .build();
-        pedidoRepository.save(pedido);
         Menu menu;
-        MenuPedido menuPedido;
+        List<MenuPedido> menuPedidos = new ArrayList<>();
         int length = createPedidoRequest.getMenuUuids().length;
         for (int index = 0; index < length; index++) {
             String menuUuid = createPedidoRequest.getMenuUuids()[index];
             BigDecimal cantidad = createPedidoRequest.getCantidades()[index];
-            menu = menuService.getMenuByUuid(menuUuid);
-            if (!restaurante.getIdentifier().equals(menu.getRestaurante().getIdentifier())) {
-                throw new InconsistencyException("Inconsistency found with the recieved Menu.",
-                        "menu.restaurante uuid recieved was " + menuUuid +
-                                ". Expected " + createPedidoRequest.getRestauranteUuid());
+            menu = menuService.getMenuByUuid(menuUuid, errors);
+            if (!restauranteUuid.equals(menu.getRestaurante().getIdentifier())) {
+                errors.setMessage("Inconsistency Exception Found.");
+                String field = "menuUuid = " + menuUuid + ", restaurante = " + restauranteUuid;
+                String message = "Inconsistency found with the recieved Menu (Recieved Restaurante doesnot match).";
+                ErrorDescription error = new ErrorDescription(field, message);
+                errors.addError(error);
             }
-            menuPedido = new MenuPedido(menu, pedido, cantidad);
-            menuPedidoRepository.save(menuPedido);
+            menuPedidos.add(new MenuPedido(menu, pedido, cantidad));
         }
+        if (errors.hasErrors()) throw new InconsistencyException();
         pedidoRepository.save(pedido);
+        menuPedidos.forEach(menuPedidoRepository::save);
         return pedido;
     }
 
     @Override
-    public Pedido getPedidoByUuid(String uuid) throws EmptyQueryResultException {
+    public Pedido getPedidoByUuid(String uuid, ErrorOutput errors) {
         Pedido pedido = pedidoRepository.findByUuid(uuid);
-        if (pedido == null) throw new EmptyQueryResultException("No pedido found with uuid = " + uuid,
-                "Please check the UUID entered and try again");
+        if (pedido == null) {
+            errors.setMessage("Empty Query Result.");
+            String field = "pedidoUuid";
+            String message = "No pedido found with uuid = " + uuid + '.';
+            ErrorDescription error = new ErrorDescription(field, message);
+            errors.addError(error);
+        }
         return pedido;
     }
 
     @Override
-    public Pedidos getPedidosByRestauranteUuid(String uuid) throws EmptyQueryResultException {
-        Restaurante restaurante = restauranteService.getRestauranteByUuid(uuid);
+    public Pedidos getPedidosByRestauranteUuid(String uuid, ErrorOutput errors) {
+        Restaurante restaurante = restauranteService.getRestauranteByUuid(uuid, errors);
+        if (errors.hasErrors()) return new Pedidos();
         Pedidos pedidos = new Pedidos(SafiraUtils.toList(restaurante.getPedidos()));
-        if (pedidos.getPedidos().isEmpty())
-            throw new EmptyQueryResultException("No pedidos were found by the given criteria",
-                    "Please check the Restaurante entered and try again");
+        if (pedidos.getPedidos().isEmpty()) {
+            errors.setMessage("Empty Query Result.");
+            String field = "restauranteUuid";
+            String message = "No pedidos were found by the given criteria.";
+            ErrorDescription error = new ErrorDescription(field, message);
+            errors.addError(error);
+        }
         return pedidos;
     }
 
     @Override
-    public Pedidos getPedidosByUsuarioUuid(String uuid) throws EmptyQueryResultException {
-        Usuario usuario = usuarioService.getUsuarioByUuid(uuid);
+    public Pedidos getPedidosByUsuarioUuid(String uuid, ErrorOutput errors) {
+        Usuario usuario = usuarioService.getUsuarioByUuid(uuid, errors);
+        if (errors.hasErrors()) return new Pedidos();
         Pedidos pedidos = new Pedidos(SafiraUtils.toList(usuario.getPedidos()));
-        if (pedidos.getPedidos().isEmpty())
-            throw new EmptyQueryResultException("No pedidos were found by the given criteria",
-                    "Please check the Usuario entered and try again");
+        if (pedidos.getPedidos().isEmpty()) {
+            errors.setMessage("Empty Query Result.");
+            String field = "restauranteUuid";
+            String message = "No pedidos were found by the given criteria.";
+            ErrorDescription error = new ErrorDescription(field, message);
+            errors.addError(error);
+        }
         return pedidos;
     }
 
     @Override
-    public Pedidos getPedidosByUsuarioUuidAndByRestauranteUuid(String usruuid, String resuuid)
-            throws EmptyQueryResultException {
-        Usuario usuario = usuarioService.getUsuarioByUuid(resuuid);
-        Restaurante restaurante = restauranteService.getRestauranteByUuid(resuuid);
+    public Pedidos getPedidosByUsuarioUuidAndByRestauranteUuid(String usruuid, String resuuid, ErrorOutput errors) {
+        Usuario usuario = usuarioService.getUsuarioByUuid(resuuid, errors);
+        Restaurante restaurante = restauranteService.getRestauranteByUuid(resuuid, errors);
+        if (errors.hasErrors()) return new Pedidos();
         List<Pedido> pedidosByRestaurante = SafiraUtils.toList(restaurante.getPedidos());
         List<Pedido> pedidosByUsuario = SafiraUtils.toList(usuario.getPedidos());
         List<Pedido> intersection = SafiraUtils.intersection(pedidosByRestaurante, pedidosByUsuario);
         Pedidos pedidos = new Pedidos(intersection);
-        if (pedidos.getPedidos().isEmpty())
-            throw new EmptyQueryResultException("No pedidos were found by the given criteria",
-                    "Please check the Usuario and Restaurante entered and try again");
+        if (pedidos.getPedidos().isEmpty()) {
+            errors.setMessage("Empty Query Result.");
+            String field = "restauranteUuid, usuarioUuid";
+            String message = "No pedidos were found by the given criteria.";
+            ErrorDescription error = new ErrorDescription(field, message);
+            errors.addError(error);
+        }
         return pedidos;
     }
 }

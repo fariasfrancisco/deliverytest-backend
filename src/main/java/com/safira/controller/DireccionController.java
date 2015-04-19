@@ -1,9 +1,10 @@
 package com.safira.controller;
 
 import com.safira.api.CreateDireccionRequest;
-import com.safira.common.ErrorMessage;
+import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.entities.Direccion;
+import com.safira.service.Validator;
 import com.safira.service.interfaces.DireccionService;
 import com.safira.service.log.DireccionXMLWriter;
 import org.apache.log4j.Logger;
@@ -26,6 +27,8 @@ public class DireccionController {
     @Autowired
     DireccionService direccionService;
 
+    private ErrorOutput errors = new ErrorOutput();
+
     final static Logger direccionLogger = Logger.getLogger("direccionLogger");
     final static Logger direccionErrorLogger = Logger.getLogger("direccionErrorLogger");
 
@@ -33,14 +36,15 @@ public class DireccionController {
     public ResponseEntity addDireccion(@RequestBody CreateDireccionRequest createDireccionRequest) {
         Direccion direccion;
         try {
-            direccion = direccionService.createDireccion(createDireccionRequest);
+            Validator.validateDireccion(createDireccionRequest, errors);
+            direccion = direccionService.createDireccion(createDireccionRequest, errors);
             direccionLogger.info("Successfully created new Direccion: " +
                     DireccionXMLWriter.createDocument(direccion).asXML());
         } catch (ValidatorException e) {
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(errors, HttpStatus.UNPROCESSABLE_ENTITY);
         } catch (Exception e) {
             direccionErrorLogger.error("An exception has occured when creating a new Direccion.", e);
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(direccion, HttpStatus.CREATED);
     }

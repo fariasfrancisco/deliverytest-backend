@@ -1,11 +1,8 @@
 package com.safira.service.interfaces;
 
-import com.safira.api.CreateDireccionRequest;
 import com.safira.api.CreateUsuarioRequest;
 import com.safira.api.LoginUsuarioRequest;
-import com.safira.common.exceptions.EmptyQueryResultException;
-import com.safira.common.exceptions.ValidatorException;
-import com.safira.domain.entities.Direccion;
+import com.safira.common.ErrorOutput;
 import com.safira.domain.entities.Usuario;
 
 /**
@@ -13,9 +10,7 @@ import com.safira.domain.entities.Usuario;
  */
 public interface UsuarioService {
 
-    public Usuario createUsuario(CreateUsuarioRequest createUsuarioRequest) throws ValidatorException;
+    public Usuario createUsuario(CreateUsuarioRequest createUsuarioRequest);
 
-    public Usuario loginUsuario(LoginUsuarioRequest loginUsuarioRequest);
-
-    public Usuario getUsuarioByUuid(String uuid) throws EmptyQueryResultException;
+    public Usuario getUsuarioByUuid(String uuid, ErrorOutput errorOutput);
 }

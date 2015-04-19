@@ -1,11 +1,13 @@
 package com.safira.controller;
 
 import com.safira.api.CreatePedidoRequest;
-import com.safira.common.ErrorMessage;
+import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
+import com.safira.common.exceptions.PedidoTimeoutException;
 import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.Pedidos;
 import com.safira.domain.entities.Pedido;
+import com.safira.service.Validator;
 import com.safira.service.interfaces.PedidoService;
 import com.safira.service.log.PedidosXMLWriter;
 import org.apache.log4j.Logger;
@@ -23,7 +25,9 @@ import static com.safira.common.URLs.*;
 public class PedidoController {
 
     @Autowired
-    PedidoService pedidoService;
+    private PedidoService pedidoService;
+
+    private ErrorOutput errors = new ErrorOutput();
 
     final static Logger pedidoLogger = Logger.getLogger("pedidoLogger");
     final static Logger pedidoErrorLogger = Logger.getLogger("pedidoExceptionLogger");
@@ -32,14 +36,15 @@ public class PedidoController {
     public ResponseEntity registerPedido(@RequestBody CreatePedidoRequest createPedidoRequest) {
         Pedido pedido;
         try {
-            pedido = pedidoService.createPedido(createPedidoRequest);
+            Validator.validatePedido(createPedidoRequest, errors);
+            pedido = pedidoService.createPedido(createPedidoRequest, errors);
             pedidoLogger.info("Successfully created new Pedido: \n" +
                     PedidosXMLWriter.createDocument(pedido).asXML());
-        } catch (ValidatorException e) {
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.CONFLICT);
+        } catch (ValidatorException | EmptyQueryResultException | PedidoTimeoutException e) {
+            return new ResponseEntity<>(errors, HttpStatus.UNPROCESSABLE_ENTITY);
         } catch (Exception e) {
             pedidoErrorLogger.error("An exception has occured when creating a new Pedido.", e);
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedido, HttpStatus.CREATED);
     }
@@ -48,12 +53,11 @@ public class PedidoController {
     public ResponseEntity getPedidoById(@RequestParam(value = "uuid", required = true) String uuid) {
         Pedido pedido;
         try {
-            pedido = pedidoService.getPedidoByUuid(uuid);
-        } catch (EmptyQueryResultException e) {
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.NOT_FOUND);
+            pedido = pedidoService.getPedidoByUuid(uuid, errors);
+            if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             pedidoErrorLogger.error("An exception has occured when finding Pedido with uuid = " + uuid, e);
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedido, HttpStatus.OK);
     }
@@ -62,12 +66,11 @@ public class PedidoController {
     public ResponseEntity getPedidosByRestaurante(@RequestParam(value = "uuid", required = true) String uuid) {
         Pedidos pedidos;
         try {
-            pedidos = pedidoService.getPedidosByRestauranteUuid(uuid);
-        } catch (EmptyQueryResultException e) {
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.NOT_FOUND);
+            pedidos = pedidoService.getPedidosByRestauranteUuid(uuid, errors);
+            if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             pedidoErrorLogger.error("An exception has occured when finding Pedido with Restaurante uuid = " + uuid, e);
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
     }
@@ -76,12 +79,11 @@ public class PedidoController {
     public ResponseEntity getPedidosByUsuario(@RequestParam(value = "uuid", required = true) String uuid) {
         Pedidos pedidos;
         try {
-            pedidos = pedidoService.getPedidosByUsuarioUuid(uuid);
-        } catch (EmptyQueryResultException e) {
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.NOT_FOUND);
+            pedidos = pedidoService.getPedidosByUsuarioUuid(uuid, errors);
+            if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             pedidoErrorLogger.error("An exception has occured when finding Pedido with Usuario uuid = " + uuid, e);
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
     }
@@ -92,14 +94,12 @@ public class PedidoController {
             @RequestParam(value = "usruuid", required = true) String usruuid) {
         Pedidos pedidos;
         try {
-            pedidos = pedidoService.getPedidosByUsuarioUuidAndByRestauranteUuid(usruuid, resuuid);
-        } catch (EmptyQueryResultException e) {
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.NOT_FOUND);
+            pedidos = pedidoService.getPedidosByUsuarioUuidAndByRestauranteUuid(usruuid, resuuid, errors);
+            if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             pedidoErrorLogger.error("An exception has occured when finding Pedido with" +
-                    " Restaurante uuid = " + resuuid +
-                    " Usuario uuid = " + usruuid, e);
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
+                    " Restaurante uuid = " + resuuid + " Usuario uuid = " + usruuid, e);
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
     }

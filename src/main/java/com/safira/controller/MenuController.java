@@ -1,11 +1,12 @@
 package com.safira.controller;
 
 import com.safira.api.CreateMenuRequest;
-import com.safira.common.ErrorMessage;
+import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.Menus;
 import com.safira.domain.entities.Menu;
+import com.safira.service.Validator;
 import com.safira.service.interfaces.MenuService;
 import com.safira.service.log.MenusXMLWriter;
 import org.apache.log4j.Logger;
@@ -25,6 +26,9 @@ public class MenuController {
     @Autowired
     MenuService menuService;
 
+    private ErrorOutput errors = new ErrorOutput();
+    ;
+
     final static Logger menuLogger = Logger.getLogger("menuLogger");
     final static Logger menuErrorLogger = Logger.getLogger("menuErrorLogger");
 
@@ -32,14 +36,15 @@ public class MenuController {
     public ResponseEntity registerMenu(@RequestBody CreateMenuRequest createMenuRequest) {
         Menu menu;
         try {
-            menu = menuService.createMenu(createMenuRequest);
+            Validator.validateMenu(createMenuRequest, errors);
+            menu = menuService.createMenu(createMenuRequest, errors);
             menuLogger.info("Successfully created new Menu: \n" +
                     MenusXMLWriter.createDocument(menu).asXML());
-        } catch (ValidatorException e) {
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.CONFLICT);
+        } catch (ValidatorException | EmptyQueryResultException e) {
+            return new ResponseEntity<>(errors, HttpStatus.UNPROCESSABLE_ENTITY);
         } catch (Exception e) {
             menuErrorLogger.error("An exception has occured when creating a new Menu.", e);
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(menu, HttpStatus.CREATED);
     }
@@ -48,12 +53,11 @@ public class MenuController {
     public ResponseEntity getMenuById(@RequestParam(value = "uuid", required = true) String uuid) {
         Menu menu;
         try {
-            menu = menuService.getMenuByUuid(uuid);
-        } catch (EmptyQueryResultException e) {
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.NOT_FOUND);
+            menu = menuService.getMenuByUuid(uuid, errors);
+            if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             menuErrorLogger.error("An exception has occured when finding Menu with uuid = " + uuid, e);
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(menu, HttpStatus.OK);
     }
@@ -62,12 +66,11 @@ public class MenuController {
     public ResponseEntity getMenusByRestaurante(@RequestParam(value = "uuid", required = true) String uuid) {
         Menus menus;
         try {
-            menus = menuService.getMenusByRestauranteUuid(uuid);
-        } catch (EmptyQueryResultException e) {
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.NOT_FOUND);
+            menus = menuService.getMenusByRestauranteUuid(uuid, errors);
+            if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             menuErrorLogger.error("An exception has occured when finding Menus with Restaurante uuid = " + uuid, e);
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(menus, HttpStatus.OK);
     }
@@ -76,12 +79,11 @@ public class MenuController {
     public ResponseEntity getMenusByPedido(@RequestParam(value = "uuid", required = true) String uuid) {
         Menus menus;
         try {
-            menus = menuService.getMenusByPedidoUuid(uuid);
-        } catch (EmptyQueryResultException e) {
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.NOT_FOUND);
+            menus = menuService.getMenusByPedidoUuid(uuid, errors);
+            if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             menuErrorLogger.error("An exception has occured when finding Menus with Pedidos uuid = " + uuid, e);
-            return new ResponseEntity<>(new ErrorMessage(e), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(menus, HttpStatus.OK);
     }

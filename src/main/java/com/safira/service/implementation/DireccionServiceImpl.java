@@ -1,11 +1,11 @@
 package com.safira.service.implementation;
 
 import com.safira.api.CreateDireccionRequest;
+import com.safira.common.ErrorDescription;
+import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
-import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.entities.Direccion;
 import com.safira.domain.entities.Usuario;
-import com.safira.service.Validator;
 import com.safira.service.interfaces.DireccionService;
 import com.safira.service.interfaces.UsuarioService;
 import com.safira.service.repositories.DireccionRepository;
@@ -22,9 +22,10 @@ public class DireccionServiceImpl implements DireccionService {
     UsuarioService usuarioService;
 
     @Override
-    public Direccion createDireccion(CreateDireccionRequest createDireccionRequest) throws ValidatorException, EmptyQueryResultException {
-        Validator.validateDireccion(createDireccionRequest);
-        Usuario usuario = usuarioService.getUsuarioByUuid(createDireccionRequest.getUsuarioUuid());
+    public Direccion createDireccion(CreateDireccionRequest createDireccionRequest, ErrorOutput errors)
+            throws EmptyQueryResultException {
+        String usuarioUuid = createDireccionRequest.getUsuarioUuid();
+        Usuario usuario = usuarioService.getUsuarioByUuid(usuarioUuid, errors);
         Direccion direccion = new Direccion.Builder()
                 .withCalle(createDireccionRequest.getCalle())
                 .withNumero(createDireccionRequest.getNumero())
@@ -37,10 +38,15 @@ public class DireccionServiceImpl implements DireccionService {
     }
 
     @Override
-    public Direccion getDireccionByUuid(String uuid) throws EmptyQueryResultException {
+    public Direccion getDireccionByUuid(String uuid, ErrorOutput errors) {
         Direccion direccion = direccionRepository.findByUuid(uuid);
-        if (direccion == null) throw new EmptyQueryResultException("No direccion found with uuid = " + uuid,
-                "Please check the UUID entered and try again.");
+        if (direccion == null) {
+            errors.setMessage("Empty Query Result.");
+            String field = "direccionUuid";
+            String message = "No direccion found with uuid = " + uuid + '.';
+            ErrorDescription error = new ErrorDescription(field, message);
+            errors.addError(error);
+        }
         return direccion;
     }
 }
