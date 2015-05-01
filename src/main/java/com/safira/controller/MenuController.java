@@ -4,7 +4,6 @@ import com.safira.api.CreateMenuRequest;
 import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.ValidatorException;
-import com.safira.domain.Menus;
 import com.safira.domain.entities.Menu;
 import com.safira.service.Validator;
 import com.safira.service.interfaces.MenuService;
@@ -14,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.safira.common.URLs.*;
 
@@ -26,14 +27,14 @@ public class MenuController {
     @Autowired
     MenuService menuService;
 
-    private ErrorOutput errors = new ErrorOutput();
-    ;
+    private ErrorOutput errors;
 
     final static Logger menuLogger = Logger.getLogger("menuLogger");
     final static Logger menuErrorLogger = Logger.getLogger("menuErrorLogger");
 
     @RequestMapping(value = REGISTER_MENU, method = RequestMethod.POST)
     public ResponseEntity registerMenu(@RequestBody CreateMenuRequest createMenuRequest) {
+        errors = new ErrorOutput();
         Menu menu;
         try {
             Validator.validateMenu(createMenuRequest, errors);
@@ -51,6 +52,7 @@ public class MenuController {
 
     @RequestMapping(value = GET_MENU_BY_UUID, method = RequestMethod.GET)
     public ResponseEntity getMenuById(@RequestParam(value = "uuid", required = true) String uuid) {
+        errors = new ErrorOutput();
         Menu menu;
         try {
             menu = menuService.getMenuByUuid(uuid, errors);
@@ -64,7 +66,8 @@ public class MenuController {
 
     @RequestMapping(value = GET_MENUS_BY_RESTAURANTE, method = RequestMethod.GET)
     public ResponseEntity getMenusByRestaurante(@RequestParam(value = "uuid", required = true) String uuid) {
-        Menus menus;
+        errors = new ErrorOutput();
+        List<Menu> menus;
         try {
             menus = menuService.getMenusByRestauranteUuid(uuid, errors);
             if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
@@ -77,7 +80,8 @@ public class MenuController {
 
     @RequestMapping(value = GET_MENUS_BY_PEDIDO, method = RequestMethod.GET)
     public ResponseEntity getMenusByPedido(@RequestParam(value = "uuid", required = true) String uuid) {
-        Menus menus;
+        errors = new ErrorOutput();
+        List<Menu> menus;
         try {
             menus = menuService.getMenusByPedidoUuid(uuid, errors);
             if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);

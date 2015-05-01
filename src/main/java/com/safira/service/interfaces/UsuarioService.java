@@ -1,7 +1,6 @@
 package com.safira.service.interfaces;
 
 import com.safira.api.CreateUsuarioRequest;
-import com.safira.api.LoginUsuarioRequest;
 import com.safira.common.ErrorOutput;
 import com.safira.domain.entities.Usuario;
 

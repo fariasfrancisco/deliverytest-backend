@@ -18,6 +18,10 @@ public class ErrorOutput {
         this.message = message;
     }
 
+    public List<ErrorDescription> getErrors() {
+        return errors;
+    }
+
     public String getMessage() {
         return message;
     }

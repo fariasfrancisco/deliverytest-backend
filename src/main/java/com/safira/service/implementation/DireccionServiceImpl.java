@@ -10,10 +10,13 @@ import com.safira.service.interfaces.DireccionService;
 import com.safira.service.interfaces.UsuarioService;
 import com.safira.service.repositories.DireccionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by francisco on 06/04/15.
  */
+@Service("direccionService")
 public class DireccionServiceImpl implements DireccionService {
     @Autowired
     DireccionRepository direccionRepository;
@@ -21,7 +24,7 @@ public class DireccionServiceImpl implements DireccionService {
     @Autowired
     UsuarioService usuarioService;
 
-    @Override
+    @Transactional
     public Direccion createDireccion(CreateDireccionRequest createDireccionRequest, ErrorOutput errors)
             throws EmptyQueryResultException {
         String usuarioUuid = createDireccionRequest.getUsuarioUuid();
@@ -37,7 +40,7 @@ public class DireccionServiceImpl implements DireccionService {
         return direccion;
     }
 
-    @Override
+    @Transactional
     public Direccion getDireccionByUuid(String uuid, ErrorOutput errors) {
         Direccion direccion = direccionRepository.findByUuid(uuid);
         if (direccion == null) {

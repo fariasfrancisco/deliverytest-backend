@@ -27,13 +27,14 @@ public class DireccionController {
     @Autowired
     DireccionService direccionService;
 
-    private ErrorOutput errors = new ErrorOutput();
+    private ErrorOutput errors;
 
     final static Logger direccionLogger = Logger.getLogger("direccionLogger");
     final static Logger direccionErrorLogger = Logger.getLogger("direccionErrorLogger");
 
     @RequestMapping(value = REGISTER_DIRECCION, method = RequestMethod.POST)
     public ResponseEntity addDireccion(@RequestBody CreateDireccionRequest createDireccionRequest) {
+        errors = new ErrorOutput();
         Direccion direccion;
         try {
             Validator.validateDireccion(createDireccionRequest, errors);

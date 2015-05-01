@@ -12,10 +12,12 @@ public class AuthenticatedRestauranteToken {
 
     public AuthenticatedRestauranteToken() {
     }
+
     public AuthenticatedRestauranteToken(String restauranteUuid) {
         this.restauranteUuid = restauranteUuid;
         this.token = UUID.randomUUID().toString();
     }
+
     public AuthenticatedRestauranteToken(String restauranteUuid, String token) {
         this.restauranteUuid = restauranteUuid;
         this.token = token;

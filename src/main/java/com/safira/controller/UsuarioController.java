@@ -25,13 +25,14 @@ public class UsuarioController {
     @Autowired
     UsuarioService usuarioService;
 
-    ErrorOutput errors = new ErrorOutput();
+    ErrorOutput errors;
 
     final static Logger usuarioLogger = Logger.getLogger("usuarioLogger");
     final static Logger usuarioErrorLogger = Logger.getLogger("usuarioErrorLogger");
 
     @RequestMapping(value = REGISTER_USUARIO, method = RequestMethod.POST)
     public ResponseEntity registerUsuario(@RequestBody CreateUsuarioRequest createUsuarioRequest) {
+        errors = new ErrorOutput();
         Usuario usuario;
         try {
             Validator.validateUsuario(createUsuarioRequest, errors);
@@ -49,6 +50,7 @@ public class UsuarioController {
 
     @RequestMapping(value = GET_USUARIO, method = RequestMethod.GET)
     public ResponseEntity getUsuario(@RequestParam(value = "uuid", required = true) String uuid) {
+        errors = new ErrorOutput();
         Usuario usuario;
         try {
             usuario = usuarioService.getUsuarioByUuid(uuid, errors);

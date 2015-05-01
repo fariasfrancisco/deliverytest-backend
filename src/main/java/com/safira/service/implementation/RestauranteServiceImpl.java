@@ -8,7 +8,6 @@ import com.safira.common.ErrorOutput;
 import com.safira.common.configuration.ApplicationConfiguration;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.LoginException;
-import com.safira.domain.Restaurantes;
 import com.safira.domain.entities.Restaurante;
 import com.safira.domain.entities.RestauranteLogin;
 import com.safira.domain.entities.RestauranteSessionToken;
@@ -19,6 +18,8 @@ import com.safira.service.repositories.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Created by francisco on 24/03/15.
@@ -87,10 +88,9 @@ public class RestauranteServiceImpl implements RestauranteService {
     }
 
     @Transactional
-    public Restaurantes getAllRestaurantes(ErrorOutput errors) {
-        Restaurantes restaurantes;
-        restaurantes = new Restaurantes(restauranteRepository.findAll());
-        if (restaurantes.getRestaurantes().isEmpty()) {
+    public List<Restaurante> getAllRestaurantes(ErrorOutput errors) {
+        List<Restaurante> restaurantes = restauranteRepository.findAll();
+        if (restaurantes.isEmpty()) {
             errors.setMessage("Empty Query Exception.");
             String field = "N/A";
             String message = "There are no Restaurantes in the database.";
@@ -113,7 +113,7 @@ public class RestauranteServiceImpl implements RestauranteService {
         return restaurante;
     }
 
-    @Override
+    @Transactional
     public RestauranteSessionToken createToken(RestauranteLogin restauranteLogin) {
         if (restauranteLogin.getRestauranteSessionToken() == null ||
                 restauranteLogin.getRestauranteSessionToken().hasExpired()) {
@@ -124,12 +124,12 @@ public class RestauranteServiceImpl implements RestauranteService {
         return restauranteLogin.getRestauranteSessionToken();
     }
 
-    @Override
+    @Transactional
     public void sendEmailVerification(RestauranteLogin restauranteLogin) {
 
     }
 
-    @Override
+    @Transactional
     public void validateEmailAddress() {
 
     }

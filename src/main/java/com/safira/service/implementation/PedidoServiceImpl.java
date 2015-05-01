@@ -7,7 +7,6 @@ import com.safira.common.SafiraUtils;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.InconsistencyException;
 import com.safira.common.exceptions.PedidoTimeoutException;
-import com.safira.domain.Pedidos;
 import com.safira.domain.entities.*;
 import com.safira.service.interfaces.*;
 import com.safira.service.repositories.MenuPedidoRepository;
@@ -98,7 +97,7 @@ public class PedidoServiceImpl implements PedidoService {
         return pedido;
     }
 
-    @Override
+    @Transactional
     public Pedido getPedidoByUuid(String uuid, ErrorOutput errors) {
         Pedido pedido = pedidoRepository.findByUuid(uuid);
         if (pedido == null) {
@@ -111,12 +110,13 @@ public class PedidoServiceImpl implements PedidoService {
         return pedido;
     }
 
-    @Override
-    public Pedidos getPedidosByRestauranteUuid(String uuid, ErrorOutput errors) {
+    @Transactional
+    public List<Pedido> getPedidosByRestauranteUuid(String uuid, ErrorOutput errors) {
+        List<Pedido> pedidos = new ArrayList<>();
         Restaurante restaurante = restauranteService.getRestauranteByUuid(uuid, errors);
-        if (errors.hasErrors()) return new Pedidos();
-        Pedidos pedidos = new Pedidos(SafiraUtils.toList(restaurante.getPedidos()));
-        if (pedidos.getPedidos().isEmpty()) {
+        if (errors.hasErrors()) return pedidos;
+        pedidos = SafiraUtils.toList(restaurante.getPedidos());
+        if (pedidos.isEmpty()) {
             errors.setMessage("Empty Query Result.");
             String field = "restauranteUuid";
             String message = "No pedidos were found by the given criteria.";
@@ -126,12 +126,13 @@ public class PedidoServiceImpl implements PedidoService {
         return pedidos;
     }
 
-    @Override
-    public Pedidos getPedidosByUsuarioUuid(String uuid, ErrorOutput errors) {
+    @Transactional
+    public List<Pedido> getPedidosByUsuarioUuid(String uuid, ErrorOutput errors) {
+        List<Pedido> pedidos = new ArrayList<>();
         Usuario usuario = usuarioService.getUsuarioByUuid(uuid, errors);
-        if (errors.hasErrors()) return new Pedidos();
-        Pedidos pedidos = new Pedidos(SafiraUtils.toList(usuario.getPedidos()));
-        if (pedidos.getPedidos().isEmpty()) {
+        if (errors.hasErrors()) return pedidos;
+        pedidos = SafiraUtils.toList(usuario.getPedidos());
+        if (pedidos.isEmpty()) {
             errors.setMessage("Empty Query Result.");
             String field = "restauranteUuid";
             String message = "No pedidos were found by the given criteria.";
@@ -141,16 +142,16 @@ public class PedidoServiceImpl implements PedidoService {
         return pedidos;
     }
 
-    @Override
-    public Pedidos getPedidosByUsuarioUuidAndByRestauranteUuid(String usruuid, String resuuid, ErrorOutput errors) {
+    @Transactional
+    public List<Pedido> getPedidosByUsuarioUuidAndByRestauranteUuid(String usruuid, String resuuid, ErrorOutput errors) {
+        List<Pedido> pedidos = new ArrayList<>();
         Usuario usuario = usuarioService.getUsuarioByUuid(resuuid, errors);
         Restaurante restaurante = restauranteService.getRestauranteByUuid(resuuid, errors);
-        if (errors.hasErrors()) return new Pedidos();
+        if (errors.hasErrors()) return pedidos;
         List<Pedido> pedidosByRestaurante = SafiraUtils.toList(restaurante.getPedidos());
         List<Pedido> pedidosByUsuario = SafiraUtils.toList(usuario.getPedidos());
-        List<Pedido> intersection = SafiraUtils.intersection(pedidosByRestaurante, pedidosByUsuario);
-        Pedidos pedidos = new Pedidos(intersection);
-        if (pedidos.getPedidos().isEmpty()) {
+        pedidos = SafiraUtils.intersection(pedidosByRestaurante, pedidosByUsuario);
+        if (pedidos.isEmpty()) {
             errors.setMessage("Empty Query Result.");
             String field = "restauranteUuid, usuarioUuid";
             String message = "No pedidos were found by the given criteria.";

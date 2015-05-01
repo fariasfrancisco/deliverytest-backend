@@ -1,4 +1,4 @@
-package com.safira.common;
+package com.safira.domain;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

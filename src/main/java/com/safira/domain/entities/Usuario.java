@@ -1,5 +1,6 @@
 package com.safira.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.Column;
@@ -20,7 +21,7 @@ public class Usuario extends ModelEntity {
     private String nombre;
     private String apellido;
 
-    @JsonManagedReference
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
     private Set<Pedido> pedidos = new HashSet<>();
 

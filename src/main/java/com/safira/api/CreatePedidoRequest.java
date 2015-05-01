@@ -2,8 +2,8 @@ package com.safira.api;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.safira.common.LocalDateTimeDeserializer;
-import com.safira.common.LocalDateTimeSerializer;
+import com.safira.domain.LocalDateTimeDeserializer;
+import com.safira.domain.LocalDateTimeSerializer;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

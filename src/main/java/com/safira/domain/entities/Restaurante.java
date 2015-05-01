@@ -1,6 +1,7 @@
 package com.safira.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -27,7 +28,7 @@ public class Restaurante extends ModelEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
     private Set<Menu> menus = new HashSet<>();
 
-    @JsonManagedReference
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
     private Set<Pedido> pedidos = new HashSet<>();
 
@@ -165,7 +166,7 @@ public class Restaurante extends ModelEntity {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Restaurante{");
+        final StringBuilder sb = new StringBuilder("Restaurante{\n");
         sb.append("nombre='").append(nombre).append('\'');
         sb.append(", calle='").append(calle).append('\'');
         sb.append(", numero='").append(numero).append('\'');

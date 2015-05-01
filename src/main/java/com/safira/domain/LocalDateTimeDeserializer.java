@@ -1,4 +1,4 @@
-package com.safira.common;
+package com.safira.domain;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;

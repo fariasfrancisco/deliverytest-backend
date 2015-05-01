@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by francisco on 03/04/15.
  */
 @Embeddable
-public class MenuPedidoId implements Serializable{
+public class MenuPedidoId implements Serializable {
 
     @ManyToOne
     private Menu menu;

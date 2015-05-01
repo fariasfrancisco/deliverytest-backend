@@ -7,7 +7,6 @@ import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.LoginException;
 import com.safira.common.exceptions.ValidatorException;
-import com.safira.domain.Restaurantes;
 import com.safira.domain.entities.Restaurante;
 import com.safira.service.Validator;
 import com.safira.service.interfaces.RestauranteService;
@@ -17,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.safira.common.URLs.*;
 
@@ -29,13 +30,14 @@ public class RestauranteController {
     @Autowired
     RestauranteService restauranteService;
 
-    private ErrorOutput errors = new ErrorOutput();
+    private ErrorOutput errors;
 
     final static Logger restauranteLogger = Logger.getLogger("restauranteLogger");
     final static Logger restauranteErrorLogger = Logger.getLogger("restauranteErrorLogger");
 
     @RequestMapping(value = REGISTER_RESTAURANTE, method = RequestMethod.POST)
     public ResponseEntity registerRestaurante(@RequestBody CreateRestauranteRequest createRestauranteRequest) {
+        errors = new ErrorOutput();
         Restaurante restaurante;
         try {
             Validator.validateRestaurante(createRestauranteRequest, errors);
@@ -53,6 +55,7 @@ public class RestauranteController {
 
     @RequestMapping(value = LOGIN_RESTAURANTE, method = RequestMethod.POST)
     public ResponseEntity loginRestaurante(@RequestBody LoginRestauranteRequest loginRestauranteRequest) {
+        errors = new ErrorOutput();
         AuthenticatedRestauranteToken authenticatedRestauranteToken;
         try {
             Validator.validateRestauranteLogin(loginRestauranteRequest, errors);
@@ -71,7 +74,8 @@ public class RestauranteController {
 
     @RequestMapping(value = GET_RESTAURANTES, method = RequestMethod.GET)
     public ResponseEntity getRestaurantes() {
-        Restaurantes restaurantes;
+        errors = new ErrorOutput();
+        List<Restaurante> restaurantes;
         try {
             restaurantes = restauranteService.getAllRestaurantes(errors);
             if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
@@ -84,6 +88,7 @@ public class RestauranteController {
 
     @RequestMapping(value = GET_RESTAURANTE_BY_UUID, method = RequestMethod.GET)
     public ResponseEntity<Object> getRestauranteById(@RequestParam(value = "uuid", required = true) String uuid) {
+        errors = new ErrorOutput();
         Restaurante restaurante;
         try {
             restaurante = restauranteService.getRestauranteByUuid(uuid, errors);

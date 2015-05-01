@@ -1,8 +1,8 @@
 package com.safira.service;
 
 import com.safira.api.*;
-import com.safira.common.ErrorOutput;
 import com.safira.common.ErrorDescription;
+import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.InconsistencyException;
 import com.safira.common.exceptions.ValidatorException;
 import org.apache.commons.validator.routines.EmailValidator;

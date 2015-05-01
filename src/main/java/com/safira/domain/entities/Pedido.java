@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.safira.common.LocalDateTimeDeserializer;
-import com.safira.common.LocalDateTimeSerializer;
+import com.safira.domain.LocalDateTimeDeserializer;
+import com.safira.domain.LocalDateTimeSerializer;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -29,12 +29,12 @@ public class Pedido extends ModelEntity {
     @JoinColumn(name = "direccion_id", nullable = false)
     private Direccion direccion;
 
-    @JsonBackReference
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    @JsonBackReference
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurante_id", nullable = false)
     private Restaurante restaurante;

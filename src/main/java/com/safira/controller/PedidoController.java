@@ -5,7 +5,6 @@ import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.PedidoTimeoutException;
 import com.safira.common.exceptions.ValidatorException;
-import com.safira.domain.Pedidos;
 import com.safira.domain.entities.Pedido;
 import com.safira.service.Validator;
 import com.safira.service.interfaces.PedidoService;
@@ -15,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.safira.common.URLs.*;
 
@@ -27,13 +28,14 @@ public class PedidoController {
     @Autowired
     private PedidoService pedidoService;
 
-    private ErrorOutput errors = new ErrorOutput();
+    private ErrorOutput errors;
 
     final static Logger pedidoLogger = Logger.getLogger("pedidoLogger");
     final static Logger pedidoErrorLogger = Logger.getLogger("pedidoExceptionLogger");
 
     @RequestMapping(value = REGISTER_PEDIDO, method = RequestMethod.POST)
     public ResponseEntity registerPedido(@RequestBody CreatePedidoRequest createPedidoRequest) {
+        errors = new ErrorOutput();
         Pedido pedido;
         try {
             Validator.validatePedido(createPedidoRequest, errors);
@@ -51,6 +53,7 @@ public class PedidoController {
 
     @RequestMapping(value = GET_PEDIDO_BY_UUID, method = RequestMethod.GET)
     public ResponseEntity getPedidoById(@RequestParam(value = "uuid", required = true) String uuid) {
+        errors = new ErrorOutput();
         Pedido pedido;
         try {
             pedido = pedidoService.getPedidoByUuid(uuid, errors);
@@ -64,7 +67,8 @@ public class PedidoController {
 
     @RequestMapping(value = GET_PEDIDOS_BY_RESTAURANTE, method = RequestMethod.GET)
     public ResponseEntity getPedidosByRestaurante(@RequestParam(value = "uuid", required = true) String uuid) {
-        Pedidos pedidos;
+        errors = new ErrorOutput();
+        List<Pedido> pedidos;
         try {
             pedidos = pedidoService.getPedidosByRestauranteUuid(uuid, errors);
             if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
@@ -77,7 +81,8 @@ public class PedidoController {
 
     @RequestMapping(value = GET_PEDIDOS_BY_USUARIO, method = RequestMethod.GET)
     public ResponseEntity getPedidosByUsuario(@RequestParam(value = "uuid", required = true) String uuid) {
-        Pedidos pedidos;
+        errors = new ErrorOutput();
+        List<Pedido> pedidos;
         try {
             pedidos = pedidoService.getPedidosByUsuarioUuid(uuid, errors);
             if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
@@ -92,7 +97,8 @@ public class PedidoController {
     public ResponseEntity getPedidosByRestauranteAndUsuario(
             @RequestParam(value = "resuuid", required = true) String resuuid,
             @RequestParam(value = "usruuid", required = true) String usruuid) {
-        Pedidos pedidos;
+        errors = new ErrorOutput();
+        List<Pedido> pedidos;
         try {
             pedidos = pedidoService.getPedidosByUsuarioUuidAndByRestauranteUuid(usruuid, resuuid, errors);
             if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);

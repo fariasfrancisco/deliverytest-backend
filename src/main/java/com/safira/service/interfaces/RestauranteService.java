@@ -6,10 +6,11 @@ import com.safira.api.LoginRestauranteRequest;
 import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.LoginException;
-import com.safira.domain.Restaurantes;
 import com.safira.domain.entities.Restaurante;
 import com.safira.domain.entities.RestauranteLogin;
 import com.safira.domain.entities.RestauranteSessionToken;
+
+import java.util.List;
 
 /**
  * Created by francisco on 24/03/15.
@@ -20,7 +21,7 @@ public interface RestauranteService {
 
     public AuthenticatedRestauranteToken loginRestaurante(LoginRestauranteRequest loginRestauranteRequest, ErrorOutput errorOutput) throws EmptyQueryResultException, LoginException;
 
-    public Restaurantes getAllRestaurantes(ErrorOutput errorOutput);
+    public List<Restaurante> getAllRestaurantes(ErrorOutput errorOutput);
 
     public Restaurante getRestauranteByUuid(String uuid, ErrorOutput errorOutput);
 
