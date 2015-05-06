@@ -1,6 +1,6 @@
-package com.safira.controller;
+package com.safira.api.controller;
 
-import com.safira.api.CreateDireccionRequest;
+import com.safira.api.requests.CreateDireccionRequest;
 import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.entities.Direccion;

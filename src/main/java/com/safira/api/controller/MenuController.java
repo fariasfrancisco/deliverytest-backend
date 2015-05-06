@@ -1,6 +1,6 @@
-package com.safira.controller;
+package com.safira.api.controller;
 
-import com.safira.api.CreateMenuRequest;
+import com.safira.api.requests.CreateMenuRequest;
 import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.ValidatorException;

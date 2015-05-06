@@ -1,8 +1,9 @@
-package com.safira.controller;
+package com.safira.api.controller;
 
-import com.safira.api.AuthenticatedRestauranteToken;
-import com.safira.api.CreateRestauranteRequest;
-import com.safira.api.LoginRestauranteRequest;
+import com.safira.api.responses.AuthenticatedRestauranteToken;
+import com.safira.api.requests.CreateRestauranteRequest;
+import com.safira.api.requests.LoginRestauranteRequest;
+import com.safira.api.responses.TokenVerificationResult;
 import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.LoginException;
@@ -45,7 +46,7 @@ public class RestauranteController {
             restauranteLogger.info("Successfully created new Restaurante: \n" +
                     RestauranteXMLWriter.createDocument(restaurante).asXML());
         } catch (ValidatorException e) {
-            return new ResponseEntity<>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(errors, HttpStatus.UNPROCESSABLE_ENTITY);
         } catch (Exception e) {
             restauranteErrorLogger.error("An exception has occured when creating a new Restaurante.", e);
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -60,9 +61,11 @@ public class RestauranteController {
         try {
             Validator.validateRestauranteLogin(loginRestauranteRequest, errors);
             authenticatedRestauranteToken = restauranteService.loginRestaurante(loginRestauranteRequest, errors);
-            restauranteLogger.info("Successfully created logged Restaurante: " +
-                    authenticatedRestauranteToken.getRestauranteUuid());
-        } catch (EmptyQueryResultException | ValidatorException | LoginException e) {
+            restauranteLogger.info("Successfully logged Restaurante: " + authenticatedRestauranteToken.getRestauranteUuid() +
+                    "with token: " + authenticatedRestauranteToken.getToken());
+        } catch (ValidatorException e) {
+            return new ResponseEntity<>(errors, HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (EmptyQueryResultException | LoginException e) {
             return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             restauranteErrorLogger.error("Failed attempt to log in Restaurante with usuario = "
@@ -70,6 +73,21 @@ public class RestauranteController {
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(authenticatedRestauranteToken, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = VERIFY_TOKEN, method = RequestMethod.POST)
+    public ResponseEntity verifyAuthenticationToken(@RequestBody AuthenticatedRestauranteToken authenticatedRestauranteToken) {
+        errors = new ErrorOutput();
+        TokenVerificationResult tokenVerificationResult;
+        try {
+            Validator.validateAuthenticationToken(authenticatedRestauranteToken, errors);
+            tokenVerificationResult = restauranteService.verififyAuthenticationToken(authenticatedRestauranteToken, errors);
+        } catch (ValidatorException e) {
+            return new ResponseEntity<>(errors, HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(tokenVerificationResult, HttpStatus.OK);
     }
 
     @RequestMapping(value = GET_RESTAURANTES, method = RequestMethod.GET)

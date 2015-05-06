@@ -1,4 +1,4 @@
-package com.safira.api;
+package com.safira.api.requests;
 
 import java.math.BigDecimal;
 

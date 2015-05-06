@@ -1,6 +1,6 @@
-package com.safira.controller;
+package com.safira.api.controller;
 
-import com.safira.api.CreatePedidoRequest;
+import com.safira.api.requests.CreatePedidoRequest;
 import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.PedidoTimeoutException;

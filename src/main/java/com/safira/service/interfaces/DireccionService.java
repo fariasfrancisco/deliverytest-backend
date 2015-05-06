@@ -1,6 +1,6 @@
 package com.safira.service.interfaces;
 
-import com.safira.api.CreateDireccionRequest;
+import com.safira.api.requests.CreateDireccionRequest;
 import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.domain.entities.Direccion;

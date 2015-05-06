@@ -1,14 +1,14 @@
 package com.safira.service.interfaces;
 
-import com.safira.api.AuthenticatedRestauranteToken;
-import com.safira.api.CreateRestauranteRequest;
-import com.safira.api.LoginRestauranteRequest;
+import com.safira.api.responses.AuthenticatedRestauranteToken;
+import com.safira.api.requests.CreateRestauranteRequest;
+import com.safira.api.requests.LoginRestauranteRequest;
+import com.safira.api.responses.TokenVerificationResult;
 import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.LoginException;
 import com.safira.domain.entities.Restaurante;
 import com.safira.domain.entities.RestauranteLogin;
-import com.safira.domain.entities.RestauranteSessionToken;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public interface RestauranteService {
 
     public Restaurante getRestauranteByUuid(String uuid, ErrorOutput errorOutput);
 
-    public RestauranteSessionToken createToken(RestauranteLogin restauranteLogin);
+    public TokenVerificationResult verififyAuthenticationToken(AuthenticatedRestauranteToken authenticatedRestauranteToken, ErrorOutput errorOutput);
 
     public void sendEmailVerification(RestauranteLogin restauranteLogin);
 

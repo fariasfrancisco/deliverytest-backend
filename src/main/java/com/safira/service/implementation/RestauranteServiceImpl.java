@@ -1,8 +1,9 @@
 package com.safira.service.implementation;
 
-import com.safira.api.AuthenticatedRestauranteToken;
-import com.safira.api.CreateRestauranteRequest;
-import com.safira.api.LoginRestauranteRequest;
+import com.safira.api.responses.AuthenticatedRestauranteToken;
+import com.safira.api.requests.CreateRestauranteRequest;
+import com.safira.api.requests.LoginRestauranteRequest;
+import com.safira.api.responses.TokenVerificationResult;
 import com.safira.common.ErrorDescription;
 import com.safira.common.ErrorOutput;
 import com.safira.common.configuration.ApplicationConfiguration;
@@ -15,11 +16,13 @@ import com.safira.service.PasswordService;
 import com.safira.service.interfaces.RestauranteService;
 import com.safira.service.repositories.RestauranteLoginRepository;
 import com.safira.service.repositories.RestauranteRepository;
+import com.safira.service.repositories.RestauranteSessionTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by francisco on 24/03/15.
@@ -28,6 +31,9 @@ import java.util.List;
 public class RestauranteServiceImpl implements RestauranteService {
     @Autowired
     RestauranteRepository restauranteRepository;
+
+    @Autowired
+    RestauranteSessionTokenRepository restauranteSessionTokenRepository;
 
     @Autowired
     RestauranteLoginRepository restauranteLoginRepository;
@@ -83,8 +89,10 @@ public class RestauranteServiceImpl implements RestauranteService {
             errors.addError(error);
             throw new LoginException();
         }
-        Restaurante restaurante = restauranteLogin.getRestaurante();
-        return new AuthenticatedRestauranteToken(restaurante.getIdentifier());
+        RestauranteSessionToken restauranteSessionToken = createToken(restauranteLogin);
+        AuthenticatedRestauranteToken authenticatedRestauranteToken =
+                new AuthenticatedRestauranteToken(restauranteLogin.getIdentifier(), restauranteSessionToken.getToken());
+        return authenticatedRestauranteToken;
     }
 
     @Transactional
@@ -114,12 +122,24 @@ public class RestauranteServiceImpl implements RestauranteService {
     }
 
     @Transactional
-    public RestauranteSessionToken createToken(RestauranteLogin restauranteLogin) {
-        if (restauranteLogin.getRestauranteSessionToken() == null ||
-                restauranteLogin.getRestauranteSessionToken().hasExpired()) {
+    public TokenVerificationResult verififyAuthenticationToken(AuthenticatedRestauranteToken authenticatedRestauranteToken, ErrorOutput errorOutput) {
+        String restauranteUuid = authenticatedRestauranteToken.getRestauranteUuid();
+        String token = authenticatedRestauranteToken.getToken();
+        RestauranteLogin restauranteLogin = restauranteLoginRepository.findByUuid(restauranteUuid);
+        RestauranteSessionToken restauranteSessionToken = restauranteLogin.getRestauranteSessionToken();
+        boolean result = !(restauranteSessionToken == null ||
+                !Objects.equals(restauranteSessionToken.getToken(), token) ||
+                restauranteSessionToken.hasExpired());
+        return new TokenVerificationResult(result);
+    }
+
+    @Transactional
+    private RestauranteSessionToken createToken(RestauranteLogin restauranteLogin) {
+        RestauranteSessionToken restauranteSessionToken = restauranteLogin.getRestauranteSessionToken();
+        if (restauranteSessionToken == null || restauranteSessionToken.hasExpired()) {
             restauranteLogin.setRestauranteSessionToken(
                     new RestauranteSessionToken(restauranteLogin, applicationConfiguration.getSessionExpirationTime()));
-            restauranteLoginRepository.save(restauranteLogin);
+            restauranteSessionTokenRepository.save(restauranteSessionToken);
         }
         return restauranteLogin.getRestauranteSessionToken();
     }

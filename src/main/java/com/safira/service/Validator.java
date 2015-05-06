@@ -1,6 +1,7 @@
 package com.safira.service;
 
-import com.safira.api.*;
+import com.safira.api.requests.*;
+import com.safira.api.responses.AuthenticatedRestauranteToken;
 import com.safira.common.ErrorDescription;
 import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.InconsistencyException;
@@ -168,6 +169,28 @@ public class Validator {
         if (!validatePassword(loginRestauranteRequest.getPassword())) {
             field = "password";
             message = "The format in the field password(" + loginRestauranteRequest.getPassword() + ") is invalid";
+            error = new ErrorDescription(field, message);
+            errors.addError(error);
+        }
+        if (errors.hasErrors()) {
+            errors.setMessage("Validation Failed");
+            throw new ValidatorException();
+        }
+    }
+
+    public static void validateAuthenticationToken(AuthenticatedRestauranteToken authenticatedRestauranteToken, ErrorOutput errors) throws ValidatorException {
+        String message;
+        String field;
+        ErrorDescription error;
+        if (!validateUuid(authenticatedRestauranteToken.getRestauranteUuid())) {
+            field = "restauranteUuid";
+            message = "The format in the field restauranteUuid(" + authenticatedRestauranteToken.getRestauranteUuid() + ") is invalid";
+            error = new ErrorDescription(field, message);
+            errors.addError(error);
+        }
+        if (!validateUuid(authenticatedRestauranteToken.getToken())) {
+            field = "token";
+            message = "The format in the field token(" + authenticatedRestauranteToken.getToken() + ") is invalid";
             error = new ErrorDescription(field, message);
             errors.addError(error);
         }

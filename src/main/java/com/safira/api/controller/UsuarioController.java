@@ -1,6 +1,6 @@
-package com.safira.controller;
+package com.safira.api.controller;
 
-import com.safira.api.CreateUsuarioRequest;
+import com.safira.api.requests.CreateUsuarioRequest;
 import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.entities.Usuario;

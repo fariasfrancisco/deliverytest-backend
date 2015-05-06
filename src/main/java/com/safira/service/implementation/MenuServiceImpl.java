@@ -1,6 +1,6 @@
 package com.safira.service.implementation;
 
-import com.safira.api.CreateMenuRequest;
+import com.safira.api.requests.CreateMenuRequest;
 import com.safira.common.ErrorDescription;
 import com.safira.common.ErrorOutput;
 import com.safira.common.SafiraUtils;

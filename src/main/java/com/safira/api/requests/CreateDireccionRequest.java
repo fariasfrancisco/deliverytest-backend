@@ -1,4 +1,4 @@
-package com.safira.api;
+package com.safira.api.requests;
 
 /**
  * Created by francisco on 24/03/15.

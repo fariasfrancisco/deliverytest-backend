@@ -10,6 +10,7 @@ public class URLs {
     public static final String REGISTER_RESTAURANTE = "/postRestaurante";
     public static final String GET_RESTAURANTE_BY_UUID = "/getRestauranteByUuid";
     public static final String LOGIN_RESTAURANTE = "/loginRestaurante";
+    public static final String VERIFY_TOKEN = "/verifyAuthenticationToken";
 
     //MENUS
     public static final String REGISTER_MENU = "/postMenu";
