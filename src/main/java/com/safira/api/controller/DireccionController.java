@@ -25,8 +25,9 @@ import static com.safira.common.URLs.REGISTER_DIRECCION;
 public class DireccionController {
 
     @Autowired
-    DireccionService direccionService;
+    private DireccionService direccionService;
 
+    @Autowired
     private ErrorOutput errors;
 
     final static Logger direccionLogger = Logger.getLogger("direccionLogger");

@@ -16,7 +16,7 @@ public class RestauranteXMLWriter {
         RestauranteLogin restauranteLogin = restaurante.getRestauranteLogin();
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("Restaurante")
-                .addAttribute("UUID", restaurante.getIdentifier())
+                .addAttribute("UUID", restaurante.getUuid())
                 .addAttribute("Usuario", restauranteLogin.getUsuario());
         Element creation = root.addElement("Creation")
                 .addAttribute("TimeStamp", LocalDateTime.now().toString());

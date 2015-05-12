@@ -13,6 +13,5 @@ import org.springframework.transaction.annotation.Transactional;
 public interface RestauranteLoginRepository extends CrudRepository<RestauranteLogin, Long> {
     RestauranteLogin findByUsuario(String usuario);
 
-    @Query("select r from RestauranteLogin r where r.uuid = :uuid")
     RestauranteLogin findByUuid(@Param("uuid") String uuid);
 }

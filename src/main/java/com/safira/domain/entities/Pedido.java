@@ -44,15 +44,15 @@ public class Pedido extends ModelEntity {
     private Set<MenuPedido> menuPedidos = new HashSet<>();
 
     public Pedido() {
-        this(UUID.randomUUID());
+        this(UUID.randomUUID().toString());
     }
 
-    public Pedido(UUID uuid) {
+    public Pedido(String uuid) {
         super(uuid);
     }
 
     public Pedido(Builder builder) {
-        super(UUID.randomUUID());
+        super(UUID.randomUUID().toString());
         this.telefono = builder.telefono;
         this.estado = builder.estado;
         this.fecha = builder.fecha;

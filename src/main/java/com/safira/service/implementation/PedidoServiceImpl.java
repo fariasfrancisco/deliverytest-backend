@@ -82,7 +82,7 @@ public class PedidoServiceImpl implements PedidoService {
             String menuUuid = createPedidoRequest.getMenuUuids()[index];
             BigDecimal cantidad = createPedidoRequest.getCantidades()[index];
             menu = menuService.getMenuByUuid(menuUuid, errors);
-            if (!restauranteUuid.equals(menu.getRestaurante().getIdentifier())) {
+            if (!restauranteUuid.equals(menu.getRestaurante().getUuid())) {
                 errors.setMessage("Inconsistency Exception Found.");
                 String field = "menuUuid = " + menuUuid + ", restaurante = " + restauranteUuid;
                 String message = "Inconsistency found with the recieved Menu (Recieved Restaurante doesnot match).";

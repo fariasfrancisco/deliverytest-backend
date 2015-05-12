@@ -11,6 +11,5 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public interface RestauranteRepository extends JpaRepository<Restaurante, Long> {
-    @Query("select r from Restaurante r where r.uuid = :uuid")
     Restaurante findByUuid(@Param("uuid") String uuid);
 }

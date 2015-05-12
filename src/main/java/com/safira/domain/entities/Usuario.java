@@ -30,15 +30,15 @@ public class Usuario extends ModelEntity {
     private Set<Direccion> direcciones = new HashSet<>();
 
     public Usuario() {
-        this(UUID.randomUUID());
+        this(UUID.randomUUID().toString());
     }
 
-    public Usuario(UUID uuid) {
+    public Usuario(String uuid) {
         super(uuid);
     }
 
     public Usuario(Builder builder) {
-        super(UUID.randomUUID());
+        super(UUID.randomUUID().toString());
         this.facebookId = builder.facebookId;
         this.email = builder.email;
         this.nombre = builder.nombre;

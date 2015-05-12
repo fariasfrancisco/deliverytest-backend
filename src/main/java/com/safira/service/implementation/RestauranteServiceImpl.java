@@ -1,12 +1,11 @@
 package com.safira.service.implementation;
 
-import com.safira.api.responses.AuthenticatedRestauranteToken;
 import com.safira.api.requests.CreateRestauranteRequest;
 import com.safira.api.requests.LoginRestauranteRequest;
+import com.safira.api.responses.AuthenticatedRestauranteToken;
 import com.safira.api.responses.TokenVerificationResult;
 import com.safira.common.ErrorDescription;
 import com.safira.common.ErrorOutput;
-import com.safira.common.configuration.ApplicationConfiguration;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.LoginException;
 import com.safira.domain.entities.Restaurante;
@@ -18,6 +17,10 @@ import com.safira.service.repositories.RestauranteLoginRepository;
 import com.safira.service.repositories.RestauranteRepository;
 import com.safira.service.repositories.RestauranteSessionTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +32,9 @@ import java.util.Objects;
  */
 @Service("restauranteService")
 public class RestauranteServiceImpl implements RestauranteService {
+
+    private static final int PAGE_SIZE = 10;
+
     @Autowired
     RestauranteRepository restauranteRepository;
 
@@ -37,8 +43,6 @@ public class RestauranteServiceImpl implements RestauranteService {
 
     @Autowired
     RestauranteLoginRepository restauranteLoginRepository;
-
-    ApplicationConfiguration applicationConfiguration;
 
     @Transactional
     public Restaurante createRestaurante(CreateRestauranteRequest createRestauranteRequest) {
@@ -90,21 +94,24 @@ public class RestauranteServiceImpl implements RestauranteService {
             throw new LoginException();
         }
         RestauranteSessionToken restauranteSessionToken = createToken(restauranteLogin);
-        AuthenticatedRestauranteToken authenticatedRestauranteToken =
-                new AuthenticatedRestauranteToken(restauranteLogin.getIdentifier(), restauranteSessionToken.getToken());
-        return authenticatedRestauranteToken;
+        String uuid = restauranteLogin.getUuid();
+        String token = restauranteSessionToken.getToken();
+        return new AuthenticatedRestauranteToken(uuid, token);
     }
 
     @Transactional
-    public List<Restaurante> getAllRestaurantes(ErrorOutput errors) {
-        List<Restaurante> restaurantes = restauranteRepository.findAll();
-        if (restaurantes.isEmpty()) {
+    public List<Restaurante> getAllRestaurantes(int pageNumber, ErrorOutput errors) {
+        Pageable pageRequest = new PageRequest(pageNumber-1, PAGE_SIZE, Sort.Direction.ASC, "nombre");
+        Page<Restaurante> queryPage = restauranteRepository.findAll(pageRequest);
+        System.out.println(queryPage.getTotalElements());
+        if (queryPage.getNumberOfElements()==0) {
             errors.setMessage("Empty Query Exception.");
             String field = "N/A";
-            String message = "There are no Restaurantes in the database.";
+            String message = "The page for the query returned no Restaurantes.";
             ErrorDescription error = new ErrorDescription(field, message);
             errors.addError(error);
         }
+        List<Restaurante> restaurantes = queryPage.getContent();
         return restaurantes;
     }
 
@@ -138,7 +145,7 @@ public class RestauranteServiceImpl implements RestauranteService {
         RestauranteSessionToken restauranteSessionToken = restauranteLogin.getRestauranteSessionToken();
         if (restauranteSessionToken == null || restauranteSessionToken.hasExpired()) {
             restauranteLogin.setRestauranteSessionToken(
-                    new RestauranteSessionToken(restauranteLogin, applicationConfiguration.getSessionExpirationTime()));
+                    new RestauranteSessionToken(restauranteLogin, 720));
             restauranteSessionTokenRepository.save(restauranteSessionToken);
         }
         return restauranteLogin.getRestauranteSessionToken();

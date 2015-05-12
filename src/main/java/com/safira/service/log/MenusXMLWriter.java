@@ -12,12 +12,12 @@ public class MenusXMLWriter {
     public static Document createDocument(Menu menu) {
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("Menu")
-                .addAttribute("UUID", menu.getIdentifier())
+                .addAttribute("UUID", menu.getUuid())
                 .addAttribute("Nombre", menu.getNombre())
                 .addAttribute("Costo", menu.getCosto().toString());
         Element creation = root.addElement("Creation")
                 .addAttribute("TimeStamp", LocalDateTime.now().toString())
-                .addText(menu.getRestaurante().getIdentifier());
+                .addText(menu.getRestaurante().getUuid());
         Element descripcion = root.addElement("Descripcion")
                 .addText(menu.getDescripcion());
         return document;

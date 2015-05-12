@@ -14,14 +14,14 @@ public class DireccionXMLWriter {
     public static Document createDocument(Direccion direccion) {
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("Direccion")
-                .addAttribute("UUID", direccion.getIdentifier())
+                .addAttribute("UUID", direccion.getUuid())
                 .addText(direccion.getCalle())
                 .addText(direccion.getNumero())
                 .addText(direccion.getPiso())
                 .addText(direccion.getDepartamento());
         Element creation = root.addElement("Creation")
                 .addAttribute("TimeStamp", LocalDateTime.now().toString())
-                .addText(direccion.getUsuario().getIdentifier());
+                .addText(direccion.getUsuario().getUuid());
         return document;
     }
 }

@@ -11,6 +11,5 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
-    @Query("select p from Pedido p where p.uuid = :uuid")
     Pedido findByUuid(@Param("uuid") String uuid);
 }

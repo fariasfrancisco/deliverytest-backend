@@ -11,6 +11,5 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-    @Query("select u from Usuario u where u.uuid = :uuid")
     Usuario findByUuid(@Param("uuid") String uuid);
 }

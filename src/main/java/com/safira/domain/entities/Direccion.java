@@ -27,15 +27,15 @@ public class Direccion extends ModelEntity {
     private Set<Pedido> pedidos = new HashSet<>();
 
     public Direccion() {
-        this(UUID.randomUUID());
+        this(UUID.randomUUID().toString());
     }
 
-    public Direccion(UUID uuid) {
+    public Direccion(String uuid) {
         super(uuid);
     }
 
     public Direccion(Builder builder) {
-        super(UUID.randomUUID());
+        super(UUID.randomUUID().toString());
         this.calle = builder.calle;
         this.numero = builder.numero;
         this.piso = builder.piso;

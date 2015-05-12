@@ -30,10 +30,10 @@ public class RestauranteLogin extends ModelEntity {
     private RestauranteSessionToken restauranteSessionToken;
 
     public RestauranteLogin() {
-        this(UUID.randomUUID());
+        this(UUID.randomUUID().toString());
     }
 
-    public RestauranteLogin(UUID uuid) {
+    public RestauranteLogin(String uuid) {
         super(uuid);
     }
 
@@ -107,7 +107,7 @@ public class RestauranteLogin extends ModelEntity {
         private byte[] hash;
         private byte[] salt;
         private boolean isVerified = false;
-        private UUID uuid;
+        private String uuid;
 
         public Builder withUsuario(String usuario) {
             this.usuario = usuario;
@@ -129,7 +129,7 @@ public class RestauranteLogin extends ModelEntity {
             return this;
         }
 
-        public Builder withUuid(UUID uuid) {
+        public Builder withUuid(String uuid) {
             this.uuid = uuid;
             return this;
         }

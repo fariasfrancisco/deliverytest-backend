@@ -25,8 +25,9 @@ import static com.safira.common.URLs.*;
 public class MenuController {
 
     @Autowired
-    MenuService menuService;
+    private MenuService menuService;
 
+    @Autowired
     private ErrorOutput errors;
 
     final static Logger menuLogger = Logger.getLogger("menuLogger");
@@ -34,7 +35,7 @@ public class MenuController {
 
     @RequestMapping(value = REGISTER_MENU, method = RequestMethod.POST)
     public ResponseEntity registerMenu(@RequestBody CreateMenuRequest createMenuRequest) {
-        errors = new ErrorOutput();
+        errors.flush();
         Menu menu;
         try {
             Validator.validateMenu(createMenuRequest, errors);
@@ -52,7 +53,7 @@ public class MenuController {
 
     @RequestMapping(value = GET_MENU_BY_UUID, method = RequestMethod.GET)
     public ResponseEntity getMenuById(@RequestParam(value = "uuid", required = true) String uuid) {
-        errors = new ErrorOutput();
+        errors.flush();
         Menu menu;
         try {
             menu = menuService.getMenuByUuid(uuid, errors);
@@ -66,10 +67,10 @@ public class MenuController {
 
     @RequestMapping(value = GET_MENUS_BY_RESTAURANTE, method = RequestMethod.GET)
     public ResponseEntity getMenusByRestaurante(@RequestParam(value = "uuid", required = true) String uuid) {
-        errors = new ErrorOutput();
+        errors.flush();
         List<Menu> menus;
         try {
-            menus = menuService.getMenusByRestauranteUuid(uuid, errors);
+            menus = menuService.getMenusByRestauranteUuid(uuid,0, errors);
             if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             menuErrorLogger.error("An exception has occured when finding Menus with Restaurante uuid = " + uuid, e);
@@ -80,10 +81,10 @@ public class MenuController {
 
     @RequestMapping(value = GET_MENUS_BY_PEDIDO, method = RequestMethod.GET)
     public ResponseEntity getMenusByPedido(@RequestParam(value = "uuid", required = true) String uuid) {
-        errors = new ErrorOutput();
+        errors.flush();
         List<Menu> menus;
         try {
-            menus = menuService.getMenusByPedidoUuid(uuid, errors);
+            menus = menuService.getMenusByPedidoUuid(uuid, 0, errors);
             if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             menuErrorLogger.error("An exception has occured when finding Menus with Pedidos uuid = " + uuid, e);

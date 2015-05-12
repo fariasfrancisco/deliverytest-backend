@@ -24,15 +24,15 @@ public class Menu extends ModelEntity {
     private Set<MenuPedido> menuPedidos = new HashSet<>();
 
     public Menu() {
-        this(UUID.randomUUID());
+        this(UUID.randomUUID().toString());
     }
 
-    public Menu(UUID uuid) {
+    public Menu(String uuid) {
         super(uuid);
     }
 
     public Menu(Builder builder) {
-        super(UUID.randomUUID());
+        super(UUID.randomUUID().toString());
         this.nombre = builder.nombre;
         this.descripcion = builder.descripcion;
         this.costo = builder.costo;

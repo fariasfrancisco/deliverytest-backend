@@ -28,6 +28,7 @@ public class PedidoController {
     @Autowired
     private PedidoService pedidoService;
 
+    @Autowired
     private ErrorOutput errors;
 
     final static Logger pedidoLogger = Logger.getLogger("pedidoLogger");
@@ -35,7 +36,7 @@ public class PedidoController {
 
     @RequestMapping(value = REGISTER_PEDIDO, method = RequestMethod.POST)
     public ResponseEntity registerPedido(@RequestBody CreatePedidoRequest createPedidoRequest) {
-        errors = new ErrorOutput();
+        errors.flush();
         Pedido pedido;
         try {
             Validator.validatePedido(createPedidoRequest, errors);
@@ -53,7 +54,7 @@ public class PedidoController {
 
     @RequestMapping(value = GET_PEDIDO_BY_UUID, method = RequestMethod.GET)
     public ResponseEntity getPedidoById(@RequestParam(value = "uuid", required = true) String uuid) {
-        errors = new ErrorOutput();
+        errors.flush();
         Pedido pedido;
         try {
             pedido = pedidoService.getPedidoByUuid(uuid, errors);
@@ -67,10 +68,10 @@ public class PedidoController {
 
     @RequestMapping(value = GET_PEDIDOS_BY_RESTAURANTE, method = RequestMethod.GET)
     public ResponseEntity getPedidosByRestaurante(@RequestParam(value = "uuid", required = true) String uuid) {
-        errors = new ErrorOutput();
+        errors.flush();
         List<Pedido> pedidos;
         try {
-            pedidos = pedidoService.getPedidosByRestauranteUuid(uuid, errors);
+            pedidos = pedidoService.getPedidosByRestauranteUuid(uuid,0, errors);
             if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             pedidoErrorLogger.error("An exception has occured when finding Pedido with Restaurante uuid = " + uuid, e);
@@ -81,10 +82,10 @@ public class PedidoController {
 
     @RequestMapping(value = GET_PEDIDOS_BY_USUARIO, method = RequestMethod.GET)
     public ResponseEntity getPedidosByUsuario(@RequestParam(value = "uuid", required = true) String uuid) {
-        errors = new ErrorOutput();
+        errors.flush();
         List<Pedido> pedidos;
         try {
-            pedidos = pedidoService.getPedidosByUsuarioUuid(uuid, errors);
+            pedidos = pedidoService.getPedidosByUsuarioUuid(uuid,0, errors);
             if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             pedidoErrorLogger.error("An exception has occured when finding Pedido with Usuario uuid = " + uuid, e);
@@ -97,10 +98,10 @@ public class PedidoController {
     public ResponseEntity getPedidosByRestauranteAndUsuario(
             @RequestParam(value = "resuuid", required = true) String resuuid,
             @RequestParam(value = "usruuid", required = true) String usruuid) {
-        errors = new ErrorOutput();
+        errors.flush();
         List<Pedido> pedidos;
         try {
-            pedidos = pedidoService.getPedidosByUsuarioUuidAndByRestauranteUuid(usruuid, resuuid, errors);
+            pedidos = pedidoService.getPedidosByUsuarioUuidAndByRestauranteUuid(usruuid, resuuid,0 , errors);
             if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             pedidoErrorLogger.error("An exception has occured when finding Pedido with" +

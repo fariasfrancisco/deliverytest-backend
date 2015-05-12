@@ -21,7 +21,7 @@ public interface RestauranteService {
 
     public AuthenticatedRestauranteToken loginRestaurante(LoginRestauranteRequest loginRestauranteRequest, ErrorOutput errorOutput) throws EmptyQueryResultException, LoginException;
 
-    public List<Restaurante> getAllRestaurantes(ErrorOutput errorOutput);
+    public List<Restaurante> getAllRestaurantes(int pageNumber,ErrorOutput errorOutput);
 
     public Restaurante getRestauranteByUuid(String uuid, ErrorOutput errorOutput);
 

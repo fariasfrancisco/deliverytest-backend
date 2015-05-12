@@ -20,17 +20,17 @@ public abstract class ModelEntity extends AbstractPersistable<Long> {
     private LocalDateTime timeCreated;
 
     public ModelEntity() {
-        this(UUID.randomUUID());
+        this(UUID.randomUUID().toString());
     }
 
-    public ModelEntity(UUID guid) {
+    public ModelEntity(String guid) {
         Assert.notNull(guid, "UUID is required");
         setUuid(guid.toString());
         this.timeCreated = LocalDateTime.now();
     }
 
-    public UUID getUuid() {
-        return UUID.fromString(uuid);
+    public String getUuid() {
+        return uuid;
     }
 
     public void setUuid(String uuid) {
@@ -39,10 +39,6 @@ public abstract class ModelEntity extends AbstractPersistable<Long> {
 
     public int hashCode() {
         return getUuid().hashCode();
-    }
-
-    public String getIdentifier() {
-        return getUuid().toString();
     }
 
     public LocalDateTime getTimeCreated() {

@@ -33,15 +33,15 @@ public class Restaurante extends ModelEntity {
     private Set<Pedido> pedidos = new HashSet<>();
 
     public Restaurante() {
-        this(UUID.randomUUID());
+        this(UUID.randomUUID().toString());
     }
 
-    public Restaurante(UUID uuid) {
+    public Restaurante(String uuid) {
         super(uuid);
     }
 
     public Restaurante(Builder builder) {
-        super(UUID.randomUUID());
+        super(UUID.randomUUID().toString());
         this.nombre = builder.nombre;
         this.calle = builder.calle;
         this.numero = builder.numero;

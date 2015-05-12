@@ -1,11 +1,14 @@
 package com.safira.common;
 
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by francisco on 15/04/15.
  */
+@Component
 public class ErrorOutput {
     private String message;
     private List<ErrorDescription> errors;
@@ -32,5 +35,9 @@ public class ErrorOutput {
 
     public boolean hasErrors() {
         return !(errors.isEmpty());
+    }
+
+    public void flush() {
+        errors.clear();
     }
 }

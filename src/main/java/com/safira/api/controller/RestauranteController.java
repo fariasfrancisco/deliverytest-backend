@@ -1,8 +1,8 @@
 package com.safira.api.controller;
 
-import com.safira.api.responses.AuthenticatedRestauranteToken;
 import com.safira.api.requests.CreateRestauranteRequest;
 import com.safira.api.requests.LoginRestauranteRequest;
+import com.safira.api.responses.AuthenticatedRestauranteToken;
 import com.safira.api.responses.TokenVerificationResult;
 import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
@@ -29,8 +29,9 @@ import static com.safira.common.URLs.*;
 public class RestauranteController {
 
     @Autowired
-    RestauranteService restauranteService;
+    private RestauranteService restauranteService;
 
+    @Autowired
     private ErrorOutput errors;
 
     final static Logger restauranteLogger = Logger.getLogger("restauranteLogger");
@@ -38,7 +39,7 @@ public class RestauranteController {
 
     @RequestMapping(value = REGISTER_RESTAURANTE, method = RequestMethod.POST)
     public ResponseEntity registerRestaurante(@RequestBody CreateRestauranteRequest createRestauranteRequest) {
-        errors = new ErrorOutput();
+        errors.flush();
         Restaurante restaurante;
         try {
             Validator.validateRestaurante(createRestauranteRequest, errors);
@@ -56,7 +57,7 @@ public class RestauranteController {
 
     @RequestMapping(value = LOGIN_RESTAURANTE, method = RequestMethod.POST)
     public ResponseEntity loginRestaurante(@RequestBody LoginRestauranteRequest loginRestauranteRequest) {
-        errors = new ErrorOutput();
+        errors.flush();
         AuthenticatedRestauranteToken authenticatedRestauranteToken;
         try {
             Validator.validateRestauranteLogin(loginRestauranteRequest, errors);
@@ -77,7 +78,7 @@ public class RestauranteController {
 
     @RequestMapping(value = VERIFY_TOKEN, method = RequestMethod.POST)
     public ResponseEntity verifyAuthenticationToken(@RequestBody AuthenticatedRestauranteToken authenticatedRestauranteToken) {
-        errors = new ErrorOutput();
+        errors.flush();
         TokenVerificationResult tokenVerificationResult;
         try {
             Validator.validateAuthenticationToken(authenticatedRestauranteToken, errors);
@@ -91,11 +92,10 @@ public class RestauranteController {
     }
 
     @RequestMapping(value = GET_RESTAURANTES, method = RequestMethod.GET)
-    public ResponseEntity getRestaurantes() {
-        errors = new ErrorOutput();
+    public ResponseEntity getRestaurantes(@RequestParam(value = "pageNumber", required = true) int pagenumber) {
         List<Restaurante> restaurantes;
         try {
-            restaurantes = restauranteService.getAllRestaurantes(errors);
+            restaurantes = restauranteService.getAllRestaurantes(pagenumber, errors);
             if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             restauranteErrorLogger.error("An exception has occured when finding all Restaurantes", e);
@@ -106,7 +106,6 @@ public class RestauranteController {
 
     @RequestMapping(value = GET_RESTAURANTE_BY_UUID, method = RequestMethod.GET)
     public ResponseEntity<Object> getRestauranteById(@RequestParam(value = "uuid", required = true) String uuid) {
-        errors = new ErrorOutput();
         Restaurante restaurante;
         try {
             restaurante = restauranteService.getRestauranteByUuid(uuid, errors);

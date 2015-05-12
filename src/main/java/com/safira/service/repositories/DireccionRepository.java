@@ -11,6 +11,5 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public interface DireccionRepository extends JpaRepository<Direccion, Long> {
-    @Query("select d from Direccion d where d.uuid = :uuid")
     Direccion findByUuid(@Param("uuid") String uuid);
 }
