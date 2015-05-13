@@ -1,20 +1,21 @@
 package com.safira.service.interfaces;
 
-import com.safira.api.CreateMenuRequest;
+import com.safira.api.requests.CreateMenuRequest;
+import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
-import com.safira.common.exceptions.ValidatorException;
-import com.safira.domain.Menus;
 import com.safira.domain.entities.Menu;
+
+import java.util.List;
 
 /**
  * Created by francisco on 24/03/15.
  */
 public interface MenuService {
-    public Menu createMenu(CreateMenuRequest createMenuRequest) throws ValidatorException, EmptyQueryResultException;
+    Menu createMenu(CreateMenuRequest createMenuRequest, ErrorOutput errorOutput) throws EmptyQueryResultException;
 
-    public Menu getMenuByUuid(String uuid) throws EmptyQueryResultException;
+    Menu getMenuByUuid(String uuid, ErrorOutput errorOutput);
 
-    public Menus getMenusByRestauranteUuid(String uuid) throws EmptyQueryResultException;
+    List<Menu> getMenusByRestauranteUuid(String uuid, int pageNumber, ErrorOutput errorOutput);
 
-    public Menus getMenusByPedidoUuid(String uuid) throws EmptyQueryResultException;
+    List<Menu> getMenusByPedidoUuid(String uuid, ErrorOutput errorOutput);
 }

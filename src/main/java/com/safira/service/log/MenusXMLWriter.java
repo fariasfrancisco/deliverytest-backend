@@ -5,17 +5,19 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
-/**
- * Class in charge of creating XML data for a new created Menu.
- */
+import java.time.LocalDateTime;
+
 public class MenusXMLWriter {
 
     public static Document createDocument(Menu menu) {
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("Menu")
-                .addAttribute("Id", String.valueOf(menu.getId()))
+                .addAttribute("UUID", menu.getUuid())
                 .addAttribute("Nombre", menu.getNombre())
                 .addAttribute("Costo", menu.getCosto().toString());
+        Element creation = root.addElement("Creation")
+                .addAttribute("TimeStamp", LocalDateTime.now().toString())
+                .addText(menu.getRestaurante().getUuid());
         Element descripcion = root.addElement("Descripcion")
                 .addText(menu.getDescripcion());
         return document;

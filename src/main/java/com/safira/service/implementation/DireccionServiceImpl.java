@@ -1,44 +1,50 @@
 package com.safira.service.implementation;
 
-import com.safira.api.CreateDireccionRequest;
+import com.safira.api.requests.CreateDireccionRequest;
+import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
-import com.safira.common.exceptions.ValidatorException;
 import com.safira.domain.entities.Direccion;
 import com.safira.domain.entities.Usuario;
-import com.safira.service.Validator;
 import com.safira.service.interfaces.DireccionService;
+import com.safira.service.interfaces.UsuarioService;
 import com.safira.service.repositories.DireccionRepository;
-import com.safira.service.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by francisco on 24/03/15.
+ * Created by francisco on 06/04/15.
  */
 @Service("direccionService")
 public class DireccionServiceImpl implements DireccionService {
-
-    @Autowired
-    UsuarioRepository usuarioRepository;
-
     @Autowired
     DireccionRepository direccionRepository;
 
+    @Autowired
+    UsuarioService usuarioService;
+
     @Transactional
-    public Direccion createDireccion(CreateDireccionRequest createDireccionRequest) throws ValidatorException, EmptyQueryResultException {
-        Validator.validateDireccion(createDireccionRequest);
-        Usuario usuario = usuarioRepository.findByUuid(createDireccionRequest.getUsuarioUuid());
-        if (usuario == null)
-            throw new EmptyQueryResultException("No usuario found with uuid = " + createDireccionRequest.getUsuarioUuid());
+    public Direccion createDireccion(CreateDireccionRequest createDireccionRequest, ErrorOutput errors)
+            throws EmptyQueryResultException {
+        String usuarioUuid = createDireccionRequest.getUsuarioUuid();
+        Usuario usuario = usuarioService.getUsuarioByUuid(usuarioUuid, errors);
         Direccion direccion = new Direccion.Builder()
-                .withUsuario(usuario)
                 .withCalle(createDireccionRequest.getCalle())
                 .withNumero(createDireccionRequest.getNumero())
                 .withPiso(createDireccionRequest.getPiso())
                 .withDepartamento(createDireccionRequest.getDepartamento())
+                .withUsuario(usuario)
                 .build();
         direccionRepository.save(direccion);
+        return direccion;
+    }
+
+    @Transactional
+    public Direccion getDireccionByUuid(String uuid, ErrorOutput errors) {
+        Direccion direccion = direccionRepository.findByUuid(uuid);
+        if (direccion == null)
+            errors.addError("Empty Query Result.", "direccionUuid",
+                    "No direccion found with uuid = " + uuid + '.');
         return direccion;
     }
 }

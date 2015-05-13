@@ -1,7 +1,5 @@
 package com.safira.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Type;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 import org.springframework.util.Assert;
 
@@ -19,22 +17,20 @@ public abstract class ModelEntity extends AbstractPersistable<Long> {
     @Column(length = 36, nullable = false, unique = true)
     private String uuid;
 
-    @JsonIgnore
-    @Type(type = "com.safira.common.LocalDateTimeUserType")
     private LocalDateTime timeCreated;
 
     public ModelEntity() {
-        this(UUID.randomUUID());
+        this(UUID.randomUUID().toString());
     }
 
-    public ModelEntity(UUID guid) {
+    public ModelEntity(String guid) {
         Assert.notNull(guid, "UUID is required");
         setUuid(guid.toString());
         this.timeCreated = LocalDateTime.now();
     }
 
-    public UUID getUuid() {
-        return UUID.fromString(uuid);
+    public String getUuid() {
+        return uuid;
     }
 
     public void setUuid(String uuid) {
@@ -43,10 +39,6 @@ public abstract class ModelEntity extends AbstractPersistable<Long> {
 
     public int hashCode() {
         return getUuid().hashCode();
-    }
-
-    public String getIdentifier() {
-        return getUuid().toString();
     }
 
     public LocalDateTime getTimeCreated() {

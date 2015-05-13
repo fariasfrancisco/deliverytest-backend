@@ -1,5 +1,6 @@
 package com.safira.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -18,7 +19,7 @@ public class Restaurante extends ModelEntity {
     private String telefono;
     private String email;
 
-    @JsonManagedReference
+    @JsonBackReference
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "restaurante", cascade = CascadeType.ALL)
     private RestauranteLogin restauranteLogin;
 
@@ -26,36 +27,25 @@ public class Restaurante extends ModelEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
     private Set<Menu> menus = new HashSet<>();
 
-    @JsonManagedReference
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
     private Set<Pedido> pedidos = new HashSet<>();
 
     public Restaurante() {
-        this(UUID.randomUUID());
+        this(UUID.randomUUID().toString());
     }
 
-    public Restaurante(UUID uuid) {
+    public Restaurante(String uuid) {
         super(uuid);
     }
 
     public Restaurante(Builder builder) {
-        super(UUID.randomUUID());
+        super(UUID.randomUUID().toString());
         this.nombre = builder.nombre;
         this.calle = builder.calle;
         this.numero = builder.numero;
         this.telefono = builder.telefono;
         this.email = builder.email;
-        this.restauranteLogin = builder.restauranteLogin;
-        if (restauranteLogin != null && restauranteLogin.getRestaurante() != this)
-            restauranteLogin.setRestaurante(this);
-        this.menus = builder.menus;
-        menus.stream()
-                .filter(menu -> menu.getRestaurante() != this)
-                .forEach(menu -> menu.setRestaurante(this));
-        this.pedidos = builder.pedidos;
-        pedidos.stream()
-                .filter(pedido -> pedido.getRestaurante() != this)
-                .forEach(pedido -> pedido.setRestaurante(this));
     }
 
     public String getNombre() {
@@ -91,8 +81,22 @@ public class Restaurante extends ModelEntity {
         return menus;
     }
 
+    public void setMenus(Set<Menu> menus) {
+        this.menus = menus;
+        menus.stream()
+                .filter(menu -> menu.getRestaurante() != this)
+                .forEach(menu -> menu.setRestaurante(this));
+    }
+
     public Set<Pedido> getPedidos() {
         return pedidos;
+    }
+
+    public void setPedidos(Set<Pedido> pedidos) {
+        this.pedidos = pedidos;
+        pedidos.stream()
+                .filter(pedido -> pedido.getRestaurante() != this)
+                .forEach(pedido -> pedido.setRestaurante(this));
     }
 
     public static class Builder {
@@ -101,9 +105,6 @@ public class Restaurante extends ModelEntity {
         private String numero;
         private String telefono;
         private String email;
-        private RestauranteLogin restauranteLogin;
-        private Set<Menu> menus = new HashSet<>();
-        private Set<Pedido> pedidos = new HashSet<>();
 
         public Builder withNombre(String nombre) {
             this.nombre = nombre;
@@ -127,21 +128,6 @@ public class Restaurante extends ModelEntity {
 
         public Builder withEmail(String email) {
             this.email = email;
-            return this;
-        }
-
-        public Builder withRestauranteLogin(RestauranteLogin restauranteLogin) {
-            this.restauranteLogin = restauranteLogin;
-            return this;
-        }
-
-        public Builder withMenus(Set<Menu> menus) {
-            this.menus = menus;
-            return this;
-        }
-
-        public Builder withPedidos(Set<Pedido> pedidos) {
-            this.pedidos = pedidos;
             return this;
         }
 
@@ -179,7 +165,7 @@ public class Restaurante extends ModelEntity {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Restaurante{");
+        final StringBuilder sb = new StringBuilder("Restaurante{\n");
         sb.append("nombre='").append(nombre).append('\'');
         sb.append(", calle='").append(calle).append('\'');
         sb.append(", numero='").append(numero).append('\'');

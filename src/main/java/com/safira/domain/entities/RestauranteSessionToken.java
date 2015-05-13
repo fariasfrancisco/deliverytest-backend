@@ -1,7 +1,6 @@
 package com.safira.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import org.hibernate.annotations.Type;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import javax.persistence.*;
@@ -18,10 +17,8 @@ public class RestauranteSessionToken extends AbstractPersistable<Long> {
     @Column(length = 36)
     private String token;
 
-    @Type(type = "com.safira.common.LocalDateTimeUserType")
     private LocalDateTime creationTime;
 
-    @Type(type = "com.safira.common.LocalDateTimeUserType")
     private LocalDateTime expirationTime;
 
     @JsonBackReference

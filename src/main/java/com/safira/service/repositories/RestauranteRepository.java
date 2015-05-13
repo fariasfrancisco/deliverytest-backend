@@ -1,9 +1,9 @@
 package com.safira.service.repositories;
 
 import com.safira.domain.entities.Restaurante;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public interface RestauranteRepository extends JpaRepository<Restaurante, Long> {
-    @Query("select r from Restaurante r where r.uuid = :uuid")
-    Restaurante findByUuid(@Param("uuid") String uuid);
+    Restaurante findByUuid(String uuid);
+
+    Page<Restaurante> findByNombreContainingIgnoreCase(String nombre, Pageable pageable);
 }

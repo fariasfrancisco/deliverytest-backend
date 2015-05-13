@@ -1,7 +1,6 @@
 package com.safira.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,7 +16,6 @@ public class RestauranteVerificationToken extends ModelEntity {
     @Column(length = 36)
     private final String token;
 
-    @Type(type = "com.safira.common.LocalDateTimeUserType")
     private LocalDateTime expiryDate;
 
     @Enumerated(EnumType.STRING)
@@ -79,5 +77,9 @@ public class RestauranteVerificationToken extends ModelEntity {
 
     public boolean hasExpired() {
         return expiryDate.isBefore(LocalDateTime.now());
+    }
+
+    public enum TokenType {
+        lostPassword, emailVerification, emailRegistration
     }
 }

@@ -6,15 +6,20 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+import java.time.LocalDateTime;
+
 /**
  * Class in charge of creating XML data for a new created Restaurante and RestauranteLogin.
  */
 public class RestauranteXMLWriter {
-    public static Document createDocument(Restaurante restaurante, RestauranteLogin restauranteLogin) {
+    public static Document createDocument(Restaurante restaurante) {
+        RestauranteLogin restauranteLogin = restaurante.getRestauranteLogin();
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("Restaurante")
-                .addAttribute("Id", String.valueOf(restaurante.getId()))
+                .addAttribute("UUID", restaurante.getUuid())
                 .addAttribute("Usuario", restauranteLogin.getUsuario());
+        Element creation = root.addElement("Creation")
+                .addAttribute("TimeStamp", LocalDateTime.now().toString());
         Element nombre = root.addElement("Nombre")
                 .addText(restaurante.getNombre());
         Element direccion = root.addElement("Direccion")

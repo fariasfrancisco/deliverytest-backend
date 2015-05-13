@@ -1,41 +1,51 @@
 package com.safira.service.implementation;
 
-import com.safira.api.AuthenticatedRestauranteToken;
-import com.safira.api.CreateRestauranteRequest;
-import com.safira.api.LoginRestauranteRequest;
+import com.safira.api.requests.CreateRestauranteRequest;
+import com.safira.api.requests.LoginRestauranteRequest;
+import com.safira.api.responses.AuthenticatedRestauranteToken;
+import com.safira.api.responses.TokenVerificationResult;
+import com.safira.common.ErrorDescription;
+import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.LoginException;
-import com.safira.common.exceptions.ValidatorException;
-import com.safira.configuration.ApplicationConfiguration;
-import com.safira.domain.Restaurantes;
 import com.safira.domain.entities.Restaurante;
 import com.safira.domain.entities.RestauranteLogin;
 import com.safira.domain.entities.RestauranteSessionToken;
+import com.safira.service.PasswordService;
+import com.safira.service.interfaces.RestauranteService;
 import com.safira.service.repositories.RestauranteLoginRepository;
 import com.safira.service.repositories.RestauranteRepository;
-import com.safira.service.PasswordService;
-import com.safira.service.Validator;
-import com.safira.service.interfaces.RestauranteService;
+import com.safira.service.repositories.RestauranteSessionTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by francisco on 24/03/15.
  */
 @Service("restauranteService")
 public class RestauranteServiceImpl implements RestauranteService {
+
+    private static final int PAGE_SIZE = 10;
+
     @Autowired
     RestauranteRepository restauranteRepository;
 
     @Autowired
+    RestauranteSessionTokenRepository restauranteSessionTokenRepository;
+
+    @Autowired
     RestauranteLoginRepository restauranteLoginRepository;
 
-    ApplicationConfiguration applicationConfiguration;
-
     @Transactional
-    public Restaurante createRestaurante(CreateRestauranteRequest createRestauranteRequest) throws ValidatorException {
-        Validator.validateRestaurante(createRestauranteRequest);
+    public Restaurante createRestaurante(CreateRestauranteRequest createRestauranteRequest) {
         byte[] salt = PasswordService.getNextSalt();
         char[] password = createRestauranteRequest.getPassword().toCharArray();
         Restaurante restaurante = new Restaurante.Builder()
@@ -60,53 +70,106 @@ public class RestauranteServiceImpl implements RestauranteService {
     }
 
     @Transactional
-    public AuthenticatedRestauranteToken loginRestaurante(LoginRestauranteRequest loginRestauranteRequest)
-            throws ValidatorException, EmptyQueryResultException, LoginException {
-        Validator.validateRestauranteLogin(loginRestauranteRequest);
-        RestauranteLogin restauranteLogin = restauranteLoginRepository.findByUsuario(loginRestauranteRequest.getUsuario());
-        if (restauranteLogin == null) throw new EmptyQueryResultException("Desearilization Failed. " +
-                "No restaurante found with usuario = " + loginRestauranteRequest.getUsuario());
-        if (!PasswordService.isExpectedPassword(loginRestauranteRequest.getPassword().toCharArray()
-                , restauranteLogin.getSalt(), restauranteLogin.getHash()))
-            throw new LoginException("The password recieved does not match stored password.");
-        Restaurante restaurante = restauranteLogin.getRestaurante();
-        return new AuthenticatedRestauranteToken(restaurante.getIdentifier(), null);
+    public AuthenticatedRestauranteToken loginRestaurante(LoginRestauranteRequest loginRestauranteRequest, ErrorOutput errors)
+            throws EmptyQueryResultException, LoginException {
+        String usuarioUuid = loginRestauranteRequest.getUsuario();
+        RestauranteLogin restauranteLogin = restauranteLoginRepository.findByUsuario(usuarioUuid);
+        if (restauranteLogin == null) {
+            errors.setMessage("Empty Query Exception.");
+            String field = "usuarioUuid";
+            String message = "No restaurante found with usuario = " + usuarioUuid + '.';
+            ErrorDescription error = new ErrorDescription(field, message);
+            errors.addError(error);
+            throw new EmptyQueryResultException();
+        }
+        char[] password = loginRestauranteRequest.getPassword().toCharArray();
+        byte[] salt = restauranteLogin.getSalt();
+        byte[] hash = restauranteLogin.getHash();
+        if (!PasswordService.isExpectedPassword(password, salt, hash)) {
+            errors.setMessage("Authentication Failure.");
+            String field = "password";
+            String message = "The recieved username or password does not match.";
+            ErrorDescription error = new ErrorDescription(field, message);
+            errors.addError(error);
+            throw new LoginException();
+        }
+        RestauranteSessionToken restauranteSessionToken = createToken(restauranteLogin);
+        String uuid = restauranteLogin.getUuid();
+        String token = restauranteSessionToken.getToken();
+        return new AuthenticatedRestauranteToken(uuid, token);
     }
 
     @Transactional
-    public Restaurantes getAllRestaurantes() throws EmptyQueryResultException {
-        Restaurantes restaurantes;
-        restaurantes = new Restaurantes(restauranteRepository.findAll());
-        if (restaurantes.getRestaurantes().isEmpty())
-            throw new EmptyQueryResultException("No restaurantes were found by the given criteria");
+    public List<Restaurante> getAllRestaurantes(int pageNumber, ErrorOutput errors) {
+        Pageable pageRequest = new PageRequest(pageNumber - 1, PAGE_SIZE, Sort.Direction.ASC, "nombre");
+        Page<Restaurante> queryPage = restauranteRepository.findAll(pageRequest);
+        if (queryPage.getNumberOfElements() == 0) {
+            errors.setMessage("Empty Query Exception.");
+            String field = "N/A";
+            String message = "The page for the query returned no Restaurantes.";
+            ErrorDescription error = new ErrorDescription(field, message);
+            errors.addError(error);
+        }
+        List<Restaurante> restaurantes = queryPage.getContent();
         return restaurantes;
     }
 
     @Transactional
-    public Restaurante getRestauranteByUuid(String uuid) throws EmptyQueryResultException {
+    public Restaurante getRestauranteByUuid(String uuid, ErrorOutput errors) {
         Restaurante restaurante = restauranteRepository.findByUuid(uuid);
-        if (restaurante == null) throw new EmptyQueryResultException("Desearilization Failed. " +
-                "No restaurante found with uuid = " + uuid);
+        if (restaurante == null) {
+            errors.setMessage("Empty Query Result.");
+            String field = "restauranteUuid";
+            String message = "No restaurante found with uuid = " + uuid + '.';
+            ErrorDescription error = new ErrorDescription(field, message);
+            errors.addError(error);
+        }
         return restaurante;
     }
 
-    @Override
-    public RestauranteSessionToken createToken(RestauranteLogin restauranteLogin) {
-        if (restauranteLogin.getRestauranteSessionToken() == null ||
-                restauranteLogin.getRestauranteSessionToken().hasExpired()) {
+    @Transactional
+    public List<Restaurante> getRestaurantesByNombre(String nombre, int pageNumber, ErrorOutput errors) {
+        Pageable pageRequest = new PageRequest(pageNumber - 1, PAGE_SIZE, Sort.Direction.ASC, "nombre");
+        Page<Restaurante> queryPage = restauranteRepository.findByNombreContainingIgnoreCase(nombre, pageRequest);
+        if (queryPage.getNumberOfElements() == 0) {
+            errors.setMessage("Empty Query Exception.");
+            String field = "N/A";
+            String message = "The page for the query returned no Restaurantes.";
+            ErrorDescription error = new ErrorDescription(field, message);
+            errors.addError(error);
+        }
+        return queryPage.getContent();
+    }
+
+    @Transactional
+    public TokenVerificationResult verififyAuthenticationToken(AuthenticatedRestauranteToken authenticatedRestauranteToken, ErrorOutput errorOutput) {
+        String restauranteUuid = authenticatedRestauranteToken.getRestauranteUuid();
+        String token = authenticatedRestauranteToken.getToken();
+        RestauranteLogin restauranteLogin = restauranteLoginRepository.findByUuid(restauranteUuid);
+        RestauranteSessionToken restauranteSessionToken = restauranteLogin.getRestauranteSessionToken();
+        boolean result = !(restauranteSessionToken == null ||
+                !Objects.equals(restauranteSessionToken.getToken(), token) ||
+                restauranteSessionToken.hasExpired());
+        return new TokenVerificationResult(result);
+    }
+
+    @Transactional
+    private RestauranteSessionToken createToken(RestauranteLogin restauranteLogin) {
+        RestauranteSessionToken restauranteSessionToken = restauranteLogin.getRestauranteSessionToken();
+        if (restauranteSessionToken == null || restauranteSessionToken.hasExpired()) {
             restauranteLogin.setRestauranteSessionToken(
-                    new RestauranteSessionToken(restauranteLogin, applicationConfiguration.getSessionExpirationTime()));
-            restauranteLoginRepository.save(restauranteLogin);
+                    new RestauranteSessionToken(restauranteLogin, 720));
+            restauranteSessionTokenRepository.save(restauranteSessionToken);
         }
         return restauranteLogin.getRestauranteSessionToken();
     }
 
-    @Override
+    @Transactional
     public void sendEmailVerification(RestauranteLogin restauranteLogin) {
 
     }
 
-    @Override
+    @Transactional
     public void validateEmailAddress() {
 
     }

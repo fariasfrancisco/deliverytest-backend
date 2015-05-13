@@ -1,32 +1,30 @@
 package com.safira.service.interfaces;
 
-import com.safira.api.AuthenticatedRestauranteToken;
-import com.safira.api.CreateRestauranteRequest;
-import com.safira.api.LoginRestauranteRequest;
+import com.safira.api.requests.CreateRestauranteRequest;
+import com.safira.api.requests.LoginRestauranteRequest;
+import com.safira.api.responses.AuthenticatedRestauranteToken;
+import com.safira.api.responses.TokenVerificationResult;
+import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.common.exceptions.LoginException;
-import com.safira.common.exceptions.ValidatorException;
-import com.safira.domain.Restaurantes;
 import com.safira.domain.entities.Restaurante;
-import com.safira.domain.entities.RestauranteLogin;
-import com.safira.domain.entities.RestauranteSessionToken;
+
+import java.util.List;
 
 /**
  * Created by francisco on 24/03/15.
  */
 public interface RestauranteService {
 
-    public Restaurante createRestaurante(CreateRestauranteRequest createRestauranteRequest) throws ValidatorException;
+    Restaurante createRestaurante(CreateRestauranteRequest createRestauranteRequest);
 
-    public AuthenticatedRestauranteToken loginRestaurante(LoginRestauranteRequest loginRestauranteRequest) throws ValidatorException, EmptyQueryResultException, LoginException;
+    AuthenticatedRestauranteToken loginRestaurante(LoginRestauranteRequest loginRestauranteRequest, ErrorOutput errorOutput) throws EmptyQueryResultException, LoginException;
 
-    public Restaurantes getAllRestaurantes() throws EmptyQueryResultException;
+    List<Restaurante> getAllRestaurantes(int pageNumber, ErrorOutput errorOutput);
 
-    public Restaurante getRestauranteByUuid(String uuid) throws EmptyQueryResultException;
+    Restaurante getRestauranteByUuid(String uuid, ErrorOutput errorOutput);
 
-    public RestauranteSessionToken createToken(RestauranteLogin restauranteLogin);
+    List<Restaurante> getRestaurantesByNombre(String nombre, int pageNumber, ErrorOutput errorOutput);
 
-    public void sendEmailVerification(RestauranteLogin restauranteLogin);
-
-    public void validateEmailAddress();
+    TokenVerificationResult verififyAuthenticationToken(AuthenticatedRestauranteToken authenticatedRestauranteToken, ErrorOutput errorOutput);
 }

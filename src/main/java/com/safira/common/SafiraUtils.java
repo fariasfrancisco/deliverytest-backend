@@ -1,7 +1,5 @@
 package com.safira.common;
 
-import org.apache.commons.collections.ArrayStack;
-
 import java.util.*;
 
 /**
@@ -29,7 +27,7 @@ public class SafiraUtils {
         return list;
     }
 
-    public static <E> List<E> toList(Set<E> set){
+    public static <E> List<E> toList(Set<E> set) {
         return new ArrayList<>(set);
     }
 
@@ -46,7 +44,7 @@ public class SafiraUtils {
         List<T> list = new ArrayList<T>();
 
         for (T t : list1) {
-            if(list2.contains(t)) {
+            if (list2.contains(t)) {
                 list.add(t);
             }
         }

@@ -10,4 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface RestauranteLoginRepository extends CrudRepository<RestauranteLogin, Long> {
     RestauranteLogin findByUsuario(String usuario);
+
+    RestauranteLogin findByUuid(String uuid);
 }

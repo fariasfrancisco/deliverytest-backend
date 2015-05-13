@@ -1,23 +1,25 @@
 package com.safira.service.interfaces;
 
-import com.safira.api.CreatePedidoRequest;
-import com.safira.common.exceptions.InconsistencyException;
+import com.safira.api.requests.CreatePedidoRequest;
+import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
-import com.safira.common.exceptions.ValidatorException;
-import com.safira.domain.Pedidos;
+import com.safira.common.exceptions.InconsistencyException;
+import com.safira.common.exceptions.PedidoTimeoutException;
 import com.safira.domain.entities.Pedido;
+
+import java.util.List;
 
 /**
  * Created by francisco on 24/03/15.
  */
 public interface PedidoService {
-    public Pedido createPedido(CreatePedidoRequest createPedidoRequest) throws ValidatorException, EmptyQueryResultException, InconsistencyException;
+    Pedido createPedido(CreatePedidoRequest createPedidoRequest, ErrorOutput errorOutput) throws InconsistencyException, PedidoTimeoutException, EmptyQueryResultException;
 
-    public Pedido getPedidoByUuid(String uuid) throws EmptyQueryResultException;
+    Pedido getPedidoByUuid(String uuid, ErrorOutput errorOutput);
 
-    public Pedidos getPedidosByRestauranteUuid(String uuid) throws EmptyQueryResultException;
+    List<Pedido> getPedidosByRestauranteUuid(String uuid, int pageNumber, ErrorOutput errorOutput);
 
-    public Pedidos getPedidosByUsuarioUuid(String uuid) throws EmptyQueryResultException;
+    List<Pedido> getPedidosByUsuarioUuid(String uuid, int pageNumber, ErrorOutput errorOutput);
 
-    public Pedidos getPedidosByUsuarioUuidAndByRestauranteUuid(String usruuid, String resuuid) throws EmptyQueryResultException;
+    List<Pedido> getPedidosByUsuarioUuidAndByRestauranteUuid(String usuarioUuid, String restauranteUuid, int pageNumber, ErrorOutput errorOutput);
 }

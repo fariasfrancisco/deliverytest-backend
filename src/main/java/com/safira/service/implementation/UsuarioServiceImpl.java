@@ -1,13 +1,10 @@
 package com.safira.service.implementation;
 
-import com.safira.api.CreateUsuarioRequest;
-import com.safira.api.LoginUsuarioRequest;
-import com.safira.common.exceptions.EmptyQueryResultException;
-import com.safira.common.exceptions.ValidatorException;
+import com.safira.api.requests.CreateUsuarioRequest;
+import com.safira.common.ErrorOutput;
 import com.safira.domain.entities.Usuario;
-import com.safira.service.repositories.UsuarioRepository;
-import com.safira.service.Validator;
 import com.safira.service.interfaces.UsuarioService;
+import com.safira.service.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +19,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     UsuarioRepository usuarioRepository;
 
     @Transactional
-    public Usuario createUsuario(CreateUsuarioRequest createUsuarioRequest) throws ValidatorException {
-        Validator.validateUsuario(createUsuarioRequest);
+    public Usuario createUsuario(CreateUsuarioRequest createUsuarioRequest) {
         Usuario usuario = new Usuario.Builder()
                 .withFacebookId(createUsuarioRequest.getFacebookId())
                 .withNombre(createUsuarioRequest.getNombre())
@@ -35,16 +31,10 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Transactional
-    public Usuario loginUsuario(LoginUsuarioRequest loginUsuarioRequest) {
-        return null;
-    }
-
-
-    @Transactional
-    public Usuario getUsuarioByUuid(String uuid) throws EmptyQueryResultException {
+    public Usuario getUsuarioByUuid(String uuid, ErrorOutput errors) {
         Usuario usuario = usuarioRepository.findByUuid(uuid);
-        if (usuario == null) throw new EmptyQueryResultException("Desearilization Failed. " +
-                "No usuario found with uuid = " + uuid);
+        if (usuario == null)
+            errors.addError("Empty Query Exception.", "usuarioUuid", "No usuario found with uuid = " + uuid + '.');
         return usuario;
     }
 }
