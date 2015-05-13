@@ -35,7 +35,7 @@ public class DireccionController {
 
     @RequestMapping(value = REGISTER_DIRECCION, method = RequestMethod.POST)
     public ResponseEntity addDireccion(@RequestBody CreateDireccionRequest createDireccionRequest) {
-        errors = new ErrorOutput();
+        errors.flush();
         Direccion direccion;
         try {
             Validator.validateDireccion(createDireccionRequest, errors);

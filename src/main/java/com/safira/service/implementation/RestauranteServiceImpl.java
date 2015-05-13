@@ -101,10 +101,9 @@ public class RestauranteServiceImpl implements RestauranteService {
 
     @Transactional
     public List<Restaurante> getAllRestaurantes(int pageNumber, ErrorOutput errors) {
-        Pageable pageRequest = new PageRequest(pageNumber-1, PAGE_SIZE, Sort.Direction.ASC, "nombre");
+        Pageable pageRequest = new PageRequest(pageNumber - 1, PAGE_SIZE, Sort.Direction.ASC, "nombre");
         Page<Restaurante> queryPage = restauranteRepository.findAll(pageRequest);
-        System.out.println(queryPage.getTotalElements());
-        if (queryPage.getNumberOfElements()==0) {
+        if (queryPage.getNumberOfElements() == 0) {
             errors.setMessage("Empty Query Exception.");
             String field = "N/A";
             String message = "The page for the query returned no Restaurantes.";
@@ -126,6 +125,20 @@ public class RestauranteServiceImpl implements RestauranteService {
             errors.addError(error);
         }
         return restaurante;
+    }
+
+    @Transactional
+    public List<Restaurante> getRestaurantesByNombre(String nombre, int pageNumber, ErrorOutput errors) {
+        Pageable pageRequest = new PageRequest(pageNumber - 1, PAGE_SIZE, Sort.Direction.ASC, "nombre");
+        Page<Restaurante> queryPage = restauranteRepository.findByNombreContainingIgnoreCase(nombre, pageRequest);
+        if (queryPage.getNumberOfElements() == 0) {
+            errors.setMessage("Empty Query Exception.");
+            String field = "N/A";
+            String message = "The page for the query returned no Restaurantes.";
+            ErrorDescription error = new ErrorDescription(field, message);
+            errors.addError(error);
+        }
+        return queryPage.getContent();
     }
 
     @Transactional

@@ -2,8 +2,6 @@ package com.safira.service.repositories;
 
 import com.safira.domain.entities.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -11,5 +9,5 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-    Usuario findByUuid(@Param("uuid") String uuid);
+    Usuario findByUuid(String uuid);
 }

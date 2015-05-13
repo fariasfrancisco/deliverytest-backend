@@ -5,10 +5,13 @@ package com.safira.common;
  */
 public class URLs {
 
+    public static final String PAGINATION = "/{pageNumber}";
+
     //RESTAURANTES
     public static final String GET_RESTAURANTES = "/getRestaurantes";
     public static final String REGISTER_RESTAURANTE = "/postRestaurante";
     public static final String GET_RESTAURANTE_BY_UUID = "/getRestauranteByUuid";
+    public static final String GET_RESTAURANTES_BY_NOMBRE = "/getRestaurantesByNombre";
     public static final String LOGIN_RESTAURANTE = "/loginRestaurante";
     public static final String VERIFY_TOKEN = "/verifyAuthenticationToken";
 

@@ -1,7 +1,6 @@
 package com.safira.service.implementation;
 
 import com.safira.api.requests.CreateUsuarioRequest;
-import com.safira.common.ErrorDescription;
 import com.safira.common.ErrorOutput;
 import com.safira.domain.entities.Usuario;
 import com.safira.service.interfaces.UsuarioService;
@@ -34,13 +33,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional
     public Usuario getUsuarioByUuid(String uuid, ErrorOutput errors) {
         Usuario usuario = usuarioRepository.findByUuid(uuid);
-        if (usuario == null) {
-            errors.setMessage("Empty Query Exception.");
-            String field = "usuarioUuid";
-            String message = "No usuario found with uuid = " + uuid + '.';
-            ErrorDescription error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
+        if (usuario == null)
+            errors.addError("Empty Query Exception.", "usuarioUuid", "No usuario found with uuid = " + uuid + '.');
         return usuario;
     }
 }

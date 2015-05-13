@@ -38,6 +38,13 @@ public class ErrorOutput {
     }
 
     public void flush() {
-        errors.clear();
+        message = "";
+        errors = new ArrayList<>();
+    }
+
+    public void addError(String header, String field, String message) {
+        message = header;
+        ErrorDescription error = new ErrorDescription(field, message);
+        errors.add(error);
     }
 }

@@ -15,7 +15,7 @@ public interface MenuService {
 
     Menu getMenuByUuid(String uuid, ErrorOutput errorOutput);
 
-    List<Menu> getMenusByRestauranteUuid(String uuid, ErrorOutput errorOutput);
+    List<Menu> getMenusByRestauranteUuid(String uuid, int pageNumber, ErrorOutput errorOutput);
 
     List<Menu> getMenusByPedidoUuid(String uuid, ErrorOutput errorOutput);
 }

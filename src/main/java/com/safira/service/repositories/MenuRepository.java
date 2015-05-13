@@ -1,8 +1,9 @@
 package com.safira.service.repositories;
 
 import com.safira.domain.entities.Menu;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -10,5 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public interface MenuRepository extends JpaRepository<Menu, Long> {
-    Menu findByUuid(@Param("uuid") String uuid);
+    Menu findByUuid(String uuid);
+
+    Page<Menu> findByRestaurante_Uuid(String uuid, Pageable pageable);
 }

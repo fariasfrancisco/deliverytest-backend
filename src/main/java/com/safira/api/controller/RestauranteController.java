@@ -91,12 +91,16 @@ public class RestauranteController {
         return new ResponseEntity<>(tokenVerificationResult, HttpStatus.OK);
     }
 
-    @RequestMapping(value = GET_RESTAURANTES, method = RequestMethod.GET)
-    public ResponseEntity getRestaurantes(@RequestParam(value = "pageNumber", required = true) int pagenumber) {
+    @RequestMapping(value = GET_RESTAURANTES + PAGINATION, method = RequestMethod.GET)
+    public ResponseEntity getRestaurantes(@PathVariable(value = "pageNumber") int pagenumber) {
+        errors.flush();
         List<Restaurante> restaurantes;
         try {
+            Validator.validatePageNumber(pagenumber,errors);
             restaurantes = restauranteService.getAllRestaurantes(pagenumber, errors);
             if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+        } catch (ValidatorException e) {
+            return new ResponseEntity<>(errors, HttpStatus.UNPROCESSABLE_ENTITY);
         } catch (Exception e) {
             restauranteErrorLogger.error("An exception has occured when finding all Restaurantes", e);
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -106,6 +110,7 @@ public class RestauranteController {
 
     @RequestMapping(value = GET_RESTAURANTE_BY_UUID, method = RequestMethod.GET)
     public ResponseEntity<Object> getRestauranteById(@RequestParam(value = "uuid", required = true) String uuid) {
+        errors.flush();
         Restaurante restaurante;
         try {
             restaurante = restauranteService.getRestauranteByUuid(uuid, errors);
@@ -115,5 +120,24 @@ public class RestauranteController {
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(restaurante, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = GET_RESTAURANTES_BY_NOMBRE + PAGINATION, method = RequestMethod.GET)
+    public ResponseEntity getRestaurantes(
+            @RequestParam(value = "nombre", required = true) String nombre,
+            @PathVariable(value = "pageNumber") int pagenumber) {
+        errors.flush();
+        List<Restaurante> restaurantes;
+        try {
+            Validator.validatePageNumber(pagenumber,errors);
+            restaurantes = restauranteService.getRestaurantesByNombre(nombre, pagenumber, errors);
+            if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+        } catch (ValidatorException e) {
+            return new ResponseEntity<>(errors, HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (Exception e) {
+            restauranteErrorLogger.error("An exception has occured when finding all Restaurantes", e);
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(restaurantes, HttpStatus.OK);
     }
 }

@@ -17,9 +17,9 @@ public interface PedidoService {
 
     Pedido getPedidoByUuid(String uuid, ErrorOutput errorOutput);
 
-    List<Pedido> getPedidosByRestauranteUuid(String uuid, ErrorOutput errorOutput);
+    List<Pedido> getPedidosByRestauranteUuid(String uuid, int pageNumber, ErrorOutput errorOutput);
 
-    List<Pedido> getPedidosByUsuarioUuid(String uuid, ErrorOutput errorOutput);
+    List<Pedido> getPedidosByUsuarioUuid(String uuid, int pageNumber, ErrorOutput errorOutput);
 
-    List<Pedido> getPedidosByUsuarioUuidAndByRestauranteUuid(String usruuid, String resuuid, ErrorOutput errorOutput);
+    List<Pedido> getPedidosByUsuarioUuidAndByRestauranteUuid(String usuarioUuid, String restauranteUuid, int pageNumber, ErrorOutput errorOutput);
 }

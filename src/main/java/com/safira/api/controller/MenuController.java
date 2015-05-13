@@ -65,13 +65,18 @@ public class MenuController {
         return new ResponseEntity<>(menu, HttpStatus.OK);
     }
 
-    @RequestMapping(value = GET_MENUS_BY_RESTAURANTE, method = RequestMethod.GET)
-    public ResponseEntity getMenusByRestaurante(@RequestParam(value = "uuid", required = true) String uuid) {
+    @RequestMapping(value = GET_MENUS_BY_RESTAURANTE + "/{pageNumber}", method = RequestMethod.GET)
+    public ResponseEntity getMenusByRestaurante(
+            @RequestParam(value = "uuid", required = true) String uuid,
+            @PathVariable(value = "pageNumber") int pageNumber) {
         errors.flush();
         List<Menu> menus;
         try {
-            menus = menuService.getMenusByRestauranteUuid(uuid,0, errors);
+            Validator.validatePageNumber(pageNumber, errors);
+            menus = menuService.getMenusByRestauranteUuid(uuid, pageNumber, errors);
             if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+        } catch (ValidatorException e) {
+            return new ResponseEntity<>(errors, HttpStatus.UNPROCESSABLE_ENTITY);
         } catch (Exception e) {
             menuErrorLogger.error("An exception has occured when finding Menus with Restaurante uuid = " + uuid, e);
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -84,7 +89,7 @@ public class MenuController {
         errors.flush();
         List<Menu> menus;
         try {
-            menus = menuService.getMenusByPedidoUuid(uuid, 0, errors);
+            menus = menuService.getMenusByPedidoUuid(uuid, errors);
             if (errors.hasErrors()) return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             menuErrorLogger.error("An exception has occured when finding Menus with Pedidos uuid = " + uuid, e);

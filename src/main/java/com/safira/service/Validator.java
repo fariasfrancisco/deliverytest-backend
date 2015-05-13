@@ -2,7 +2,6 @@ package com.safira.service;
 
 import com.safira.api.requests.*;
 import com.safira.api.responses.AuthenticatedRestauranteToken;
-import com.safira.common.ErrorDescription;
 import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.InconsistencyException;
 import com.safira.common.exceptions.ValidatorException;
@@ -21,212 +20,108 @@ public class Validator {
 
     public static void validateUsuario(CreateUsuarioRequest createUsuarioRequest, ErrorOutput errors) throws ValidatorException {
         if (!validateEmail(createUsuarioRequest.getEmail())) {
-            String field = "email";
-            String message = "The format in the field email(" + createUsuarioRequest.getEmail() + ") is invalid";
-            ErrorDescription error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (errors.hasErrors()) {
-            errors.setMessage("Validation Failed");
+            errors.addError("Validation Failed", "email", "The format in the field email("
+                    + createUsuarioRequest.getEmail() + ") is invalid");
             throw new ValidatorException();
         }
     }
 
     public static void validateMenu(CreateMenuRequest createMenuRequest, ErrorOutput errors) throws ValidatorException {
-        String message;
-        String field;
-        ErrorDescription error;
-        if (!validateUuid(createMenuRequest.getRestauranteUuid())) {
-            field = "restauranteUuid";
-            message = "The format in the field restauranteUuid(" +
-                    createMenuRequest.getRestauranteUuid() + ") is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (!validateMoney(createMenuRequest.getCosto())) {
-            field = "costo";
-            message = "The format in the field costo(" + createMenuRequest.getCosto() + ") is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (errors.hasErrors()) {
-            errors.setMessage("Validation Failed");
+        if (!validateUuid(createMenuRequest.getRestauranteUuid()))
+            errors.addError("Validation Failed", "restauranteUuid", "The format in the field restauranteUuid(" +
+                    createMenuRequest.getRestauranteUuid() + ") is invalid");
+        if (!validateMoney(createMenuRequest.getCosto()))
+            errors.addError("Validation Failed", "costo", "The format in the field costo("
+                    + createMenuRequest.getCosto() + ") is invalid");
+        if (errors.hasErrors())
             throw new ValidatorException();
-        }
     }
 
     public static void validateRestaurante(CreateRestauranteRequest createRestauranteRequest, ErrorOutput errors) throws ValidatorException {
-        String message;
-        String field;
-        ErrorDescription error;
-        if (!validateUsername(createRestauranteRequest.getUsuario())) {
-            field = "usuario";
-            message = "The format in the field usuario(" + createRestauranteRequest.getUsuario() + ") is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (!validateNumber(createRestauranteRequest.getNumero())) {
-            field = "numero";
-            message = "The format in the field numero(" + createRestauranteRequest.getNumero() + ") is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (!validatePhone(createRestauranteRequest.getTelefono())) {
-            field = "telefono";
-            message = "The format in the field telefono(" + createRestauranteRequest.getTelefono() + ") is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (!validateEmail(createRestauranteRequest.getEmail())) {
-            field = "email";
-            message = "The format in the field email(" + createRestauranteRequest.getEmail() + ") is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (!validatePassword(createRestauranteRequest.getPassword())) {
-            field = "password";
-            message = "The format in the field password(" + createRestauranteRequest.getPassword() + ") is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (errors.hasErrors()) {
-            errors.setMessage("Validation Failed");
-            throw new ValidatorException();
-        }
+        if (!validateUsername(createRestauranteRequest.getUsuario()))
+            errors.addError("Validation Failed", "usuario", "The format in the field usuario("
+                    + createRestauranteRequest.getUsuario() + ") is invalid");
+        if (!validateNumber(createRestauranteRequest.getNumero()))
+            errors.addError("Validation Failed", "numero", "The format in the field numero("
+                    + createRestauranteRequest.getNumero() + ") is invalid");
+        if (!validatePhone(createRestauranteRequest.getTelefono()))
+            errors.addError("Validation Failed", "telefono", "The format in the field telefono("
+                    + createRestauranteRequest.getTelefono() + ") is invalid");
+        if (!validateEmail(createRestauranteRequest.getEmail()))
+            errors.addError("Validation Failed", "email", "The format in the field email("
+                    + createRestauranteRequest.getEmail() + ") is invalid");
+        if (!validatePassword(createRestauranteRequest.getPassword()))
+            errors.addError("Validation Failed", "password", "The format in the field password("
+                    + createRestauranteRequest.getPassword() + ") is invalid");
+        if (errors.hasErrors()) throw new ValidatorException();
     }
 
     public static void validatePedido(CreatePedidoRequest createPedidoRequest, ErrorOutput errors) throws ValidatorException, InconsistencyException {
-        String message;
-        String field;
-        ErrorDescription error;
-        if (!validateCantidades(createPedidoRequest.getCantidades())) {
-            field = "cantidades";
-            message = "The format in at least one of the values in the field cantidades is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (createPedidoRequest.getMenuUuids().length != createPedidoRequest.getCantidades().length) {
-            field = "menusUuid";
-            message = "The ammount of menus (" + createPedidoRequest.getMenuUuids().length
-                    + ") does not match the ammount of cantidad(" + createPedidoRequest.getCantidades().length + ")";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (!validateUuid(createPedidoRequest.getDireccionUuid())) {
-            field = "direccionUuid";
-            message = "The format in the field direccionUuid(" +
-                    createPedidoRequest.getDireccionUuid() + ") is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (!validatePhone(createPedidoRequest.getTelefono())) {
-            field = "telefono";
-            message = "The format in the field telefono(" + createPedidoRequest.getTelefono() + ") is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (!validateUuid(createPedidoRequest.getUsuarioUuid())) {
-            field = "usuarioUuid";
-            message = "The format in the field usuarioUuid(" + createPedidoRequest.getUsuarioUuid() + ") is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (!validateUuid(createPedidoRequest.getRestauranteUuid())) {
-            field = "restauranteUuid";
-            message = "The format in the field restauranteUuid(" +
-                    createPedidoRequest.getRestauranteUuid() + ") is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (!validateMenuArray(createPedidoRequest.getMenuUuids())) {
-            field = "menuUuids";
-            message = "The format in the field menuUuids is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (!validateDate(createPedidoRequest.getFecha())) {
-            field = "fecha";
-            message = "The recieved date is invalid: " + createPedidoRequest.getFecha().toString();
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (errors.hasErrors()) {
-            errors.setMessage("Validation Failed");
-            throw new ValidatorException();
-        }
+        if (!validateCantidades(createPedidoRequest.getCantidades()))
+            errors.addError("Validation Failed", "cantidades",
+                    "The format in at least one of the values in the field cantidades is invalid");
+        if (createPedidoRequest.getMenuUuids().length != createPedidoRequest.getCantidades().length)
+            errors.addError("Validation Failed", "menusUuid", "The ammount of menus (" +
+                    createPedidoRequest.getMenuUuids().length + ") does not match the ammount of cantidad("
+                    + createPedidoRequest.getCantidades().length + ")");
+        if (!validateUuid(createPedidoRequest.getDireccionUuid()))
+            errors.addError("Validation Failed", "direccionUuid", "The format in the field direccionUuid(" +
+                    createPedidoRequest.getDireccionUuid() + ") is invalid");
+        if (!validatePhone(createPedidoRequest.getTelefono()))
+            errors.addError("Validation Failed", "telefono", "The format in the field telefono("
+                    + createPedidoRequest.getTelefono() + ") is invalid");
+        if (!validateUuid(createPedidoRequest.getUsuarioUuid()))
+            errors.addError("Validation Failed", "usuarioUuid", "The format in the field usuarioUuid("
+                    + createPedidoRequest.getUsuarioUuid() + ") is invalid");
+        if (!validateUuid(createPedidoRequest.getRestauranteUuid()))
+            errors.addError("Validation Failed", "restauranteUuid", "The format in the field restauranteUuid(" +
+                    createPedidoRequest.getRestauranteUuid() + ") is invalid");
+        if (!validateMenuArray(createPedidoRequest.getMenuUuids()))
+            errors.addError("Validation Failed", "menuUuids", "The format in the field menuUuids is invalid");
+        if (!validateDate(createPedidoRequest.getFecha()))
+            errors.addError("Validation Failed", "fecha", "The recieved date is invalid: "
+                    + createPedidoRequest.getFecha().toString());
+        if (errors.hasErrors()) throw new ValidatorException();
     }
 
     public static void validateRestauranteLogin(LoginRestauranteRequest loginRestauranteRequest, ErrorOutput errors) throws ValidatorException {
-        String message;
-        String field;
-        ErrorDescription error;
-        if (!validateUsername(loginRestauranteRequest.getUsuario())) {
-            field = "usuario";
-            message = "The format in the field usuario(" + loginRestauranteRequest.getUsuario() + ") is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (!validatePassword(loginRestauranteRequest.getPassword())) {
-            field = "password";
-            message = "The format in the field password(" + loginRestauranteRequest.getPassword() + ") is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (errors.hasErrors()) {
-            errors.setMessage("Validation Failed");
-            throw new ValidatorException();
-        }
+        if (!validateUsername(loginRestauranteRequest.getUsuario()))
+            errors.addError("Validation Failed.", "usuario", "The format in the field usuario("
+                    + loginRestauranteRequest.getUsuario() + ") is invalid");
+        if (!validatePassword(loginRestauranteRequest.getPassword()))
+            errors.addError("Validation Failed.", "password", "The format in the field password("
+                    + loginRestauranteRequest.getPassword() + ") is invalid");
+        if (errors.hasErrors()) throw new ValidatorException();
     }
 
     public static void validateAuthenticationToken(AuthenticatedRestauranteToken authenticatedRestauranteToken, ErrorOutput errors) throws ValidatorException {
-        String message;
-        String field;
-        ErrorDescription error;
-        if (!validateUuid(authenticatedRestauranteToken.getRestauranteUuid())) {
-            field = "restauranteUuid";
-            message = "The format in the field restauranteUuid(" + authenticatedRestauranteToken.getRestauranteUuid() + ") is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (!validateUuid(authenticatedRestauranteToken.getToken())) {
-            field = "token";
-            message = "The format in the field token(" + authenticatedRestauranteToken.getToken() + ") is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (errors.hasErrors()) {
-            errors.setMessage("Validation Failed");
-            throw new ValidatorException();
-        }
+        if (!validateUuid(authenticatedRestauranteToken.getRestauranteUuid()))
+            errors.addError("Validation Failed.", "restauranteUuid", "The format in the field restauranteUuid("
+                    + authenticatedRestauranteToken.getRestauranteUuid() + ") is invalid");
+        if (!validateUuid(authenticatedRestauranteToken.getToken()))
+            errors.addError("Validation Failed.", "token", "The format in the field token("
+                    + authenticatedRestauranteToken.getToken() + ") is invalid");
+        if (errors.hasErrors()) throw new ValidatorException();
     }
 
     public static void validateDireccion(CreateDireccionRequest createDireccionRequest, ErrorOutput errors) throws ValidatorException {
-        String message;
-        String field;
-        ErrorDescription error;
-        if (!validateUuid(createDireccionRequest.getUsuarioUuid())) {
-            field = "usuarioUuid";
-            message = "The format in the field usuarioUuid(" +
-                    createDireccionRequest.getUsuarioUuid() + ") is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (!validateNumber(createDireccionRequest.getNumero())) {
-            field = "numero";
-            message = "The format in the field numero(" +
-                    createDireccionRequest.getNumero() + ") is invalid";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
+        if (!validateUuid(createDireccionRequest.getUsuarioUuid()))
+            errors.addError("Validation Failed.", "usuarioUuid", "The format in the field usuarioUuid(" +
+                    createDireccionRequest.getUsuarioUuid() + ") is invalid");
+        if (!validateNumber(createDireccionRequest.getNumero()))
+            errors.addError("Validation Failed.", "numero", "The format in the field numero(" +
+                    createDireccionRequest.getNumero() + ") is invalid");
         if (createDireccionRequest.getPiso() == null &&
-                createDireccionRequest.getDepartamento() != null) {
-            field = "piso/departamento";
-            message = "If piso is null departamento must be null.";
-            error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
-        if (errors.hasErrors()) {
-            errors.setMessage("Validation Failed");
+                createDireccionRequest.getDepartamento() != null)
+            errors.addError("Validation Failed.", "piso/departamento",
+                    "If piso is null departamento must be null.");
+        if (errors.hasErrors()) throw new ValidatorException();
+    }
+
+    public static void validatePageNumber(int pagenumber, ErrorOutput errors) throws ValidatorException {
+        if (pagenumber < 1) {
+            errors.addError("Validation Failed.", "pageNumber",
+                    "recieved page number must be equals to 1 or higher");
             throw new ValidatorException();
         }
     }

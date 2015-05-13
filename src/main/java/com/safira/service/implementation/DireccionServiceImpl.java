@@ -1,7 +1,6 @@
 package com.safira.service.implementation;
 
 import com.safira.api.requests.CreateDireccionRequest;
-import com.safira.common.ErrorDescription;
 import com.safira.common.ErrorOutput;
 import com.safira.common.exceptions.EmptyQueryResultException;
 import com.safira.domain.entities.Direccion;
@@ -43,13 +42,9 @@ public class DireccionServiceImpl implements DireccionService {
     @Transactional
     public Direccion getDireccionByUuid(String uuid, ErrorOutput errors) {
         Direccion direccion = direccionRepository.findByUuid(uuid);
-        if (direccion == null) {
-            errors.setMessage("Empty Query Result.");
-            String field = "direccionUuid";
-            String message = "No direccion found with uuid = " + uuid + '.';
-            ErrorDescription error = new ErrorDescription(field, message);
-            errors.addError(error);
-        }
+        if (direccion == null)
+            errors.addError("Empty Query Result.", "direccionUuid",
+                    "No direccion found with uuid = " + uuid + '.');
         return direccion;
     }
 }
