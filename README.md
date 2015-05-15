@@ -8,12 +8,12 @@
 
 ### How do I get set up? ###
 
-* Clone the project and make sure your jdk/jre is 1.7 or higher.
+* Clone the project and make sure your jdk/jre is 1.8 or higher.
 * Let gradle download all necesary dependencies you dont already have.
 * Download MySQL v5 or higher.
 * Create and empty schema and call it "deliverytest".
 * Run using bootRun and let the program create the tables and associations in the database.
-* Tests are not yet implemented.
+* Tests are not yet implemented. Feel free to do so. 
 
 ### Contribution guidelines ###
 
