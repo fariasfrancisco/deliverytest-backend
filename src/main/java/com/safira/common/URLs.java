@@ -5,33 +5,44 @@ package com.safira.common;
  */
 public class URLs {
 
+    //OPERATORS
     public static final String PAGINATION = "/{pageNumber}";
+    private static final String GETALL = "/getAll";
+    private static final String GET = "/get";
+    private static final String POST = "/post";
+    private static final String LOGIN = "/login";
+    private static final String VERIFY = "/login";
 
     //RESTAURANTES
-    public static final String GET_RESTAURANTES = "/getRestaurantes";
-    public static final String REGISTER_RESTAURANTE = "/postRestaurante";
-    public static final String GET_RESTAURANTE_BY_UUID = "/getRestauranteByUuid";
-    public static final String GET_RESTAURANTES_BY_NOMBRE = "/getRestaurantesByNombre";
-    public static final String LOGIN_RESTAURANTE = "/loginRestaurante";
-    public static final String VERIFY_TOKEN = "/verifyAuthenticationToken";
+    private static final String RESTAURANTE = "/restaurante";
+    public static final String GET_RESTAURANTES = RESTAURANTE + GETALL;
+    public static final String REGISTER_RESTAURANTE = RESTAURANTE + POST;
+    public static final String GET_RESTAURANTE_BY_UUID = RESTAURANTE + GET;
+    public static final String GET_RESTAURANTES_BY_NOMBRE = RESTAURANTE + GET;
+    public static final String LOGIN_RESTAURANTE = RESTAURANTE + LOGIN;
+    public static final String VERIFY_TOKEN = RESTAURANTE + VERIFY;
 
     //MENUS
-    public static final String REGISTER_MENU = "/postMenu";
-    public static final String GET_MENU_BY_UUID = "/getMenuByUuid";
-    public static final String GET_MENUS_BY_RESTAURANTE = "/getMenusByRestaurante";
-    public static final String GET_MENUS_BY_PEDIDO = "/getMenusByPedido";
+    private static final String MENU = "/menu";
+    public static final String REGISTER_MENU = MENU + POST;
+    public static final String GET_MENU_BY_UUID = MENU + GET;
+    public static final String GET_MENUS_BY_RESTAURANTE = MENU + GET;
+    public static final String GET_MENUS_BY_PEDIDO = MENU + GET;
 
     //USUARIOS
-    public static final String REGISTER_USUARIO = "/postUsuario";
-    public static final String GET_USUARIO = "/getUsuario";
+    private static final String USUARIO = "/usuario";
+    public static final String REGISTER_USUARIO = USUARIO + POST;
+    public static final String GET_USUARIO = USUARIO + GET;
 
     //DIRECCION
-    public static final String REGISTER_DIRECCION = "/postDireccion";
+    private static final String DIRECCION = "/direccion";
+    public static final String REGISTER_DIRECCION = DIRECCION + POST;
 
     //PEDIDOS
-    public static final String REGISTER_PEDIDO = "/postPedido";
-    public static final String GET_PEDIDO_BY_UUID = "/getPedidoByUuid";
-    public static final String GET_PEDIDOS_BY_RESTAURANTE = "/getPedidosByRestaurante";
-    public static final String GET_PEDIDOS_BY_USUARIO = "/getPedidosByUsuario";
-    public static final String GET_PEDIDOS_BY_USUARIO_AND_BY_RESTAURANTE = "/getPedidosByRestauranteAndUsuario";
+    private static final String PEDIDO = "/pedido";
+    public static final String REGISTER_PEDIDO = PEDIDO + POST;
+    public static final String GET_PEDIDO_BY_UUID = PEDIDO + GET;
+    public static final String GET_PEDIDOS_BY_RESTAURANTE = PEDIDO + GET;
+    public static final String GET_PEDIDOS_BY_USUARIO = PEDIDO + GET;
+    public static final String GET_PEDIDOS_BY_USUARIO_AND_BY_RESTAURANTE = PEDIDO + GET;
 }

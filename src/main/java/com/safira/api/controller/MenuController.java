@@ -67,7 +67,7 @@ public class MenuController {
 
     @RequestMapping(value = GET_MENUS_BY_RESTAURANTE + "/{pageNumber}", method = RequestMethod.GET)
     public ResponseEntity getMenusByRestaurante(
-            @RequestParam(value = "uuid", required = true) String uuid,
+            @RequestParam(value = "restauranteUuid", required = true) String uuid,
             @PathVariable(value = "pageNumber") int pageNumber) {
         errors.flush();
         List<Menu> menus;
@@ -85,7 +85,8 @@ public class MenuController {
     }
 
     @RequestMapping(value = GET_MENUS_BY_PEDIDO, method = RequestMethod.GET)
-    public ResponseEntity getMenusByPedido(@RequestParam(value = "uuid", required = true) String uuid) {
+    public ResponseEntity getMenusByPedido(
+            @RequestParam(value = "pedidoUuid", required = true) String uuid) {
         errors.flush();
         List<Menu> menus;
         try {

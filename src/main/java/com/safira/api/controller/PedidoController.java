@@ -68,7 +68,7 @@ public class PedidoController {
 
     @RequestMapping(value = GET_PEDIDOS_BY_RESTAURANTE + PAGINATION, method = RequestMethod.GET)
     public ResponseEntity getPedidosByRestaurante(
-            @RequestParam(value = "uuid", required = true) String uuid,
+            @RequestParam(value = "restauranteUuid", required = true) String uuid,
             @PathVariable(value = "pageNumber") int pageNumber) {
         errors.flush();
         List<Pedido> pedidos;
@@ -87,7 +87,7 @@ public class PedidoController {
 
     @RequestMapping(value = GET_PEDIDOS_BY_USUARIO + PAGINATION, method = RequestMethod.GET)
     public ResponseEntity getPedidosByUsuario(
-            @RequestParam(value = "uuid", required = true) String uuid,
+            @RequestParam(value = "usuarioUuid", required = true) String uuid,
             @PathVariable(value = "pageNumber") int pageNumber) {
         errors.flush();
         List<Pedido> pedidos;
