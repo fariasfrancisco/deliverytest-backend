@@ -1,11 +1,19 @@
 # DeliveryTest#
+# deliverytest-backend
+This is a mock for the back-end of a food delivery system that serves as a hub for multiple restaurants.
+
+this projects uses gradle as a dependecy manager and life cycle manager as well.
+
+By default it expects a MySQL database with a deliverytest schema created. The program will handle all the table creation.
+
+
+This provides a bunch of end points for a REST API.
 
 ### What is this repository for? ###
 
 * This repository is meant to host the code for a test application that will run in the server side of the platform.
 * 0.1.0
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
-
+* 
 ### How do I get set up? ###
 
 * Clone the project and make sure your jdk/jre is 1.8 or higher.
